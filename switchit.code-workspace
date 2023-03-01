@@ -1,12 +1,13 @@
 {
 	"folders": [
 		{
-			"name": "vue",
 			"path": "vue"
 		},
 		{
-			"name": "node",
 			"path": "node"
+		},
+		{
+			"path": "../inspiru-vue"
 		}
 	],
 	"settings": {}

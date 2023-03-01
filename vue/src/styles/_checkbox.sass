@@ -1,0 +1,73 @@
+@import "variables"
+
+.checkbox-group
+  margin: 10px
+  display: flex
+  flex-direction: column
+  gap: 10px
+
+.checkbox-label
+  display: flex
+  align-items: center
+  position: relative
+  padding-left: 35px
+  margin-bottom: 0
+  cursor: pointer
+  -webkit-user-select: none
+  -moz-user-select: none
+  -ms-user-select: none
+  user-select: none
+  flex-grow: 1
+  font: inherit
+  color: inherit
+  width: 20px
+  height: 20px
+  &.nolabel
+    width: 20px
+    height: 20px
+
+  /* Hide the browser's default check-box button */
+  & input
+    position: absolute
+    opacity: 0
+    cursor: pointer
+    height: 0
+    width: 0
+
+  /* Create a custom check-box button */
+  .checkmark
+    position: absolute
+    top: 0
+    left: 0
+    height: 20px
+    width: 20px
+    border-radius: $input-border-radius
+    background-color: none
+    border: 1px solid #aaa
+    display: flex
+    align-items: center
+    justify-content: center
+
+  /* On mouse-over, add a grey background color */
+  &:hover input~.checkmark
+    background-color: rgba(0,0,0,.1)
+
+  /* When the check-box button is checked, add a green background */
+  & input:checked~.checkmark
+    background-color: $ui-active
+
+    border: 1px solid #333
+
+  /* Create the indicator (the check symbol - hidden when not checked) */
+  .checkmark:after
+    content: "\f88b"
+    color: $ui-indicator
+    font-family: "Material Symbols Outlined"
+    font-size: 20px
+    display: none
+    border-radius: $input-border-radius
+    background: $ui-active
+
+  /* Show the indicator when checked */
+  & input:checked~.checkmark:after
+    display: flex

@@ -1,0 +1,36 @@
+@import "variables";
+  
+$width: 340px
+
+.carousel
+  width: $width
+
+  .inner
+    white-space: nowrap
+
+  .card
+    width: $width
+    margin-right: 10px
+    display: inline-flex
+    height: 40px
+    background-color: #39b1bd
+    color: white
+    border-radius: 4px
+    align-items: center
+    justify-content: center
+    overflow: hidden
+
+  .card-enter-from,
+  .card-leave-to
+    width: 0px
+
+  .card-enter-to,
+  .card-leave-from
+    width: $width
+
+  .card-enter-active,
+  .card-leave-active
+    transition: all 0.5s ease
+
+
+    

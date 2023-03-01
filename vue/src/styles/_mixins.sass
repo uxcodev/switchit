@@ -1,0 +1,22 @@
+@mixin unselectable($user-select: none)
+  -webkit-user-select: $user-select
+  -moz-user-select: $user-select
+  -ms-user-select: $user-select
+  user-select: $user-select
+
+@mixin box-shadow($top, $left, $blur, $color, $inset: false)
+  @if $inset
+    -webkit-box-shadow: inset $top $left $blur $color
+    -moz-box-shadow: inset $top $left $blur $color
+    box-shadow: inset $top $left $blur $color
+  @else
+    -webkit-box-shadow: $top $left $blur $color
+    -moz-box-shadow: $top $left $blur $color
+    box-shadow: $top $left $blur $color
+
+@mixin shadow($size: 20px)
+  $top: -5px
+  $left: 5px
+  $blur: $size
+  $color: rgb(0 0 0 / 0.1)
+  @include box-shadow($top, $left, $blur, $color)

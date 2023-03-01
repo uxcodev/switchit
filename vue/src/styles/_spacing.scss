@@ -1,0 +1,66 @@
+/*
+This .scss file will provide a full list of helper classes for margins and paddings for your HTML.
+My suggestion is to use in rems instead of pixels, but you can easily change the values in px.
+You can customize the $prefix variable to avoid issues with frameworks or decide to remove it at all, it's up to you.
+The "m" and "p" letters inside classes are for margin and padding respectively. Same logic is used for $sides keys ("t" for top, "l" for left and so on..).
+The generated classes follow the examples below:
+for MARGIN:
+  .s-m-2 { margin: .25rem; }  // .25rem for all margins
+  .s-mt-5 { margin-top: 1rem; }  // 1rem for margin top
+for PADDING:
+  .s-p-0 { padding: 0rem; }  // 0rem for all paddings
+  .s-pl-7 { padding-left: 2rem; }  // 2rem for padding left
+REMINDER: use GULP (or GRUNT) to build your .css file.
+*/
+
+// All measures are expressed in rems instead of pixels
+
+$prefix: s;
+
+// $space-values: (0, .125, .25, .5, .75, 1, 1.5, 2, 2.5, 3);
+
+$space-values: (
+	"0": "0",
+	"1": "0.125",
+	"2": "0.25",
+	"3": "0.5",
+	"4": "0.75",
+	"5": "1",
+	"6": "1.5",
+	"7": "2",
+	"8": "2.5",
+	"9": "3",
+	"10": "3.75",
+	"11": "4.5",
+	"12": "5.25",
+	"13": "6",
+	"14": "6.75",
+	"15": "7.5",
+	"16": "8.25",
+	"17": "9",
+	"18": "9.75",
+	"19": "10.5",
+	"20": "11.25",
+);
+
+$sides: (
+	"": "all",
+	"t": "top",
+	"r": "right",
+	"b": "bottom",
+	"l": "left",
+);
+
+@each $space-key, $space-value in $space-values {
+	@each $side-key, $side-value in $sides {
+		$property: if($side-key == "", "", -#{$side-value});
+
+		.m#{$side-key}#{$space-key} {
+			margin#{$property}: #{$space-value}rem;
+		}
+
+		.p#{$side-key}#{$space-key} {
+			padding#{$property}: #{$space-value}rem;
+		}
+	}
+}

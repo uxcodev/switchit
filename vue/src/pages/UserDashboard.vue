@@ -103,50 +103,54 @@
       </div>
       <div class="table">
         <div class="table-header">
-          <div class="table-header-sm">
+          <div class="table-header-check">
             <label class="checkbox-label">
               <input class="checkbox" type="checkbox" v-model="selectAll" id="mortgage" />
               <span class="checkmark"></span>
             </label>
           </div>
-          <div class="table-header-sm">Match</div>
-          <div class="table-header-med">User ID</div>
-          <div class="table-header-lg">Services</div>
-          <div class="table-header-sm">Value</div>
-          <div class="table-header-sm last"></div>
+          <div class="table-header-content">
+            <div class="table-header-content-sm">Match</div>
+            <div class="table-header-content-med">User ID</div>
+            <div class="table-header-content-lg">Services</div>
+            <div class="table-header-content-sm">Value</div>
+            <div class="table-header-content-sm last"></div>
+          </div>
         </div>
         <div class="table-rows">
-          <div v-for="(lead, index) in leads" :key="index" @click="openLead(lead._id)" class="table-row">
-            <div class="table-row-sm">
-              <label class="checkbox-label nolabel">
+          <div v-for="(lead, index) in leads" :key="index" class="table-row">
+            <div class="table-row-check">
+              <label class=" checkbox-label nolabel">
                 <input v-show="false" class="checkbox" v-model="lead.selected" type="checkbox" id="mortgage" />
                 <span class="checkmark"></span>
               </label>
 
             </div>
-            <div class="table-row-sm">
-              <div class="donut">
-                <Doughnut class='chart' id="my-chart-id" :options="chartOptions" :data="chartData" />
-                {{ lead.match }}%
+            <div @click="openLead(lead._id)" class="table-row-content">
+              <div class="table-row-content-sm">
+                <div class="donut">
+                  <Doughnut class='chart' id="my-chart-id" :options="chartOptions" :data="chartData" />
+                  {{ lead.match }}%
+                </div>
               </div>
-            </div>
-            <div class="table-row-med">
-              {{ lead.userId }}
-            </div>
-            <div class="access_icons table-row-lg">
-              <span :class="lead.access.mortgage.status ? 'active' : ''" class="material-symbols-outlined">house</span>
-              <span :class="lead.access.insurance.status ? 'active' : ''" class="material-symbols-outlined">verified_user</span>
-              <span :class="lead.access.banking.status ? 'active' : ''" class="material-symbols-outlined">credit_card</span>
-              <span :class="lead.access.broadband.status ? 'active' : ''" class="material-symbols-outlined">language</span>
-              <span :class="lead.access.mobile.status ? 'active' : ''" class="material-symbols-outlined">smartphone</span>
-              <span :class="lead.access.utilities.status ? 'active' : ''" class="material-symbols-outlined">lightbulb</span>
-              <span :class="lead.access.auto.status ? 'active' : ''" class="material-symbols-outlined">directions_car</span>
-            </div>
-            <div class="table-header-sm">
-              {{ lead.value }} €
-            </div>
-            <div class="table-header-sm last">
-              <span class="material-symbols-outlined">chevron_right</span>
+              <div class="table-row-content-med">
+                {{ lead.userId }}
+              </div>
+              <div class="access_icons table-row-content-lg">
+                <span :class="lead.access.mortgage.status ? 'active' : ''" class="material-symbols-outlined">house</span>
+                <span :class="lead.access.insurance.status ? 'active' : ''" class="material-symbols-outlined">verified_user</span>
+                <span :class="lead.access.banking.status ? 'active' : ''" class="material-symbols-outlined">credit_card</span>
+                <span :class="lead.access.broadband.status ? 'active' : ''" class="material-symbols-outlined">language</span>
+                <span :class="lead.access.mobile.status ? 'active' : ''" class="material-symbols-outlined">smartphone</span>
+                <span :class="lead.access.utilities.status ? 'active' : ''" class="material-symbols-outlined">lightbulb</span>
+                <span :class="lead.access.auto.status ? 'active' : ''" class="material-symbols-outlined">directions_car</span>
+              </div>
+              <div class="table-row-content-sm">
+                {{ lead.value }} €
+              </div>
+              <div class="table-row-content-sm last">
+                <span class="material-symbols-outlined">chevron_right</span>
+              </div>
             </div>
           </div>
         </div>
@@ -215,7 +219,7 @@ export default {
       async handler(page) {
         // let page = this.pg.currentPage
         let limit = this.pg.limit
-        let skip = page * limit
+        let skip = (page - 1) * limit
         let response = await this.$api.getLeads({ limit: limit, skip: skip })
         this.leads = response.leads
         // this.pg.pageCount = Math.ceil(response.count / limit)
@@ -275,8 +279,9 @@ export default {
     pg_forward() {
       // this.pg.currentPage++
       console.log(this.pg.pageCount)
+      console.log(this.pg.currentPage)
       let p = this.pg.currentPage
-      this.pg.currentPage = p < this.pg.pageCount - 1 ? p + 1 : p
+      this.pg.currentPage = p < this.pg.pageCount ? p + 1 : p
     },
     openFilters() {
       console.log('openFilters')
@@ -309,7 +314,8 @@ export default {
     this.pg.pageCount = Math.ceil(response.count / this.pg.limit)
     console.log('this.pg.pageCount')
     console.log(this.pg.pageCount)
-    // this.pg.currentPage = 1
+    console.log(response.count)
+    console.log(this.pg.limit)
   }
 }
 </script>
@@ -531,13 +537,14 @@ pre
     background-color: white
     border-radius:10px
   &-row 
-    // flex: 1
     display: flex
     justify-content: space-between
     align-items: center
     padding: 10px
-    border-radius: 10px
-   
+    cursor: pointer
+    &:hover
+      background: #fafafa
+      transition: all .2s
   &-header
     background-color: #546E7A
     display: flex
@@ -550,27 +557,35 @@ pre
   &-header,
   &-row  
     &-check
-      width: 50px
+      width: 20px
       display: flex
-    &-sm
-      width: 100px
-    &-med
-      width: 150px
-    &-lg
+    &-content
       flex: 1
+      display: flex
+      justify-content: space-between
+      align-items: center
+      padding: 0 10px 0 50px 
+      &-xs
+        width: 20px
+      &-sm
+        width: 100px
+      &-med
+        width: 150px
+      &-lg
+        flex: 1
   .last
     display: flex
     justify-content: flex-end
     color: #00BB8E
   .access_icons
-        display: flex
-        gap: 6px
-        span
-          font-size:1.5em
-          opacity: .1
-          color: #00C6C6
-        span.active
-          opacity: 1  
+    display: flex
+    gap: 6px
+    span
+      font-size:1.5em
+      opacity: .1
+      color: #00C6C6
+    span.active
+      opacity: 1  
   // .stars 
 //   font-variation-settings: {
 //   'FILL' 1,
@@ -581,6 +596,31 @@ pre
   // .checkmark
   //   background-color: #00C6C6
 
+
+@media only screen and (max-width: 767px)
+  .table-row-content,
+  .table-header-content
+    &-xs
+      width: 20px
+    &-sm
+      width: 60px
+    &-med
+      width: 80px
+    &-lg
+      flex: 1
+    .last
+      display: flex
+      justify-content: flex-end
+      color: #00BB8E
+    .access_icons
+      display: flex
+      gap: 2px
+      span
+        font-size:1.5em
+        opacity: .1
+        color: #00C6C6
+      span.active
+        opacity: 1  
 </style>
 
 <style lang="scss">

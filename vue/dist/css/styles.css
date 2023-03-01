@@ -1,0 +1,19 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat&Nunito:wght@300;400;500;700");
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+:root {
+  --primary: #ffe100;
+  --red: rgb(253, 67, 67);
+  --link: #0088ff;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  font-family: Nunito, sans-serif;
+  color: #333;
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 20px;
+  background-color: #fff;
+}
+/*# sourceMappingURL=styles.css.map */

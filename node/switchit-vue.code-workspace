@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "../switchit-vue"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "aci_admin"
+	}
+}

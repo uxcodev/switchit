@@ -1,6 +1,6 @@
 <template>
   <div class="submenu">
-    <button @click="show('SettingsCalendar')" :class="screen ==='SettingsCalendar' ? 'active' : ''">Calendar</button>
+    <button @click="show('SettingsCalendar')" :class="screen === 'SettingsCalendar' ? 'active' : ''">Calendar</button>
     <button @click="show('SettingsServices')" :class="screen === 'SettingsServices' ? 'active' : ''">Services</button>
     <!-- <button @click="show('SettingsServices')">Other</button> -->
   </div>

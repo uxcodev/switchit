@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const Company = require("../models/company");
 const jwt = require('jsonwebtoken')
 
 exports.createToken = async (req, res, next) => {
@@ -54,6 +55,20 @@ exports.updateUser = async (req, res, next) => {
 };
 
 exports.deleteUser = async (req, res, next) => {
-  let response = await User.deleteOne({ _id: req.query.id })
+  let userId = req.query.id
+  let user = await User.findById(userId)
+  for (const role of user.roles) {
+    const companyId = role.company.toString();
+    console.log(companyId);
+    let response = await Company.findOneAndUpdate(
+      { _id: companyId, 'roles.user': userId },
+      { $pull: { roles: { user: userId } } },
+      { new: true }
+    )
+    console.log(response)
+    // Handle company object id
+  }
+  let response = await User.deleteOne({ _id: userId })
+
   res.status(200).json({ message: response })
 };

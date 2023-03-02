@@ -33,18 +33,18 @@ exports.signupCompany = async (req, res, next) => {
   // see if company is already in database
   // if so, return. if not, create it
 
-  // companyExists = await Company.findOne({ website: companyFields.website }, { strictQuery: true },)
-  // console.log(companyExists)
-  // if (!companyExists) {
-  for (const [key, value] of Object.entries(companyFields)) {
-    companyObj[key] = value
+  company = await Company.findOne({ website: companyFields.website }, { strictQuery: true },)
+  if (!company) {
+    for (const [key, value] of Object.entries(companyFields)) {
+      companyObj[key] = value
+    }
+    company = new Company(companyObj)
+  } else {
+    console.log('company already exists')
+    console.log(company)
+    // res.status(200).json({ message: "Company already exists" }) // UNCOMMENT FOR PROD
+    // return
   }
-  company = new Company(companyObj)
-  // } else {
-  // company = companyExists // DELETE FOR PROD - this will overwrite existing companies
-  // res.status(200).json({ message: "Company already exists" })  UNCOMMENT FOR PROD
-  // }
-  console.log(company)
 
   // see if user is already in database, if not create it
 
@@ -58,34 +58,31 @@ exports.signupCompany = async (req, res, next) => {
     }
     user = new User(userObj)
     user.roles = []
+
+    // add role to user
+
+    user.roles.push({
+      company: company._id,
+      role: "owner"
+    })
+
+    // add role to company
+
+    company.roles = [{
+      user: user._id,
+      role: "owner"
+    }]
+
+    company.save()
+    user.save()
+
+    // return created company
+    res.status(200).json(company)
   } else {
-    console.log('user already exists')
-    user = userExists
-    if (!user.roles) {
-      user.roles = []
-    }
+    res.status(409).json({ message: "User already exists" })
+    return
   }
 
-  // add role to user
-
-  user.roles.push({
-    company: company._id,
-    role: "owner"
-  })
-
-  // add role to company
-
-  company.roles = [{
-    user: user._id,
-    role: "owner"
-  }]
-
-  company.save()
-  user.save()
-
-  // return created company
-
-  res.status(200).json(company)
 
 };
 

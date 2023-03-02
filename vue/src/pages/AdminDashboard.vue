@@ -41,13 +41,5 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-.main
-  display: flex
-  justify-content: center
-
-  background: #F5F5F5
-  min-height: 100vh
-  padding: 100px 40px
-  top: 80px
 @import "/src/styles/variables.sass"
 </style>

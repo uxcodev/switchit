@@ -368,8 +368,8 @@ section
   flex-direction: column
   gap:0px
 .container
-  width:900px
-  max-width:100%
+  width:100%
+  max-width:900px
   display: flex
   flex-direction: column
   gap: 20px

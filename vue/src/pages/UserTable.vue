@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!edit && !add">
+  <div class="content" v-if="!edit && !add">
     <h2>Users</h2>
     <div class="table_header">
       <div class="row">
@@ -37,18 +37,20 @@
               <select name="status" class="select status" v-model="user.status" @change="changeStatus(user)">
                 <option value="new">New</option>
                 <option value="pending">Pending</option>
-                <option value="approved">Approved</option>
+                <option value="active">Approved</option>
                 <option value="rejected">Rejected</option>
               </select>
             </div>
           </div>
-          <div class="option" @click="deleteUser(user.id)">
+          <div class="option" @click="deleteUser(user._id)">
             <span class="material-symbols-outlined">Delete</span>
           </div>
         </div>
       </div>
     </div>
-    <button class="mt10" @click="add = true">+ Add</button>
+    <div>
+      <button class="mt10" @click="add = false">+ Add</button>
+    </div>
   </div>
   <div v-if="edit">
     <!-- <SettingsUserEdit :selectedUser="selectedUser" @updateUser="updateUser" @closeEdit="close" /> -->
@@ -58,10 +60,7 @@
     <!-- <SettingsUserCreate -->
   </div>
 </template>
-
 <script>
-
-
 
 
 export default {
@@ -92,7 +91,9 @@ export default {
       console.log(response)
     },
     async deleteUser(id) {
-      console.log(id)
+      let response = await this.$api.deleteUser(id)
+      this.users = await this.$api.getUsers()
+      console.log(response)
     },
     closeModal() {
       this.modalComponent = null
@@ -119,10 +120,16 @@ export default {
 h3
   margin-block-end: 0
 
+.content
+  width: 100%  
+  display: flex
+  flex-direction: column
+  align-content: center
+  justify-content: center
+  max-width: 900px
 .table_header
   display: flex
   width: 100% 
-  max-width: 900px
   border-radius: 6px
   background-color: #546E7A
   padding: 6px 10px
@@ -157,7 +164,7 @@ h3
   display: flex
   flex-direction: column
   gap: 10px
-  width:900px 
+  width: 100%
   max-width: 900px
   .item
     gap:10px

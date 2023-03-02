@@ -81,7 +81,7 @@
         <!-- <vue-slider v-model="sliderValue"></vue-slider> -->
       </section>
     </div>
-</div>
+  </div>
 </template>
 
 <script>
@@ -154,7 +154,7 @@ export default {
 
 <style lang="sass" scoped>
 @import "/src/styles/styles.sass"
-// 
+
 
 // TRANSITIONS
 $transition-sidebar: .2s ease-in-out
@@ -165,9 +165,11 @@ $transition-sidebar: .2s ease-in-out
 h1
   margin: 0 0 10px 0  
   font-size: 1.8em
+  color: inherit
 h2
   font-size: 1.4em
   margin: 0
+  color: inherit
 p
   margin: 0
   color: rgba(255, 255, 255, .5)

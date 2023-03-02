@@ -222,6 +222,29 @@ export default {
       console.error(err);
     }
   },
+  async deleteUser(id) {
+
+    try {
+      let token = localStorage.getItem('switchit_token')
+      let options = {
+        method: "DELETE",
+        headers: {
+          accept: "application/json",
+          "content-type": "application/*+json",
+          authorization: `Bearer ${token}`,
+        },
+      }
+
+      let url = process.env.VUE_APP_API_URL
+      let response = await fetch(
+        `${url}/users/delete-user?id=${id}`, options
+      );
+      let data = await response.json();
+      return data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
 
   async signupCompany(fields) {
     try {
@@ -248,6 +271,7 @@ export default {
         options
       )
       const data = await response.json();
+      data.ok = response.ok
       return data;
     } catch (err) {
       console.error(err);

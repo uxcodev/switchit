@@ -89,13 +89,19 @@ const routes = [
     path: '/onboarding',
     name: "onboarding",
     beforeEnter: isAuth,
-    component: () => import('@/pages//onboarding/CompanyOnboarding.vue')
+    component: () => import('@/pages/onboarding/CompanyOnboarding.vue')
   },
   {
     path: '/offer',
     name: "offer",
     beforeEnter: isAuth,
     component: () => import('@/pages/CreateOffer.vue')
+  },
+  {
+    path: '/signup_success',
+    name: "signup_success",
+    beforeEnter: isAuth,
+    component: () => import('@/pages/onboarding/CompanyOnboardingSuccess.vue')
   },
 ]
 

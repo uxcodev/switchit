@@ -2,8 +2,8 @@
   <ModalWindow v-if="modalComponent" :component="modalComponent" @closeModal="closeModal">
     <component :is="modalComponent"></component>
   </ModalWindow>
-  <div class="main">
-    <div v-if="status === 'new'" class="container">
+  <div v-if="status === 'new'" class="main">
+    <div class="container white">
       <h2>Request access to Switchit</h2>
       <form @submit.prevent class="switchit-form sm">
         <!-- <h3>{{ service.name }}</h3> -->
@@ -67,12 +67,29 @@
           </div>
         </div>
         <button class="icon" @click="submitForm">Submit request</button>
+        <div v-if="errors.length" class="msg_error">{{ errors[0] }}</div>
       </form>
     </div>
+  </div>
+  <div v-if="status === 'pending'" class="main clip">
+    <div class="container clip">
+      <!-- <h2>Settings</h2>  -->
+      <div class="ph_content">
+        <div class="cards_lg">
+          <!-- <div v-for="i in 2" :key='i'><span :class='i'></span></div> -->
+          <div class="banner_lg">
+            <h1>
+              Your account is pending approval.
+            </h1>
+            <p>Once your account is approved, your opportunities will appear in the dashboard below. In the meantime, you can start learning how to get the most out of your SwitchIt account.</p>
+            <button>Get more out of SwitchIt</button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <img class="img_placeholder mt6" src="@/images/switchit_onboarding_placeholder.svg" />
+      </div>
 
-    <div v-if="status === 'pending'">
-      <h2>Thank you for your application</h2>
-      <div>We will get back to you soon.</div>
     </div>
     <!-- <h3>{{ user.status }}</h3> -->
     <!-- <div>
@@ -129,8 +146,9 @@ export default {
             auto: { status: false },
             banking: { status: false },
           },
-        }
+        },
       },
+      errors: [],
       country_list: ["Denmark", "Germany", "Norway", "Sweden", "United States"]
     }
   },
@@ -142,7 +160,7 @@ export default {
   watch: {
     user(user) {
       this.status = user.status
-      if (user.status === "approved") {
+      if (user.status === "active") {
         this.$router.push({ path: '/dashboard' })
       }
     }
@@ -160,9 +178,14 @@ export default {
     async submitForm() {
       this.form.user.access = this.form.company.access
       let response = await this.$api.signupCompany(this.form)
-      console.log(response)
-      if (response.name) {
+      if (response.ok) {
+        console.log(`response:`)
+        console.log(response)
         this.status = "pending"
+        // this.$router.push({ path: '/signup_success' })
+      } else {
+        this.errors.push(response.message)
+        setTimeout(() => { this.errors = [] }, 3000)
       }
     }
   },
@@ -171,6 +194,9 @@ export default {
       let user = this.$store.getters.user
       this.status = user ? user.status || 'new' : 'new'
       // this.status = user.status
+      if (this.status === 'pending') {
+        // this.$router.push({ path: '/signup_success' })
+      }
     }, 500)
     // setTimeout(() => {
     //   let user = this.$store.getters.user
@@ -178,7 +204,7 @@ export default {
     //   // console.log(user)
     //   // console.log(user.status)
     //   // console.log(this.$auth0.user._value.email)
-    //   if (user.status === "approved") {
+    //   if (user.status === "active") {
     //     this.$router.push({ path: '/dashboard' })
     //   }
     //   // this.user = this.$store.getters.user
@@ -191,6 +217,8 @@ export default {
 @import "/src/styles/variables.sass"
 @import "/src/styles/mixins.sass"
 @import "@vueform/multiselect/themes/default.css"
+.img_placeholder
+  width: 100%
 .main
   display: flex
   flex-direction: column
@@ -200,8 +228,11 @@ export default {
   min-height: 100vh
   padding: 120px 20px 60px 20px
   top: 80px
+  &.clip
+    max-height: 100vh
+    overflow: hidden
 
-.container
+.container.white
   background-color: white
   padding: 50px
   border-radius: 10px
@@ -210,6 +241,7 @@ export default {
   .group
     input:not(.reset)
       max-width: none
+
 
 .checkbox-group
   flex-direction: row

@@ -10,16 +10,27 @@ export default {
       return Math.random() < 0.5;
     }
 
+
+    // Function to generate preferences
+    function getPreferenceValues() {
+      let prefs = {
+        price: getRandomNumber(0, 10),
+        service: getRandomNumber(0, 10),
+        features: getRandomNumber(0, 10),
+      }
+      return prefs;
+    }
+
     // Function to generate a random object for the access property
-    function getRandomAccess() {
+    function createPreferences() {
       return {
-        mortgage: { status: getRandomBoolean(), preferences: { test: 1 } },
-        insurance: { status: getRandomBoolean(), preferences: { test: 1 } },
-        banking: { status: getRandomBoolean(), preferences: { test: 1 } },
-        broadband: { status: getRandomBoolean(), preferences: { test: 1 } },
-        mobile: { status: getRandomBoolean(), preferences: { test: 1 } },
-        utilities: { status: getRandomBoolean(), preferences: { test: 1 } },
-        auto: { status: getRandomBoolean(), preferences: { test: 1 } }
+        mortgage: { status: getRandomBoolean(), preferences: getPreferenceValues() },
+        insurance: { status: getRandomBoolean(), preferences: getPreferenceValues() },
+        banking: { status: getRandomBoolean(), preferences: getPreferenceValues() },
+        broadband: { status: getRandomBoolean(), preferences: getPreferenceValues() },
+        mobile: { status: getRandomBoolean(), preferences: getPreferenceValues() },
+        utilities: { status: getRandomBoolean(), preferences: getPreferenceValues() },
+        auto: { status: getRandomBoolean(), preferences: getPreferenceValues() }
       };
     }
 
@@ -31,7 +42,7 @@ export default {
         match: getRandomNumber(30, 99),
         value: getRandomNumber(5, 4000),
         // selected: false,
-        access: getRandomAccess()
+        access: createPreferences()
       };
       array.push(obj);
     }

@@ -1,8 +1,8 @@
 <template>
   <MainNav />
-  <SideBar />
+  <FilterPanel v-if="loaded" />
   <div id="app">
-    <router-view></router-view>
+    <router-view v-if="loaded"></router-view>
     <!-- <div class="main">
                               Waiting for authorization...
                             </div> -->
@@ -13,16 +13,17 @@
 import MainNav from "@/components/layout/MainNav.vue";
 // import api from "@/api/switchit";
 import jwt_decode from "jwt-decode";
-import SideBar from "./components/layout/SideBar.vue";
+import FilterPanel from "./components/layout/FilterPanel.vue";
 
 export default {
   components: {
     MainNav,
-    SideBar
+    FilterPanel
   },
   name: "App",
   data() {
     return {
+      loaded: false,
       auth0User: this.$auth0.user,
       user: () => { this.$store.getters.user }
     };
@@ -46,8 +47,8 @@ export default {
         // if there is no user in the switchit db, push 
         // to onboarding
 
-        console.log('decodedToken.user')
-        console.log(decodedToken.user)
+        // console.log('decodedToken.user')
+        // console.log(decodedToken.user)
 
         if (decodedToken.user === null) {
           this.$router.push({ path: '/onboarding' })
@@ -66,7 +67,9 @@ export default {
         console.log(decodedToken)
         if (decodedToken.user && decodedToken.user.admin) {
           this.$store.dispatch('isAdmin', decodedToken.user.admin)
+          this.$store.dispatch('setAccess', decodedToken.user.access)
         }
+        this.loaded = true
       }
     }
   },

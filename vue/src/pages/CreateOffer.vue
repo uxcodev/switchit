@@ -60,7 +60,7 @@
 <script>
 
 import ModalWindow from '@/components/ui/ModalWindow.vue';
-import FilterGroup from '../components/ui/FilterGroup.vue';
+import FilterGroup from '../components/ui/FilterTabs.vue';
 import ChartDealsWon from '../components/ui/ChartDealsWon.vue';
 import { Chart as ChartJS, ArcElement, Tooltip } from 'chart.js'
 import { Doughnut } from 'vue-chartjs'

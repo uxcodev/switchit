@@ -4,7 +4,7 @@
   </ModalWindow>
   <div class="main">
     <div class="container">
-      <FilterGroup />
+      <FilterTabs @applyFilterTabs="applyFilterTabs" />
       <section>
         <h1>Stats</h1>
         <div class="ph_boxes stats">
@@ -105,7 +105,7 @@
         <div class="table-header">
           <div class="table-header-check">
             <label class="checkbox-label">
-              <input class="checkbox" type="checkbox" v-model="selectAll" id="mortgage" />
+              <input class="checkbox" type="checkbox" v-model="selectAll" id="select_all" />
               <span class="checkmark"></span>
             </label>
           </div>
@@ -121,7 +121,7 @@
           <div v-for="(lead, index) in leads" :key="index" class="table-row">
             <div class="table-row-check">
               <label class=" checkbox-label nolabel">
-                <input v-show="false" class="checkbox" v-model="lead.selected" type="checkbox" id="mortgage" />
+                <input v-show="false" class="checkbox" v-model="lead.selected" type="checkbox" id="select_all" />
                 <span class="checkmark"></span>
               </label>
 
@@ -137,13 +137,7 @@
                 {{ lead.userId }}
               </div>
               <div class="access_icons table-row-content-lg">
-                <span :class="lead.access.mortgage.status ? 'active' : ''" class="material-symbols-outlined">house</span>
-                <span :class="lead.access.insurance.status ? 'active' : ''" class="material-symbols-outlined">verified_user</span>
-                <span :class="lead.access.banking.status ? 'active' : ''" class="material-symbols-outlined">credit_card</span>
-                <span :class="lead.access.broadband.status ? 'active' : ''" class="material-symbols-outlined">language</span>
-                <span :class="lead.access.mobile.status ? 'active' : ''" class="material-symbols-outlined">smartphone</span>
-                <span :class="lead.access.utilities.status ? 'active' : ''" class="material-symbols-outlined">lightbulb</span>
-                <span :class="lead.access.auto.status ? 'active' : ''" class="material-symbols-outlined">directions_car</span>
+                <span v-for="(acc, key) in lead.access" :key="key" :class="acc.status ? 'active' : ''" class="material-symbols-outlined">{{ categories[key] ? categories[key].icon : '' }}</span>
               </div>
               <div class="table-row-content-sm">
                 {{ lead.value }} €
@@ -171,10 +165,11 @@
 <script>
 
 import ModalWindow from '@/components/ui/ModalWindow.vue';
-import FilterGroup from '../components/ui/FilterGroup.vue';
+import FilterTabs from '../components/ui/FilterTabs.vue';
 import ChartDealsWon from '../components/ui/ChartDealsWon.vue';
 import { Chart as ChartJS, ArcElement, Tooltip } from 'chart.js'
 import { Doughnut } from 'vue-chartjs'
+// import fake_data from "@/api/fake_data.js"; // uncomment to create fake data
 
 ChartJS.register(ArcElement, Tooltip)
 
@@ -182,7 +177,7 @@ ChartJS.register(ArcElement, Tooltip)
 export default {
   components: {
     ModalWindow,
-    FilterGroup,
+    FilterTabs,
     ChartDealsWon,
     Doughnut
   },
@@ -195,11 +190,6 @@ export default {
     leads: {
       deep: true,
       handler() {
-        // this.pg.pageCount = Math.ceil(this.leads.length / this.pg.limit)
-        // console.log(this.leads.length)
-        // console.log(this.pg.limit)
-        // console.log('this.pageCount')
-        // console.log(this.pg.pageCount)
         let checked = false
         let unchecked = false
         for (let lead of this.leads) {
@@ -208,10 +198,7 @@ export default {
         }
         if (checked && !unchecked) { this.selectAll = true }
         if (unchecked && !checked) { this.selectAll = false }
-        if (unchecked && checked) { console.log('partial') }
-
-        // if (checked) { selectAll = true }
-        // console.log('it was clicked')
+        // if (unchecked && checked) { console.log('partial') }
       }
     },
     'pg.currentPage': {
@@ -220,11 +207,19 @@ export default {
         // let page = this.pg.currentPage
         let limit = this.pg.limit
         let skip = (page - 1) * limit
-        let response = await this.$api.getLeads({ limit: limit, skip: skip })
+        let filters = this.$store.getters.filters
+        let response = await this.$api.getLeads({ limit: limit, skip: skip, filter: filters })
         this.leads = response.leads
         // this.pg.pageCount = Math.ceil(response.count / limit)
       }
     },
+    filters: {
+      deep: true,
+      async handler() {
+        // console.log('filters changed')
+        this.loadLeads()
+      }
+    }
   },
   data() {
     return {
@@ -266,26 +261,50 @@ export default {
     user() {
       return this.$store.getters.user
     },
-    // pageCount() {
-    //   let number = Math.ceil(this.leads.length / this.pg.limit);
-    //   return number
-    // }
+    filters() {
+      return this.$store.getters.filters
+    },
+    categories() {
+      return this.$store.getters.categories
+    },
+
   },
+
   methods: {
     pg_back() {
       let p = this.pg.currentPage
       this.pg.currentPage = p > 1 ? p - 1 : p
     },
     pg_forward() {
-      // this.pg.currentPage++
-      console.log(this.pg.pageCount)
-      console.log(this.pg.currentPage)
+      // console.log(this.pg.pageCount)
+      // console.log(this.pg.currentPage)
       let p = this.pg.currentPage
       this.pg.currentPage = p < this.pg.pageCount ? p + 1 : p
     },
     openFilters() {
-      console.log('openFilters')
+      // console.log('openFilters')
       this.$store.dispatch('openMenu')
+    },
+    applyFilterTabs(categories) {
+      console.log('applyFilterTabs')
+      console.log(categories)
+      this.$store.dispatch('setCategories', categories)
+      this.loadLeads()
+      /* 
+      const filteredLeads = this.leads.filter((lead) => {
+        // Get the categories' status from the lead's access object
+        const categories = Object.keys(lead.access);
+
+        // Check if the lead's access object has at least one category with a status that matches the filter
+        return categories.some((category) => {
+          return filters[category] && filters[category].status && lead.access[category].status;
+        });
+      });
+      this.leads = filteredLeads
+      console.log('this.leads.length')
+      console.log(this.leads.length)
+      this.pg.pageCount = Math.ceil(this.leads.length / this.pg.limit)
+      */
     },
     closeModal() {
       this.modalComponent = null
@@ -300,22 +319,43 @@ export default {
       this.pg.currentPage = page
     },
     openLead(id) {
-      // console.log(`openLead: ${id}`)
       let leads = []
       leads.push(id)
       this.$store.dispatch('setSelectedLeads', [id])
       this.$router.push({ path: `/offer` })
-    }
+    },
+    async loadLeads() {
+      let catObj = { ...this.categories }
+      let filterObj = { ...this.filters }
+
+      for (const key in filterObj) {
+        if (Object.prototype.hasOwnProperty.call(filterObj, key)) {
+          const category = key.split("_")[0];
+          if (!catObj[category].status) {
+            delete filterObj[key];
+          }
+        }
+      }
+      console.log(filterObj)
+
+      let response = await this.$api.getLeads({ limit: this.pg.limit, skip: 0, filters: filterObj })
+      this.leads = response.leads
+      this.pg.pageCount = Math.ceil(response.count / this.pg.limit)
+    },
+
   },
   async mounted() {
-    console.log(this.$api)
-    let response = await this.$api.getLeads({ limit: this.pg.limit, skip: 0 })
-    this.leads = response.leads
-    this.pg.pageCount = Math.ceil(response.count / this.pg.limit)
-    console.log('this.pg.pageCount')
-    console.log(this.pg.pageCount)
-    console.log(response.count)
-    console.log(this.pg.limit)
+    console.log('UserDashboard - filters')
+    console.log(this.$store.getters.filters)
+    console.log(this.$store.getters.categories)
+    // uncomment to create fake data
+
+    // let leads = fake_data.getLeads()
+    // console.log(leads)
+    // let response = await this.$api.createLeads(leads)
+    // console.log(response)
+
+    this.loadLeads()
   }
 }
 </script>

@@ -23,6 +23,7 @@
               </div>
             </div>
             <div class="access_icons">
+              <!-- <span v-for="category in categories" :key="category" :class="user.access[category].status ? 'active' : ''" class="material-symbols-outlined">{{ category.icon }}</span> -->
               <span :class="user.access.mortgage.status ? 'active' : ''" class="material-symbols-outlined">house</span>
               <span :class="user.access.insurance.status ? 'active' : ''" class="material-symbols-outlined">verified_user</span>
               <span :class="user.access.banking.status ? 'active' : ''" class="material-symbols-outlined">credit_card</span>
@@ -77,6 +78,7 @@ export default {
       edit: false,
       add: false,
       modalComponent: null,
+      categories: this.$store.getters.categories
     };
   },
   methods: {

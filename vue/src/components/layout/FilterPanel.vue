@@ -65,12 +65,6 @@ export default {
     }
   },
   computed: {
-    // filters() {
-    //   return this.$store.getters.filters
-    // },
-    // categories() {
-    //   return this.$store.getters.categories
-    // },
     isOpen() {
       return this.$store.getters.isOpen;
     },
@@ -110,25 +104,26 @@ export default {
       return s ? s[0].toUpperCase() + s.slice(1) : ""
     },
     async applyFilters() {
-
-      const preferences = this.preferences
-      const filters = {}
-      console.log('this.preferences')
-      console.log(this.preferences)
-      console.log('this.categories')
-      console.log(this.categories)
-      for (const category in preferences) {
-        if (preferences[category].selected) {
-          const prefs = preferences[category].preferences
-          filters[`${category}_price_min`] = prefs.price.values[0]
-          filters[`${category}_price_max`] = prefs.price.values[1]
-          filters[`${category}_service_min`] = prefs.service.values[0]
-          filters[`${category}_service_max`] = prefs.service.values[1]
-          filters[`${category}_features_min`] = prefs.features.values[0]
-          filters[`${category}_features_max`] = prefs.features.values[1]
+      setTimeout(async () => {
+        const preferences = this.preferences
+        const filters = {}
+        console.log('this.preferences')
+        console.log(this.preferences)
+        console.log('this.categories')
+        console.log(this.categories)
+        for (const category in preferences) {
+          if (preferences[category].selected) {
+            const prefs = preferences[category].preferences
+            filters[`${category}_price_min`] = prefs.price.values[0]
+            filters[`${category}_price_max`] = prefs.price.values[1]
+            filters[`${category}_service_min`] = prefs.service.values[0]
+            filters[`${category}_service_max`] = prefs.service.values[1]
+            filters[`${category}_features_min`] = prefs.features.values[0]
+            filters[`${category}_features_max`] = prefs.features.values[1]
+          }
         }
-      }
-      await this.$store.dispatch('setFilters', filters)
+        await this.$store.dispatch('setFilters', filters)
+      }, 300)
 
 
     }

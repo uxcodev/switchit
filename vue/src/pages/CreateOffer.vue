@@ -45,15 +45,207 @@
           </div>
         </div>
       </section>
-      <div class="cards_lg">
-        <!-- <div v-for="i in 2" :key='i'><span :class='i'></span></div> -->
-        <div class="card_lg white">
+      <section>
+
+        <h1>Mortgage</h1>
+        <div class="cards_lg switchit-form">
+          <!-- <div v-for="i in 2" :key='i'><span :class='i'></span></div> -->
+          <div class="card_lg white offer-group">
+            <div class="offer-group-header">
+              <div class="offer-group-header-title">
+                User's current mortgage
+              </div>
+              <button style="opacity:0">Upload offer</button>
+            </div>
+            <div class="offer-group-items" v-if="lead.value">
+              <div class="offer-group-item">
+                <label>Rate</label>
+                <div class="offer-group-input_group">
+                  <div>{{ lead.access.mortgage.data.rate }}</div>
+                  <div class="symbol">%</div>
+                </div>
+              </div>
+              <div class="offer-group-item">
+                <label>Rate type</label>
+                <div class="offer-group-input_group">
+                  <div>{{ lead.access.mortgage.data.rate_type }}</div>
+                  <div class="symbol"></div>
+                </div>
+              </div>
+              <div class="offer-group-item">
+                <label>One-time cost</label>
+                <div class="offer-group-input_group">
+                  <div>{{ lead.access.mortgage.data.one_time_cost }}</div>
+                  <div class="symbol">€</div>
+                </div>
+              </div>
+              <div class="offer-group-item">
+                <label>Monthly cost</label>
+                <div class="offer-group-input_group">
+                  <div>{{ lead.access.mortgage.data.monthly_cost }}</div>
+                  <div class="symbol">€</div>
+                </div>
+              </div>
+              <div class="offer-group-item">
+                <label>Downpayment</label>
+                <div class="offer-group-input_group">
+                  <div>{{ lead.access.mortgage.data.downpayment }}</div>
+                  <div class="symbol">€</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card_lg white offer-group">
+            <div class="offer-group-header">
+              <div class="offer-group-header-title">
+                Enter your offer below
+              </div>
+              <button>Upload offer</button>
+            </div>
+
+            <div class="offer-group-items">
+              <div class="offer-group-item">
+                <label>Rate</label>
+                <div class="offer-group-input_group">
+                  <input class="input" />
+                  <div class="symbol">%</div>
+                </div>
+              </div>
+              <div class="offer-group-item">
+                <label>Rate type</label>
+                <div class="offer-group-input_group">
+                  <select class="select">
+                    <option>Fixed</option>
+                    <option>Variable</option>
+                  </select>
+                  <div class="symbol"></div>
+                </div>
+              </div>
+              <div class="offer-group-item">
+                <label>One-time cost</label>
+                <div class="offer-group-input_group">
+                  <input class="input" />
+                  <div class="symbol">€</div>
+                </div>
+              </div>
+              <div class="offer-group-item">
+                <label>Monthly cost</label>
+                <div class="offer-group-input_group">
+                  <input class="input" />
+                  <div class="symbol">€</div>
+                </div>
+              </div>
+              <div class="offer-group-item">
+                <label>Downpayment</label>
+                <div class="offer-group-input_group">
+                  <input class="input" />
+                  <div class="symbol">€</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="card_lg white">
+      </section>
+      <section>
+        <h1>Insurance</h1>
+        <div class="cards_lg switchit-form">
+          <!-- <div v-for="i in 2" :key='i'><span :class='i'></span></div> -->
+          <div class="card_lg white offer-group">
+            <div class="offer-group-header">
+              <div class="offer-group-header-title">
+                User's current insurance policy
+              </div>
+              <button style="opacity:0">Upload offer</button>
+            </div>
+            <div class="offer-group-items" v-if="lead.value">
+              <div class="offer-group-item">
+                <label>Premium</label>
+                <div class="offer-group-input_group">
+                  <div>{{ lead.access.insurance.data.premium }}</div>
+                  <div class="symbol">%</div>
+                </div>
+              </div>
+              <div class="offer-group-item">
+                <label>Body injury liability</label>
+                <div class="offer-group-input_group">
+                  <div>{{ lead.access.insurance.data.injury_liability }}</div>
+                  <div class="symbol"></div>
+                </div>
+              </div>
+              <div class="offer-group-item">
+                <label>Property liability</label>
+                <div class="offer-group-input_group">
+                  <div>{{ lead.access.insurance.data.property_liability }}</div>
+                  <div class="symbol">€</div>
+                </div>
+              </div>
+              <div class="offer-group-item">
+                <label>Collision deductible</label>
+                <div class="offer-group-input_group">
+                  <div>{{ lead.access.insurance.data.collision_deductible }}</div>
+                  <div class="symbol">€</div>
+                </div>
+              </div>
+              <div class="offer-group-item">
+                <label>Comprehensive deductible</label>
+                <div class="offer-group-input_group">
+                  <div>{{ lead.access.insurance.data.comprehensive_deductible }}</div>
+                  <div class="symbol">€</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card_lg white offer-group">
+            <div class="offer-group-header">
+              <div class="offer-group-header-title">
+                Enter your offer below
+              </div>
+              <button>Upload offer</button>
+            </div>
+
+            <div class="offer-group-items">
+              <div class="offer-group-item">
+                <label>Premium</label>
+                <div class="offer-group-input_group">
+                  <input class="input" />
+                  <div class="symbol">%</div>
+                </div>
+              </div>
+              <div class="offer-group-item">
+                <label>Body injury liability</label>
+                <div class="offer-group-input_group">
+                  <input class="input" />
+
+                  <div class="symbol">€</div>
+                </div>
+              </div>
+              <div class="offer-group-item">
+                <label>Property liability</label>
+                <div class="offer-group-input_group">
+                  <input class="input" />
+                  <div class="symbol">€</div>
+                </div>
+              </div>
+              <div class="offer-group-item">
+                <label>Collision deductible</label>
+                <div class="offer-group-input_group">
+                  <input class="input" />
+                  <div class="symbol">€</div>
+                </div>
+              </div>
+              <div class="offer-group-item">
+                <label>Comprehensive deductible</label>
+                <div class="offer-group-input_group">
+                  <input class="input" />
+                  <div class="symbol">€</div>
+                </div>
+              </div>
+            </div>
+          </div>
 
         </div>
-      </div>
-      <pre> {{ lead }}</pre>
+      </section>
+      <!-- <pre> {{ lead }}</pre> -->
     </div>
   </div>
 </template>
@@ -172,6 +364,21 @@ export default {
     if (leads.length === 1) {
       let id = leads[0]
       this.lead = await this.$api.getLead(id)
+      this.lead.access.mortgage.data = {
+        rate: 3.45,
+        rate_type: "Fixed",
+        one_time_cost: 0,
+        monthly_cost: 1117,
+        downpayment: 25
+
+      }
+      this.lead.access.insurance.data = {
+        premium: 3.45,
+        injury_liability: 300000,
+        property_liability: 100000,
+        collision_deductible: 1000,
+        comprehensive_deductible: 500
+      }
       console.log(`response: `)
       console.log(this.lead)
     }
@@ -181,11 +388,28 @@ export default {
 
 <style lang="sass" scoped>
 @import "/src/styles/styles.sass"
-
-</style>
-
-<style lang="scss">
-.material-symbols-rounded {
-  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 48;
-}
-</style>
+.offer-group
+  display: flex
+  flex-direction: column
+  gap: 10px
+  &-header
+    display: flex
+    justify-content: space-between
+    align-items: center
+  &-item
+    display: flex
+    justify-content: space-between
+    align-items: center
+    height: 50px
+  &-input_group
+    display: flex
+    justify-content: space-between
+    align-items: center
+    gap: 10px
+    width: 120px
+    input,
+    select
+      width:100%
+    .symbol
+      width: 20px
+  </style>

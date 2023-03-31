@@ -13,7 +13,7 @@
 import MainNav from "@/components/layout/MainNav.vue";
 // import api from "@/api/switchit";
 import jwt_decode from "jwt-decode";
-import FilterPanel from "./components/layout/FilterPanel.vue";
+import FilterPanel from "./components/leads/FilterPanel.vue";
 
 export default {
   components: {

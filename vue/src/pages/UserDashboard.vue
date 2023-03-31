@@ -325,6 +325,7 @@ export default {
       this.$router.push({ path: `/offer` })
     },
     async loadLeads() {
+      console.log('loadLeads:', this.filters, this.categories)
       let catObj = { ...this.categories }
       let filterObj = { ...this.filters }
 

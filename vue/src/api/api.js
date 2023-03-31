@@ -1,209 +1,93 @@
 import store from '@/store/index.js'
+import axios from 'axios';
+
+const _axios = axios.create({
+  baseURL: process.env.VUE_APP_API_URL,
+  headers: {
+    accept: "application/json",
+  },
+});
+
+const token = localStorage.getItem('switchit_token');
+if (token) {
+  _axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+}
+
 
 export default {
 
   async whateverApiCall(method, path) {
-
     try {
-      const options = {
-        method: method,
-        headers: {
-          accept: "application/json",
-          // authorization: `Bearer ${token}`,
-        },
-      };
+      let url = "https://switchitapi.azurewebsites.net/api/v1/" + path;
 
-      let url = "https://switchitapi.azurewebsites.net/api/v1/"
-      const response = await fetch(
-        `${url}${path}`,
-        options
-      );
-      const data = await response.json();
-      return data;
+      const response = await _axios({
+        method: method,
+        url: url,
+      });
+
+      return response.data;
     } catch (err) {
       console.error(err);
     }
   },
+
 
 
   async getPsd2Institutions() {
-    // let token = localStorage.getItem('switchit_token');
-    // console.log(`getUsers token: ${token}`)
-
     try {
-      const options = {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          // authorization: `Bearer ${token}`,
-        },
-      };
-
-      let url = "https://switchitapi.azurewebsites.net/api/v1/"
-      const response = await fetch(
-        `${url}/psd2Institutions`,
-        options
-      );
-      const data = await response.json();
-      return data;
+      let url = "https://switchitapi.azurewebsites.net/api/v1/psd2Institutions";
+      const response = await _axios.get(url);
+      return response.data;
     } catch (err) {
       console.error(err);
     }
   },
-
 
   async createToken(email) {
-
     try {
-
       // create JWT token in backend
-
       let body = {
         email: email
-      }
-      const options = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body)
-      }
+      };
 
-      let url = process.env.VUE_APP_API_URL
-      const response = await fetch(
-        `${url}/users/create-token`,
-        options
-      )
-      const data = await response.json();
+      let url = process.env.VUE_APP_API_URL + "/users/create-token";
+      const response = await _axios.post(url, body);
+      const data = response.data;
 
       // save the token in local storage
-
-      localStorage.setItem('switchit_token', data.token)
+      localStorage.setItem('switchit_token', data.token);
       return data.token;
-
     } catch (err) {
       console.error(err);
     }
   },
 
+
   async getUsers() {
-    let token = localStorage.getItem('switchit_token');
-
-    // console.log(`getUsers token: ${token}`)
-
     try {
-      const options = {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          authorization: `Bearer ${token}`,
-        },
-      };
-
-      let url = process.env.VUE_APP_API_URL
-      const response = await fetch(
-        `${url}/users/get-users`,
-        options
-      );
-      const data = await response.json();
-      return data;
+      const response = await _axios.get('/users/get-users');
+      return response.data;
     } catch (err) {
       console.error(err);
     }
-    return true
+    return true;
   },
 
   async getLeads(query) {
-    let token = localStorage.getItem('switchit_token');
-    console.log('query:')
-    console.log(query)
-    // console.log(query.limit)
-    console.log(query.filters)
-    console.log(store.getters.filters)
-    // console.log(query.skip)
+    let filters = Object.keys(query.filters).length ? query.filters : store.getters.filters;
 
-    let filters = Object.keys(query.filters).length ? query.filters : store.getters.filters //query.filters //
-    console.log('filters')
-    console.log(filters)
     let filterString = '';
     for (let filter in filters) {
       filterString += `&filter=${filter}:${filters[filter]}`;
     }
-    // console.log('filterString');
-    // console.log(filterString);
-    try {
-      const options = {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          authorization: `Bearer ${token}`,
-        },
-      };
 
-      let url = process.env.VUE_APP_API_URL
-      const response = await fetch(
-        `${url}/leads/get-leads?limit=${query.limit}&skip=${query.skip}${filterString}`,
-        options
-      );
-      const data = await response.json();
-      return data;
+    try {
+      const response = await _axios.get(`/leads/get-leads?limit=${query.limit}&skip=${query.skip}${filterString}`);
+      return response.data;
     } catch (err) {
       console.error(err);
     }
-    return true
-  },
-  async getFilteredLeads(query) {
-    let token = localStorage.getItem('switchit_token');
-    // console.log('query:')
-    // console.log(query)
-    // console.log(`getUsers token: ${token}`)
-    console.log(query.limit)
-    console.log(query.filters)
-    console.log(query.skip)
-
-    try {
-      let filters = {
-        Mortgage: {
-          price: 8,
-          features: 7,
-          service: 3,
-        },
-        Insurance: {
-          price: 8,
-          features: 7,
-          service: 3,
-        },
-        Banking: {
-          price: 8,
-          features: 7,
-          service: 3,
-        },
-      }
-      let body = {
-        filters: filters,
-        limit: query.limit,
-        skip: query.skip
-      }
-      const options = {
-        method: "POST",
-        headers: {
-          accept: "application/json",
-          authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(body)
-      };
-
-      let url = process.env.VUE_APP_API_URL
-      const response = await fetch(
-        `${url}/leads/get-filtered-leads`,
-        options
-      );
-      const data = await response.json();
-      return data;
-    } catch (err) {
-      console.error(err);
-    }
-    return true
+    return true;
   },
 
   async getLead(id) {

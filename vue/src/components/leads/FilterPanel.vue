@@ -9,7 +9,7 @@
         <div class="checkboxes">
           <div v-for="(category, key) in preferences" :key="key" class="checkbox">
             <label class="checkbox-label">
-              <input v-show="false" v-model="category.selected" type="checkbox" :id="category" />
+              <input v-show="false" v-model="category.selected" @change="checkCategory" type="checkbox" :id="category" />
               <span class="checkmark"></span>
               <span class="checkbox-text">
                 <span class="checkbox-icon material-symbols-outlined">{{ category.icon }}
@@ -73,7 +73,8 @@ export default {
   created() {
     // get categories from store
     const categories = this.$store.getters.categories;
-    console.log(categories)
+    console.log('FilterPanel categories:', categories)
+    console.log('FilterPanel filters:', this.$store.getters.filters)
     // get list of preferences for each category. For prototype, these will be
     // the same for every category, but this will likely change soon
     // const prefs = this.$store.getters.preferences;
@@ -103,6 +104,9 @@ export default {
     capitalize: (s) => {
       return s ? s[0].toUpperCase() + s.slice(1) : ""
     },
+    checkCategory() {
+      this.applyFilters()
+    },
     async applyFilters() {
       setTimeout(async () => {
         const preferences = this.preferences
@@ -122,8 +126,14 @@ export default {
             filters[`${category}_features_max`] = prefs.features.values[1]
           }
         }
-        await this.$store.dispatch('setFilters', filters)
+        if (Object.keys(filters).length === 0) {
+          await this.$store.dispatch('setFilters', filters)
+        } else {
+          await this.$store.dispatch('setFilters', filters)
+          console.log('filters:', this.$store.getters.filters)
+        }
       }, 300)
+      console.log('filters:', this.$store.getters.filters)
 
 
     }

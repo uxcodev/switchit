@@ -30,17 +30,22 @@ const preferences = {
   features: { label: "Importance of lots of features", values: [0, 10] },
 }
 
-const filters = {}
+let filters = {}
 
 
 // make a list of filters that look like this:  mortgage_price_min: 0,
 // these will be sent in the query as filters
-for (let category in categories) {
-  for (let preference in preferences) {
-    filters[`${category}_${preference}_min`] = 0;
-    filters[`${category}_${preference}_max`] = 10;
+const resetFilters = (categories) => {
+  let f = {}
+  for (let category in categories) {
+    for (let preference in preferences) {
+      f[`${category}_${preference}_min`] = 0;
+      f[`${category}_${preference}_max`] = 10;
+    }
   }
+  return f
 }
+filters = resetFilters(categories)
 
 export default {
   state() {
@@ -62,19 +67,19 @@ export default {
   },
   actions: {
     setFilters(context, filters) {
+      if (Object.keys(filters).length === 0) {
+        let categories = context.getters.categories
+        filters = resetFilters(categories)
+        console.log('no filters', filters)
+      }
       context.commit('setFilters', { val: filters });
     },
     setCategories(context, categories) {
       context.commit('setCategories', { val: categories });
     },
     setAccess(context, access) {
-      /*            for (let category in access) {
-              filters[`${category}_${preference}_min`] = 0;
-              filters[`${category}_${preference}_max`] = 10;
-            }
-            */
+
       console.log('setAccess')
-      // console.log(access)
 
       const filteredCategories = {};
 

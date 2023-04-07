@@ -8,11 +8,15 @@ const _axios = axios.create({
   },
 });
 
-const token = localStorage.getItem('switchit_token');
-if (token) {
-  _axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-}
-
+_axios.interceptors.request.use((config) => {
+  const token = localStorage.getItem('switchit_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+}, (error) => {
+  return Promise.reject(error);
+});
 
 export default {
 
@@ -50,8 +54,8 @@ export default {
         email: email
       };
 
-      let url = process.env.VUE_APP_API_URL + "/users/create-token";
-      const response = await _axios.post(url, body);
+      // let url = apiUrl + "/users/create-token";
+      const response = await _axios.post("/users/create-token", body);
       const data = response.data;
 
       // save the token in local storage
@@ -73,7 +77,40 @@ export default {
     return true;
   },
 
+  async updateLeads() {
+    try {
+      const response = await _axios.put('/leads/update-leads');
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+    return true;
+  },
+
+  async createOffer(offer, leads) {
+    try {
+      // console.log('createOffer', leads)
+      const body = { offer: offer, leads: leads }
+      const response = await _axios.post('/offers/create-offer', body);
+      return response;
+    } catch (err) {
+      console.error(err);
+    }
+    return true;
+  },
+
+  async getOffers() {
+    try {
+      const response = await _axios.get(`/offers/get-offers`);
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+    return true;
+  },
+
   async getLeads(query) {
+    console.log('api getLeads:', query)
     let filters = Object.keys(query.filters).length ? query.filters : store.getters.filters;
 
     let filterString = '';
@@ -91,25 +128,9 @@ export default {
   },
 
   async getLead(id) {
-    let token = localStorage.getItem('switchit_token');
-    console.log(id)
     try {
-      const options = {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          accept: "application/json",
-          authorization: `Bearer ${token}`,
-        },
-      };
-
-      let url = process.env.VUE_APP_API_URL
-      const response = await fetch(
-        `${url}/leads/get-lead?id=${id}`,
-        options
-      );
-      const data = await response.json();
-      return data;
+      const response = await _axios.get(`/leads/get-lead?id=${id}`);
+      return response.data;
     } catch (err) {
       console.error(err);
     }
@@ -117,82 +138,37 @@ export default {
   },
 
   async createLeads(leads) {
-    let token = localStorage.getItem('switchit_token');
-
-    // console.log(`getUsers token: ${token}`)
-
     try {
-      let body = {
-        leads: leads
-      }
-      const options = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(body)
-      }
+      const body = {
+        leads: leads,
+      };
 
-      let url = process.env.VUE_APP_API_URL
-      const response = await fetch(
-        `${url}/leads/create-leads`,
-        options
-      );
-      const data = await response.json();
-      return data;
+      const response = await _axios.post('/leads/create-leads', body);
+      return response.data;
     } catch (err) {
       console.error(err);
     }
-    return true
+    return true;
   },
 
   async updateUser(id, fields) {
     try {
-      let token = localStorage.getItem('switchit_token');
-      let body = {
+      const body = {
         id: id,
-        fields: fields
-      }
-      const options = {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(body)
-      }
+        fields: fields,
+      };
 
-      let url = process.env.VUE_APP_API_URL
-      const response = await fetch(
-        `${url}/users/update-user`,
-        options
-      )
-      const data = await response.json();
-      return data;
+      const response = await _axios.put('/users/update-user', body);
+      return response.data;
     } catch (err) {
       console.error(err);
     }
   },
+
   async deleteUser(id) {
-
     try {
-      let token = localStorage.getItem('switchit_token')
-      let options = {
-        method: "DELETE",
-        headers: {
-          accept: "application/json",
-          "content-type": "application/*+json",
-          authorization: `Bearer ${token}`,
-        },
-      }
-
-      let url = process.env.VUE_APP_API_URL
-      let response = await fetch(
-        `${url}/users/delete-user?id=${id}`, options
-      );
-      let data = await response.json();
-      return data;
+      const response = await _axios.delete(`/users/delete-user?id=${id}`);
+      return response.data;
     } catch (err) {
       console.error(err);
     }
@@ -200,34 +176,17 @@ export default {
 
   async signupCompany(fields) {
     try {
-      let token = localStorage.getItem('switchit_token');
+      const body = {
+        fields: fields,
+      };
 
-      console.log('fields')
-      console.log(fields)
-
-      let body = {
-        fields: fields
-      }
-      const options = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(body)
-      }
-
-      let url = process.env.VUE_APP_API_URL
-      const response = await fetch(
-        `${url}/companies/signup-company`,
-        options
-      )
-      const data = await response.json();
-      data.ok = response.ok
+      const response = await _axios.post('/companies/signup-company', body);
+      const data = response.data;
+      data.ok = response.ok;
       return data;
     } catch (err) {
       console.error(err);
     }
-  },
+  }
 
 }

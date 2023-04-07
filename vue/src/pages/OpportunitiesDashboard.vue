@@ -100,12 +100,13 @@
       <div class="mt8 table-titlebar">
         <h1 class="table-titlebar-title">Opportunities</h1>
         <button @click="openFilters"><span class="material-symbols-outlined">tune</span>Filter</button>
+        <button @click="openFilters"><span class="material-symbols-outlined">tune</span>Filter</button>
       </div>
       <div class="table">
         <div class="table-header">
           <div class="table-header-check">
             <label class="checkbox-label">
-              <input class="checkbox" type="checkbox" v-model="selectAll" id="select_all" />
+              <input class="checkbox" type="checkbox" v-model="selectVisible" id="select_all" />
               <span class="checkmark"></span>
             </label>
           </div>
@@ -158,7 +159,9 @@
         <div class="pagination-forward active" @click="pg_forward">
           <span class="material-symbols-outlined">chevron_right</span>
         </div>
+
       </div>
+      <div class="action_panel"><button @click="openLeads">Send offer</button></div>
     </div>
   </div>
 </template>
@@ -182,33 +185,51 @@ export default {
     Doughnut
   },
   watch: {
-    selectAll(val) {
+    selectVisible(val) {
       for (let lead of this.leads) {
         lead.selected = val
       }
     },
     leads: {
-      deep: true,
-      handler() {
-        let checked = false
-        let unchecked = false
-        for (let lead of this.leads) {
-          checked = lead.selected ? true : checked
-          unchecked = !lead.selected ? true : unchecked
-        }
-        if (checked && !unchecked) { this.selectAll = true }
-        if (unchecked && !checked) { this.selectAll = false }
-        // if (unchecked && checked) { console.log('partial') }
+  deep: true,
+  handler() {
+    let checked = false;
+    let unchecked = false;
+    let checkedLeadIds = []; // Create a new array to store the _ids of checked leads
+
+    for (let lead of this.leads) {
+      if (lead.selected) {
+        checked = true;
+        checkedLeadIds.push(lead._id); // Add the _id of the checked lead to the array
+      } else {
+        unchecked = true;
       }
-    },
+    }
+
+    if (checked && !unchecked) {
+      this.selectVisible = true;
+    }
+    if (unchecked && !checked) {
+      this.selectVisible = false;
+    }
+    // if (unchecked && checked) { console.log('partial') }
+
+
+    this.$store.dispatch('setSelectedLeads', checkedLeadIds )
+    // console.log(checkedLeadsObj);
+  },
+},
+
     'pg.currentPage': {
       deep: true,
       async handler(page) {
         // let page = this.pg.currentPage
         let limit = this.pg.limit
         let skip = (page - 1) * limit
-        let filters = this.$store.getters.filters
-        let response = await this.$api.getLeads({ limit: limit, skip: skip, filter: filters })
+        // let filters = this.$store.getters.filters
+        // console.log("page:", page, "limit:", limit, "skip:", skip, "filters", filters)
+        
+        let response = await this.$api.getLeads({ limit: limit, skip: skip, filters: this.filters })
         this.leads = response.leads
         // this.pg.pageCount = Math.ceil(response.count / limit)
       }
@@ -225,6 +246,8 @@ export default {
     return {
       modalComponent: null,
       screen: 'UserTable',
+      selectVisible: false,
+      selectMultiple: false,
       selectAll: false,
       leads: [],
       count: 0,
@@ -319,10 +342,15 @@ export default {
       this.pg.currentPage = page
     },
     openLead(id) {
-      let leads = []
-      leads.push(id)
+      console.log('openLead')
       this.$store.dispatch('setSelectedLeads', [id])
-      this.$router.push({ path: `/offer` })
+      this.$router.push({ path: `/create_offer`, query: { lead: id } })
+    },
+    openLeads() {
+      console.log('openLead')
+      let leads = this.$store.getters.selectedLeads
+      console.log(leads)
+      this.$router.push({ path: `/create_offer`})
     },
     async loadLeads() {
       console.log('loadLeads:', this.filters, this.categories)
@@ -337,7 +365,7 @@ export default {
           }
         }
       }
-      console.log(filterObj)
+      console.log("filterObj", filterObj)
 
       let response = await this.$api.getLeads({ limit: this.pg.limit, skip: 0, filters: filterObj })
       this.leads = response.leads
@@ -346,7 +374,7 @@ export default {
 
   },
   async mounted() {
-    console.log('UserDashboard - filters')
+    console.log('OpportunitiesDashboard - filters')
     console.log(this.$store.getters.filters)
     console.log(this.$store.getters.categories)
     // uncomment to create fake data
@@ -356,6 +384,9 @@ export default {
     // let response = await this.$api.createLeads(leads)
     // console.log(response)
 
+    // let response = await fake_data.updateLeads()
+    // console.log('updateLeads:', response)
+    // console.log('fake_data', fake_data)
     this.loadLeads()
   }
 }

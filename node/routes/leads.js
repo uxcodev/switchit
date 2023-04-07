@@ -17,5 +17,6 @@ router.get("/get-lead", isAuth, feedController.getLead);
 // router.post("/create-lead", isAuth, feedController.createLead);
 router.post("/create-leads", isAuth, feedController.createLeads);
 // router.put("/update-lead", isAuth, feedController.updateLead);
+router.put("/update-leads", isAuth, feedController.updateLeads);
 // router.delete("/delete-lead", isAuth, feedController.deleteLead);
 module.exports = router;

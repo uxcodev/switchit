@@ -1,3 +1,18 @@
+import axios from 'axios';
+
+const _axios = axios.create({
+  baseURL: process.env.VUE_APP_API_URL,
+  headers: {
+    accept: "application/json",
+  },
+});
+
+const token = localStorage.getItem('switchit_token');
+if (token) {
+  _axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+}
+
+
 export default {
   getLeads() {
     // Function to generate a random number between min and max (inclusive)
@@ -49,5 +64,16 @@ export default {
 
     // console.log(array); // Print the array to the console
     return array
-  }
+  },
+
+  async updateLeads() {
+    try {
+      const response = await _axios.put('/leads/update-leads');
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+    return true;
+  },
+
 }

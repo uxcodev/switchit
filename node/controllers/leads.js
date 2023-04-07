@@ -79,6 +79,53 @@ exports.createLeads = (req, res, next) => {
   res.status(200)
 }
 
+function getRandom(min, max, decimals = 0) {
+  const factor = Math.pow(10, decimals);
+  min *= factor;
+  max *= factor;
+  const randomValue = Math.floor(Math.random() * (max - min + 1) + min);
+  return randomValue / factor;
+}
+
+function getRandomMultiple(min, max, multiple) {
+  const randomValue = Math.floor(Math.random() * (max - min + 1) + min);
+  return Math.floor(randomValue / multiple) * multiple;
+}
+exports.updateLeads = async (req, res, next) => {
+
+  try {
+    const leads = await Lead.find({});
+
+    for (const lead of leads) {
+      const mortgageData = {
+        "rate": getRandom(1.6, 3.9, 2),
+        "rate_type": Math.random() < 0.5 ? "Fixed" : "Variable",
+        "one_time_cost": getRandomMultiple(0, 1500, 1),
+        "monthly_cost": getRandomMultiple(600, 5000, 1),
+        "downpayment": getRandomMultiple(5, 25, 5)
+      };
+
+      const insuranceData = {
+        "premium": getRandomMultiple(50, 1000, 1),
+        "injury_liability": getRandomMultiple(100000, 500000, 100000),
+        "property_liability": getRandomMultiple(100000, 1000000, 100000),
+        "collision_deductible": [0, 250, 500, 1000][Math.floor(Math.random() * 4)],
+        "comprehensive_deductible": [0, 250, 500, 1000][Math.floor(Math.random() * 4)]
+      };
+
+      lead.access.mortgage.data = mortgageData;
+      lead.access.insurance.data = insuranceData;
+      await lead.save();
+    }
+
+    console.log('Leads updated successfully');
+    res.status(200).json({ msg: 'Leads updated successfully' });
+  } catch (err) {
+    console.error('Error updating leads:', err);
+    res.status(500).json({ error: 'Error updating leads' });
+  }
+}
+
 // exports.updateLead = async (req, res, next) => {
 //   let leadFields = req.body.fields;
 //   let lead = await Lead.findById(req.body.id)

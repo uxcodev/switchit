@@ -13,6 +13,7 @@ const app = express();
 const userRoutes = require("./routes/users");
 const companyRoutes = require("./routes/companies");
 const leadRoutes = require("./routes/leads");
+const offerRoutes = require("./routes/offers");
 
 app.use(bodyParser.json());
 
@@ -32,6 +33,7 @@ app.use((req, res, next) => {
 app.use("/users", userRoutes);
 app.use("/companies", companyRoutes);
 app.use("/leads", leadRoutes);
+app.use("/offers", offerRoutes);
 
 app.use(errorController.get404);
 

@@ -65,7 +65,7 @@ const routes = [
     path: '/dashboard',
     name: "dashboard",
     beforeEnter: authGuard,
-    component: () => import('@/pages/UserDashboard.vue')
+    component: () => import('@/pages/OpportunitiesDashboard.vue')
   },
   {
     path: '/admin',
@@ -92,10 +92,17 @@ const routes = [
     component: () => import('@/pages/onboarding/CompanyOnboarding.vue')
   },
   {
-    path: '/offer',
-    name: "offer",
+    path: '/create_offer',
+    name: "create_offer",
+    props: true,
     beforeEnter: isAuth,
     component: () => import('@/pages/CreateOffer.vue')
+  },
+  {
+    path: '/offers',
+    name: "offers",
+    beforeEnter: isAuth,
+    component: () => import('@/pages/OffersDashboard.vue')
   },
   {
     path: '/signup_success',

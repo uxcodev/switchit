@@ -10,31 +10,38 @@ const leadSchema = new Schema({
   access: {
     mortgage: {
       status: { type: Boolean, required: false },
-      preferences: { type: Object, required: false }
+      preferences: { type: Object, required: false },
+      data: { type: Object, required: false }
     },
     insurance: {
       status: { type: Boolean, required: false },
-      preferences: { type: Object, required: false }
+      preferences: { type: Object, required: false },
+      data: { type: Object, required: false }
     },
     banking: {
       status: { type: Boolean, required: false },
-      preferences: { type: Object, required: false }
+      preferences: { type: Object, required: false },
+      data: { type: Object, required: false }
     },
     broadband: {
       status: { type: Boolean, required: false },
-      preferences: { type: Object, required: false }
+      preferences: { type: Object, required: false },
+      data: { type: Object, required: false }
     },
     mobile: {
       status: { type: Boolean, required: false },
-      preferences: { type: Object, required: false }
+      preferences: { type: Object, required: false },
+      data: { type: Object, required: false }
     },
     utilities: {
       status: { type: Boolean, required: false },
-      preferences: { type: Object, required: false }
+      preferences: { type: Object, required: false },
+      data: { type: Object, required: false }
     },
     auto: {
       status: { type: Boolean, required: false },
-      preferences: { type: Object, required: false }
+      preferences: { type: Object, required: false },
+      data: { type: Object, required: false }
     },
   },
 }

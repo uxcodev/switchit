@@ -6,6 +6,7 @@
     <div class="container">
       <!-- <FilterGroup /> -->
       <section>
+        <button @click="createOffer" class="right">Submit offer</button>
         <h1>Create offer</h1>
         <div class="ph_boxes stats">
           <!-- <div v-for="i in 3" :key='i'><span :class='i'></span></div> -->
@@ -44,6 +45,47 @@
             </div>
           </div>
         </div>
+      </section>
+
+      <section class="offer-group-general">
+        <h1>Offer details</h1>
+        <div class="cards_lg  switchit-form">
+          <div class="card_lg white offer-group">
+            <div class="offer-group-item">
+              <label>Offer name</label>
+              <div class="offer-group-input_group wide">
+                <input v-model="offer_obj.offer_details.name" class="input" />
+              </div>
+              </div>
+            <div class="offer-group-item">
+              <label>Start date</label>
+              <div class="offer-group-input_group wide">
+                <input v-model="offer_obj.offer_details.start_date" class="input" />
+              </div>
+            </div>
+            <div class="offer-group-item">
+              <label>Expiry date</label>
+              <div class="offer-group-input_group wide">
+                <input v-model="offer_obj.offer_details.expiry_date" class="input" />
+              </div>
+            </div>
+            <div class="offer-group-item">
+              <label>Term</label>
+              <div class="offer-group-input_group wide">
+                <input v-model="offer_obj.offer_details.term" class="input" />
+              </div>
+            </div>
+          </div>
+          <div class="card_lg white offer-group">
+            <div class="offer-group-item h100">
+              <label>Details</label>
+              <div class="offer-group-input_group xwide h100">
+                <textarea v-model="offer_obj.offer_details.details" class="textarea h100"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        
       </section>
       <section>
 
@@ -90,7 +132,7 @@
                 <label>Downpayment</label>
                 <div class="offer-group-input_group">
                   <div>{{ lead.access.mortgage.data.downpayment }}</div>
-                  <div class="symbol">€</div>
+                  <div class="symbol">%</div>
                 </div>
               </div>
             </div>
@@ -107,14 +149,14 @@
               <div class="offer-group-item">
                 <label>Rate</label>
                 <div class="offer-group-input_group">
-                  <input class="input" />
+                  <input v-model="offer_obj.offer.mortgage.rate" class="input" />
                   <div class="symbol">%</div>
                 </div>
               </div>
               <div class="offer-group-item">
                 <label>Rate type</label>
                 <div class="offer-group-input_group">
-                  <select class="select">
+                  <select v-model="offer_obj.offer.mortgage.rate_type" class="select">
                     <option>Fixed</option>
                     <option>Variable</option>
                   </select>
@@ -124,22 +166,22 @@
               <div class="offer-group-item">
                 <label>One-time cost</label>
                 <div class="offer-group-input_group">
-                  <input class="input" />
+                  <input v-model="offer_obj.offer.mortgage.one_time_cost" class="input" />
                   <div class="symbol">€</div>
                 </div>
               </div>
               <div class="offer-group-item">
                 <label>Monthly cost</label>
                 <div class="offer-group-input_group">
-                  <input class="input" />
+                  <input v-model="offer_obj.offer.mortgage.monthly_cost" class="input" />
                   <div class="symbol">€</div>
                 </div>
               </div>
               <div class="offer-group-item">
                 <label>Downpayment</label>
                 <div class="offer-group-input_group">
-                  <input class="input" />
-                  <div class="symbol">€</div>
+                  <input v-model="offer_obj.offer.mortgage.downpayment" class="input" />
+                  <div class="symbol">%</div>
                 </div>
               </div>
             </div>
@@ -207,36 +249,35 @@
               <div class="offer-group-item">
                 <label>Premium</label>
                 <div class="offer-group-input_group">
-                  <input class="input" />
+                  <input v-model="offer_obj.offer.insurance.premium" class="input" />
                   <div class="symbol">%</div>
                 </div>
               </div>
               <div class="offer-group-item">
                 <label>Body injury liability</label>
                 <div class="offer-group-input_group">
-                  <input class="input" />
-
+                  <input v-model="offer_obj.offer.insurance.injury_liability" class="input" />
                   <div class="symbol">€</div>
                 </div>
               </div>
               <div class="offer-group-item">
                 <label>Property liability</label>
                 <div class="offer-group-input_group">
-                  <input class="input" />
+                  <input v-model="offer_obj.offer.insurance.property_liability" class="input" />
                   <div class="symbol">€</div>
                 </div>
               </div>
               <div class="offer-group-item">
                 <label>Collision deductible</label>
                 <div class="offer-group-input_group">
-                  <input class="input" />
+                  <input v-model="offer_obj.offer.insurance.collision_deductible" class="input" />
                   <div class="symbol">€</div>
                 </div>
               </div>
               <div class="offer-group-item">
                 <label>Comprehensive deductible</label>
                 <div class="offer-group-input_group">
-                  <input class="input" />
+                  <input v-model="offer_obj.offer.insurance.comprehensive_deductible" class="input" />
                   <div class="symbol">€</div>
                 </div>
               </div>
@@ -252,61 +293,14 @@
 <script>
 
 import ModalWindow from '@/components/ui/ModalWindow.vue';
-import FilterGroup from '../components/ui/FilterTabs.vue';
-import ChartDealsWon from '../components/ui/ChartDealsWon.vue';
-import { Chart as ChartJS, ArcElement, Tooltip } from 'chart.js'
-import { Doughnut } from 'vue-chartjs'
-
-ChartJS.register(ArcElement, Tooltip)
 
 
 export default {
   components: {
     ModalWindow,
-    FilterGroup,
-    ChartDealsWon,
-    Doughnut
-  },
-  watch: {
-    selectAll(val) {
-      for (let lead of this.leads) {
-        lead.selected = val
-      }
-    },
-    leads: {
-      deep: true,
-      handler() {
-        // this.pg.pageCount = Math.ceil(this.leads.length / this.pg.limit)
-        // console.log(this.leads.length)
-        // console.log(this.pg.limit)
-        // console.log('this.pageCount')
-        // console.log(this.pg.pageCount)
-        let checked = false
-        let unchecked = false
-        for (let lead of this.leads) {
-          checked = lead.selected ? true : checked
-          unchecked = !lead.selected ? true : unchecked
-        }
-        if (checked && !unchecked) { this.selectAll = true }
-        if (unchecked && !checked) { this.selectAll = false }
-        if (unchecked && checked) { console.log('partial') }
 
-        // if (checked) { selectAll = true }
-        // console.log('it was clicked')
-      }
-    },
-    'pg.currentPage': {
-      deep: true,
-      async handler(page) {
-        // let page = this.pg.currentPage
-        let limit = this.pg.limit
-        let skip = page * limit
-        let response = await this.$api.getLeads({ limit: limit, skip: skip })
-        this.leads = response.leads
-        // this.pg.pageCount = Math.ceil(response.count / limit)
-      }
-    },
   },
+
   data() {
     return {
       modalComponent: null,
@@ -315,6 +309,38 @@ export default {
       leads: [],
       lead: {
         value: null
+      },
+      offer_obj: {
+        offer_details: {
+          name: "My offer",
+          status: "new",
+          start_date: "01/01/24",
+          expiry_date: "01/01/25",
+          term: "1 year",
+          details: "Get a free donut",
+        },
+        criteria: this.$store.getters.filters,
+        offer: {
+          mortgage: {
+            rate: 3.45,
+            rate_type: "Fixed",
+            one_time_cost: 0,
+            monthly_cost: 1117,
+            downpayment: 25,
+          },
+          insurance: {
+            premium: 150,
+            injury_liability: 300000,
+            property_liability: 100000,
+            collision_deductible: 1000,
+            comprehensive_deductible: 500
+          },
+          banking: {},
+          broadband: {},
+          mobile: {},
+          utilities:{},
+          auto: {},
+       }
       },
       count: 0,
       chartData: {
@@ -356,38 +382,41 @@ export default {
     // }
   },
   methods: {
+    async createOffer() {
+      console.log('createOffer:', this.offer_obj)
+      let leads = this.leads || [this.lead._id]
+      let response = await this.$api.createOffer(this.offer_obj, leads)
+      console.log("response:",response)
+      if (response) {
+        this.$router.push({ path: '/offers' })
+      }
+    }
   },
   async mounted() {
-    console.log('CreateOffer leads:')
-    let leads = await this.$store.getters.selectedLeads
-    // console.log(leads)
-    if (leads.length === 1) {
-      let id = leads[0]
+    this.leads = await this.$store.getters.selectedLeads || [this.$route.query.lead]
+    console.log('leads:', this.leads)
+    if (this.leads.length === 1) {
+      let id = this.leads[0]
       this.lead = await this.$api.getLead(id)
-      this.lead.access.mortgage.data = {
-        rate: 3.45,
-        rate_type: "Fixed",
-        one_time_cost: 0,
-        monthly_cost: 1117,
-        downpayment: 25
-
-      }
-      this.lead.access.insurance.data = {
-        premium: 3.45,
-        injury_liability: 300000,
-        property_liability: 100000,
-        collision_deductible: 1000,
-        comprehensive_deductible: 500
-      }
-      console.log(`response: `)
-      console.log(this.lead)
+    } else {
+      console.log('bulk offers not fully supported yet')
     }
+    console.log('this.lead', this.lead)
+    console.log('this.leads', this.leads)
   }
 }
 </script>
 
 <style lang="sass" scoped>
 @import "/src/styles/styles.sass"
+section
+  position: relative
+
+  .right
+    position: absolute 
+    top: 0px
+    right: 0px
+
 .offer-group
   display: flex
   flex-direction: column
@@ -401,6 +430,8 @@ export default {
     justify-content: space-between
     align-items: center
     height: 50px
+    gap:20px
+
   &-input_group
     display: flex
     justify-content: space-between
@@ -408,8 +439,17 @@ export default {
     gap: 10px
     width: 120px
     input,
-    select
+    select,
+    textarea
       width:100%
     .symbol
       width: 20px
+    
+    &.wide
+      width: 180px  
+    &.xwide
+      width: 100%   
+      height: 100%  
+.h100
+  height: 100%
   </style>

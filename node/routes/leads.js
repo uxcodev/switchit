@@ -12,6 +12,7 @@ const router = express.Router();
 
 //TESTING
 router.get("/get-leads", isAuth, feedController.getLeads);
+// router.get("/get-lead-ids", isAuth, feedController.getLeadIds);
 router.post("/get-filtered-leads", isAuth, feedController.getFilteredLeads);
 router.get("/get-lead", isAuth, feedController.getLead);
 // router.post("/create-lead", isAuth, feedController.createLead);

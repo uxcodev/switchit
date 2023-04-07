@@ -99,20 +99,14 @@
 
       <div class="mt8 table-titlebar">
         <h1 class="table-titlebar-title">Opportunities</h1>
-        <div class="table-actions">
-          <div class="flex" style="color:grey" v-if="selectedLeads.length">
-            {{selectedLeads.length}} leads selected
-            <a href="#" class="ml5 link" @click="clearSelection">Clear selection</a>
-          </div>
-          <a href="#"  class="link" @click="selectAll">Select all {{ leadCount }} users</a>
-          <button @click="openFilters"><span class="material-symbols-outlined">tune</span>Filter</button>
-        </div>
+        <button @click="openFilters"><span class="material-symbols-outlined">tune</span>Filter</button>
+        <button @click="openFilters"><span class="material-symbols-outlined">tune</span>Filter</button>
       </div>
       <div class="table">
         <div class="table-header">
           <div class="table-header-check">
             <label class="checkbox-label">
-              <input class="checkbox" type="checkbox" v-model="selectVisible" @change="toggleSelectVisible" id="select_all" />
+              <input class="checkbox" type="checkbox" v-model="selectVisible" id="select_all" />
               <span class="checkmark"></span>
             </label>
           </div>
@@ -128,7 +122,7 @@
           <div v-for="(lead, index) in leads" :key="index" class="table-row">
             <div class="table-row-check">
               <label class=" checkbox-label nolabel">
-                <input v-show="false" class="checkbox" v-model="lead.selected" @change="updateSelectedLeads(lead)" type="checkbox" id="select_all" />
+                <input v-show="false" class="checkbox" v-model="lead.selected" type="checkbox" id="select_all" />
                 <span class="checkmark"></span>
               </label>
 
@@ -167,290 +161,214 @@
         </div>
 
       </div>
+      <div class="action_panel"><button @click="openLeads">Send offer</button></div>
     </div>
-  </div>
-  <div v-if="selectedLeads.length" class="action_panel">
-    <h2 class="mr10">Send an offer to {{ selectedLeads.length }} lead{{ selectedLeads.length >1 ? 's' : '' }}
-    </h2>
-    <button @click="openLeads">Send offer</button>
   </div>
 </template>
 <script>
-import ModalWindow from "@/components/ui/ModalWindow.vue";
-import FilterTabs from "../components/ui/FilterTabs.vue";
-import ChartDealsWon from "../components/ui/ChartDealsWon.vue";
-import { Chart as ChartJS, ArcElement, Tooltip } from "chart.js";
-import { Doughnut } from "vue-chartjs";
 
-import { ref, computed, watch, onMounted, reactive, toRefs, getCurrentInstance } from "vue";
-import { useStore } from "vuex";
-import { useRouter } from "vue-router";
-
+import ModalWindow from '@/components/ui/ModalWindow.vue';
+import FilterTabs from '../components/ui/FilterTabs.vue';
+import ChartDealsWon from '../components/ui/ChartDealsWon.vue';
+import { Chart as ChartJS, ArcElement, Tooltip } from 'chart.js'
+import { Doughnut } from 'vue-chartjs'
 // import fake_data from "@/api/fake_data.js"; // uncomment to create fake data
 
-ChartJS.register(ArcElement, Tooltip);
+ChartJS.register(ArcElement, Tooltip)
+
 
 export default {
   components: {
     ModalWindow,
     FilterTabs,
     ChartDealsWon,
-    Doughnut,
+    Doughnut
+  },
+  watch: {
+    selectVisible(val) {
+      for (let lead of this.leads) {
+        lead.selected = val
+      }
+    },
+    leads: {
+      deep: true,
+      handler() {
+        let checked = false;
+        let unchecked = false;
+        let checkedLeadIds = []; // Create a new array to store the _ids of checked leads
+
+        for (let lead of this.leads) {
+          if (lead.selected) {
+            checked = true;
+            checkedLeadIds.push(lead._id); // Add the _id of the checked lead to the array
+          } else {
+            unchecked = true;
+          }
+        }
+
+        if (checked && !unchecked) {
+          this.selectVisible = true;
+        }
+        if (unchecked && !checked) {
+          this.selectVisible = false;
+        }
+
+
+        this.$store.dispatch('setSelectedLeads', checkedLeadIds )
+      },
+    },
+
+    'pg.currentPage': {
+      deep: true,
+      async handler(page) {
+        let limit = this.pg.limit
+        let skip = (page - 1) * limit
+        let response = await this.$api.getLeads({ limit: limit, skip: skip, filters: this.filters })
+        this.leads = response.leads
+      }
+    },
+    filters: {
+      deep: true,
+      async handler() {
+        this.loadLeads()
+      }
+    }
+  },
+  data() {
+    return {
+      modalComponent: null,
+      screen: 'UserTable',
+      selectVisible: false,
+      selectMultiple: false,
+      selectAll: false,
+      leads: [],
+      count: 0,
+      chartData: {
+        datasets: [
+          {
+            data: [77, 23]
+          },
+        ]
+      },
+      pg: {
+        currentPage: 1,
+        limit: 10,
+        pageCount: 0
+      },
+      chartOptions: {
+        responsive: true,
+        maintainAspectRatio: false,
+        backgroundColor: ['#00C6C6', '#fafafa'],
+        borderWidth: 0,
+        borderJoinStyle: 'round',
+        borderAlign: 'inner',
+        cutout: '85%',
+        plugins: {
+          legend: {
+            display: false
+          }
+        }
+      }
+    }
+  },
+  computed: {
+    user() {
+      return this.$store.getters.user
+    },
+    filters() {
+      return this.$store.getters.filters
+    },
+    categories() {
+      return this.$store.getters.categories
+    },
+
   },
 
-  setup() {
-    const instance = getCurrentInstance();
-    const api = instance.appContext.config.globalProperties.$api;
-    const router = useRouter();
-    const store = useStore();
-    const modalComponent = ref(null);
+  methods: {
+    pg_back() {
+      let p = this.pg.currentPage
+      this.pg.currentPage = p > 1 ? p - 1 : p
+    },
+    pg_forward() {
+      let p = this.pg.currentPage
+      this.pg.currentPage = p < this.pg.pageCount ? p + 1 : p
+    },
+    openFilters() {
+      this.$store.dispatch('openMenu')
+    },
+    applyFilterTabs(categories) {
+      console.log('applyFilterTabs')
+      console.log(categories)
+      this.$store.dispatch('setCategories', categories)
+      this.loadLeads()
 
-    const screen = ref("UserTable");
-    const leads = ref([]); // loaded leads
-    const leadCount = ref(0); // total number of leads matching filters
-
-    const user = computed(() => store.getters.user);
-    const filters = computed(() => store.getters.filters);
-    const categories = computed(() => store.getters.categories);
-
-    // ***** Selections *****
-
-    const selectedLeads = ref([])
-    const selectVisible = ref(false);
-    const selectMultiple = ref(false);
-
-    function toggleSelectVisible() {
-      // Update the selected state of all leads
-      leads.value = leads.value.map((lead) => ({
-        ...lead,
-        selected: selectVisible.value,
-      }));
-      
-      if (selectVisible.value) {
-        // Add new leads to selectedLeads array
-        const newLeads = leads.value.filter((lead) => !selectedLeads.value.includes(lead._id));
-        selectedLeads.value.push(...newLeads.map((lead) => lead._id));
-      } else {
-        // Remove unselected leads from selectedLeads array
-        selectedLeads.value = selectedLeads.value.filter((id) =>
-          leads.value.find((lead) => lead._id === id && lead.selected)
-        );
-      }
-
-      console.log('toggleSelectVisible', selectedLeads.value)
-    }
-
-    function updateSelectedLeads(lead) {
-      if (lead.selected) {
-        selectedLeads.value.push(lead._id);
-      } else {
-        selectedLeads.value = selectedLeads.value.filter((id) => id !== lead._id);
-      }
-      console.log('updateSelectedLeads', selectedLeads.value)
-    }
-
-    async function selectAll () {
-      let response = await api.getLeads({
-        // limit: limit,
-        // skip: skip,
-        filters: filters.value,
-        ids: true
-      });
-      selectedLeads.value = await response.leads
-      console.log('selectAll', response.leads);
-      console.log('selectedLeads', selectedLeads.value)
-      selectVisible.value = true
-      toggleSelectVisible()
-    }
-
-    async function clearSelection () {
-      selectedLeads.value = []
-      selectVisible.value = false
-      toggleSelectVisible()
-    }
-
-    function pg_back() {
-      let p = pg.currentPage;
-      pg.currentPage = p > 1 ? p - 1 : p;
-    }
-
-    function pg_forward() {
-      let p = pg.currentPage;
-      pg.currentPage = p < pg.pageCount ? p + 1 : p;
-    }
-
-    function gotoPage(page) {
-      pg.currentPage = page;
-    }
-
-    function changePage(page) {
-      screen.value = page;
-    }
-
-    // ***** Filters *****
-
-    watch(filters, () => { loadLeads() });
-
-    function openFilters() {
-      store.dispatch("openMenu");
-    }
-
-    function applyFilterTabs(categories) {
-      store.dispatch("setCategories", categories);
-      loadLeads();
-    }
-
-
-    // ***** Leads *****
-
-    onMounted(async () => {
-      await loadLeads();
-    });
-
-    function openLead(id) {
-      store.dispatch("setSelectedLeads", [id]);
-      router.push({ path: `/create_offer`, query: { lead: id } });
-    }
-
-    function openLeads() {
-      store.dispatch("setSelectedLeads", selectedLeads);
-      router.push({ path: `/create_offer` });
-    }
-
-    async function loadLeads() {
-      let catObj = { ...categories.value };
-      let filterObj = { ...filters.value };
+    },
+    closeModal() {
+      this.modalComponent = null
+    },
+    openModal(component) {
+      this.modalComponent = component
+    },
+    changePage(page) {
+      this.screen = page
+    },
+    gotoPage(page) {
+      this.pg.currentPage = page
+    },
+    openLead(id) {
+      console.log('openLead')
+      this.$store.dispatch('setSelectedLeads', [id])
+      this.$router.push({ path: `/create_offer`, query: { lead: id } })
+    },
+    openLeads() {
+      console.log('openLead')
+      let leads = this.$store.getters.selectedLeads
+      console.log(leads)
+      this.$router.push({ path: `/create_offer`})
+    },
+    async loadLeads() {
+      console.log('loadLeads:', this.filters, this.categories)
+      let catObj = { ...this.categories }
+      let filterObj = { ...this.filters }
 
       for (const key in filterObj) {
         if (Object.prototype.hasOwnProperty.call(filterObj, key)) {
-          const category = key.split('_')[0];
+          const category = key.split("_")[0];
           if (!catObj[category].status) {
             delete filterObj[key];
           }
         }
       }
+      console.log("filterObj", filterObj)
 
-      let response = await api.getLeads({
-        limit: pg.limit,
-        skip: 0,
-        filters: filterObj,
-      });
+      let response = await this.$api.getLeads({ limit: this.pg.limit, skip: 0, filters: filterObj })
+      this.leads = response.leads
+      this.pg.pageCount = Math.ceil(response.count / this.pg.limit)
+    },
 
-      leads.value = response.leads;
-      leadCount.value = response.count;
-
-      pg.pageCount = Math.ceil(response.count / pg.limit);
-    }
-
-
-    // Modal window
-
-    function closeModal() {
-      modalComponent.value = null;
-    }
-
-    function openModal(component) {
-      modalComponent.value = component;
-    }
-
-    // Charts
-
-    const chartData = {
-      datasets: [
-        {
-          data: [77, 23]
-        },
-      ]
-    }
-    const chartOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-      backgroundColor: ['#00C6C6', '#fafafa'],
-      borderWidth: 0,
-      borderJoinStyle: 'round',
-      borderAlign: 'inner',
-      cutout: '85%',
-      plugins: {
-        legend: {
-          display: false
-        },
-        tooltip: {
-          enabled: false
-        }
-      },
-    }
-
-
-
-    // ***** Pagination ***** 
-
-    const pg = reactive({
-      currentPage: 1,
-      limit: 10,
-      pageCount: 0,
-    });
-    
-    watch(() => pg.currentPage, async () => {
-  let limit = pg.limit;
-  let skip = (pg.currentPage - 1) * limit;
-  let response = await api.getLeads({
-    limit: limit,
-    skip: skip,
-    filters: filters.value,
-  });
-  leads.value = response.leads;
-  leads.value = leads.value.map((lead) => ({
-    ...lead,
-    selected: selectedLeads.value.includes(lead._id),
-  }));
-
-  leadCount.value = response.count;
-  console.log('watchEffect', selectedLeads.value)
-  selectVisible.value = false
-});
-
-
-    return {
-      ...toRefs(pg),
-      modalComponent,
-      screen,
-      selectedLeads,
-      selectVisible,
-      selectMultiple,
-      selectAll,
-      clearSelection,
-      toggleSelectVisible,
-      leads,
-      leadCount,
-      chartData,
-      pg,
-      chartOptions,
-      user,
-      filters,
-      categories,
-      closeModal,
-      openModal,
-      changePage,
-      pg_back,
-      pg_forward,
-      openFilters,
-      applyFilterTabs,
-      gotoPage,
-      openLead,
-      openLeads,
-      loadLeads,
-      updateSelectedLeads,
-    };
   },
-};
+  async mounted() {
+    console.log('OpportunitiesDashboard - filters')
+    console.log(this.$store.getters.filters)
+    console.log(this.$store.getters.categories)
+    // uncomment to create fake data
+
+    // let leads = fake_data.getLeads()
+    // console.log(leads)
+    // let response = await this.$api.createLeads(leads)
+    // console.log(response)
+
+    // let response = await fake_data.updateLeads()
+    // console.log('updateLeads:', response)
+    // console.log('fake_data', fake_data)
+    this.loadLeads()
+  }
+}
 </script>
 
 <style lang="sass" scoped>
 @import "/src/styles/styles.sass"
 
-.link 
-    color: #0088ff !important
-    background: transparent !important
 .pagination
   display: flex
   gap: 6px
@@ -489,7 +407,7 @@ h1
   justify-content: flex-start
   background-color: #f1f1f1
   min-height: 100vh
-  padding: 120px 20px 120px 20px
+  padding: 120px 20px 60px 20px
   top: 80px
 section
   display: flex
@@ -522,14 +440,7 @@ section
       &.active
         background-color: rgba(255,255,255,1)
         color: #546E7A
-  .table-actions
-    display: flex
-    justify-content: center
-    align-items: center
-    gap: 16px
-    .flex
-      display: flex
-      gap: 6
+
   .table-titlebar
     display: flex
     flex-direction: row
@@ -731,15 +642,7 @@ pre
   // .checkmark
   //   background-color: #00C6C6
 
-.action_panel
-  position: fixed
-  bottom: 0
-  width: 100vw
-  display: flex
-  padding: 20px 30px
-  justify-content: flex-end
-  background-color: white
-  z-index: 9999
+
 @media only screen and (max-width: 767px)
   .table-row-content,
   .table-header-content

@@ -12,8 +12,11 @@
           <!-- <div v-for="i in 3" :key='i'><span :class='i'></span></div> -->
           <div class="card stats-rating">
             <div class="card-top">
-              <div class="stats-title">
+              <div v-if='leads.length === 1' class="stats-title">
                 User ID: {{ lead.userId }}
+              </div>
+              <div v-else class="stats-title">
+                Users selected: {{  leads.length }}
               </div>
             </div>
             <div class="card-bottom">

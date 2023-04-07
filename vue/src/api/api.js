@@ -111,6 +111,10 @@ export default {
 
   async getLeads(query) {
     console.log('api getLeads:', query)
+    let limit = query.limit || 0
+    let skip = query.skip || 0
+    let ids = query.ids || false
+    console.log('ids', ids)
     let filters = Object.keys(query.filters).length ? query.filters : store.getters.filters;
 
     let filterString = '';
@@ -119,7 +123,7 @@ export default {
     }
 
     try {
-      const response = await _axios.get(`/leads/get-leads?limit=${query.limit}&skip=${query.skip}${filterString}`);
+      const response = await _axios.get(`/leads/get-leads?limit=${limit}&skip=${skip}${filterString}&ids=${ids}`);
       return response.data;
     } catch (err) {
       console.error(err);

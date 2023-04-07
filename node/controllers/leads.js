@@ -6,8 +6,12 @@ exports.getLeads = async (req, res, next) => {
   filters = queries.parseFilters(req.query.filter)
   filters = queries.valuesToNumbers(filters)
 
-  let skip = req.query.skip
-  let limit = req.query.limit
+  let skip = req.query.skip || 0;
+  let limit = req.query.limit || 0;
+  let ids = req.query.ids
+  let projection = ids === 'true' ? { _id: 1 } : {}
+  // console.log('ids:', ids)
+  console.log('projection:', projection)
   let query = { '$or': [] }
 
   for (const key in filters) {
@@ -24,10 +28,22 @@ exports.getLeads = async (req, res, next) => {
   }
 
   let count = await Lead.countDocuments(query)
-  let leads = await Lead.find(query).limit(limit).skip(skip)
+  // let leads = await Lead.find(query).limit(limit).skip(skip)
+  // let leads
+  // if (ids === 'true') {
+  //   leads = await Lead.find(query, '_id').limit(limit).skip(skip);
+  // } else {
+  //   leads = await Lead.find(query).limit(limit).skip(skip);
+  // }
+  // let projection = { _id: 1 }
+  let leads = await Lead.find(query, projection).limit(limit).skip(skip)
+
+  if (ids === 'true') {
+    leads = leads.map((lead) => lead._id);
+  }
   // console.log(filters)
-  console.log(query)
-  console.log(count)
+  // console.log(query)
+  // console.log(count)
   res.status(200).json({ leads: leads, count: count })
 }
 
@@ -46,11 +62,13 @@ exports.getFilteredLeads = async (req, res, next) => {
   // res.status(200).json({ leads: leads, count: count })
 }
 
+
 exports.getLead = async (req, res, next) => {
   console.log(`req: ${req}`)
   let lead = await Lead.findById(req.query.id)
   res.status(200).json(lead)
 }
+
 
 // exports.createLead = (req, res, next) => {
 //   let leadFields = req.body.fields;

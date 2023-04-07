@@ -5,7 +5,10 @@
     </div>
     <div class="sidebar-content">
       <section>
-        <h1>Filter opportunities</h1>
+        <div>
+          <h1>Filter opportunities</h1>
+          <p>Only checked categories will be displayed</p>
+        </div>
         <div class="checkboxes">
           <div v-for="(category, key) in preferences" :key="key" class="checkbox">
             <label class="checkbox-label">
@@ -152,7 +155,7 @@ $transition-sidebar: .2s ease-in-out
   font-variation-settings: "FILL" 0, "wght" 100, "GRAD" 0, "opsz" 40
 
 h1
-  margin: 0 0 10px 0  
+  margin: 0
   font-size: 1.8em
   color: inherit
 h2

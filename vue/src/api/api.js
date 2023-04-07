@@ -110,7 +110,8 @@ export default {
   },
 
   async getLeads(query) {
-    console.log('api getLeads:', query)
+    console.log('api getLeads query:', query)
+    console.log('api getLeads preferences:', store.getters.preferences)
     let limit = query.limit || 0
     let skip = query.skip || 0
     let ids = query.ids || false

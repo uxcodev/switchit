@@ -447,6 +447,9 @@ export default {
 
 <style lang="sass" scoped>
 @import "/src/styles/styles.sass"
+// @import "/src/styles/variables.sass"
+@import "/src/styles/mixins.sass"
+// @import "@vueform/multiselect/themes/default.css"
 
 .link 
     color: #0088ff !important
@@ -740,6 +743,8 @@ pre
   justify-content: flex-end
   background-color: white
   z-index: 9999
+  @include shadow()
+  
 @media only screen and (max-width: 767px)
   .table-row-content,
   .table-header-content

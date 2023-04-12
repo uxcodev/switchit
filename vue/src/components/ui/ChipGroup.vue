@@ -28,11 +28,11 @@ export default {
   methods: {
     select(resource_id) {
       this.selected = resource_id;
-      // console.log(resource_id);
+      // // console.log(resource_id);
     },
   },
   mounted() {
-    // console.log("resources: " + this.resources);
+    // // console.log("resources: " + this.resources);
   },
 };
 </script>

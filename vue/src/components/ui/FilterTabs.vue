@@ -27,7 +27,7 @@ export default {
   methods: {
     select(resource_id) {
       this.selected = resource_id;
-      // console.log(resource_id);
+      // // console.log(resource_id);
     },
     changeFilters(category) {
       this.all = true
@@ -43,7 +43,7 @@ export default {
           }
         }
       }
-      // console.log(this.categories)
+      // // console.log(this.categories)
       this.$emit('applyFilterTabs', this.categories)
     }
   },

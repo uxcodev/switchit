@@ -1,4 +1,4 @@
-import store from '@/store/index.js'
+// import store from '@/store/index.js'
 import axios from 'axios';
 
 const _axios = axios.create({
@@ -34,8 +34,6 @@ export default {
       console.error(err);
     }
   },
-
-
 
   async getPsd2Institutions() {
     try {
@@ -89,7 +87,7 @@ export default {
 
   async createOffer(offer, leads) {
     try {
-      // console.log('createOffer', leads)
+      // // console.log('createOffer', leads)
       const body = { offer: offer, leads: leads }
       const response = await _axios.post('/offers/create-offer', body);
       return response;
@@ -109,17 +107,32 @@ export default {
     return true;
   },
 
-  async getLeads(query) {
-    console.log('api getLeads:', query)
-    let filters = Object.keys(query.filters).length ? query.filters : store.getters.filters;
+  // async getLeads(query) {
+  //   // // console.log('api getLeads query:', query)
+  //   // // console.log('api getLeads preferences:', store.getters.preferences)
+  //   let limit = query.limit || 0
+  //   let skip = query.skip || 0
+  //   let ids = query.ids || false
+  //   // // console.log('ids', ids)
+  //   let filters = Object.keys(query.filters).length ? query.filters : store.getters.filters;
 
-    let filterString = '';
-    for (let filter in filters) {
-      filterString += `&filter=${filter}:${filters[filter]}`;
-    }
+  //   let filterString = '';
+  //   for (let filter in filters) {
+  //     filterString += `&filter=${filter}:${filters[filter]}`;
+  //   }
 
+  //   try {
+  //     const response = await _axios.get(`/leads/get-leads?limit=${limit}&skip=${skip}${filterString}&ids=${ids}`);
+  //     return response.data;
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  //   return true;
+  // },
+  async getLeads(body) {
     try {
-      const response = await _axios.get(`/leads/get-leads?limit=${query.limit}&skip=${query.skip}${filterString}`);
+      // console.log('api.getLeads body', body)
+      const response = await _axios.post('/leads/get-leads', body);
       return response.data;
     } catch (err) {
       console.error(err);

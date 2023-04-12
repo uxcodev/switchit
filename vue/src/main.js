@@ -50,7 +50,7 @@ import { authGuard } from "@auth0/auth0-vue";
 
 const isAuth = async () => {
   if (!auth0.isAuthenticated) {
-    console.log("not authenticated")
+    // console.log("not authenticated")
     auth0.loginWithRedirect({
       appState: {
         target: window.location.href,

@@ -212,7 +212,7 @@ export default {
         }
         if (checked && !unchecked) { this.selectAll = true }
         if (unchecked && !checked) { this.selectAll = false }
-        // if (unchecked && checked) { console.log('partial') }
+        // if (unchecked && checked) { // console.log('partial') }
       }
     },
     'pg.currentPage': {
@@ -230,7 +230,7 @@ export default {
     filters: {
       deep: true,
       async handler() {
-        // console.log('filters changed')
+        // // console.log('filters changed')
         this.loadOffers()
       }
     }
@@ -290,18 +290,18 @@ export default {
       this.pg.currentPage = p > 1 ? p - 1 : p
     },
     pg_forward() {
-      // console.log(this.pg.pageCount)
-      // console.log(this.pg.currentPage)
+      // // console.log(this.pg.pageCount)
+      // // console.log(this.pg.currentPage)
       let p = this.pg.currentPage
       this.pg.currentPage = p < this.pg.pageCount ? p + 1 : p
     },
     openFilters() {
-      // console.log('openFilters')
+      // // console.log('openFilters')
       this.$store.dispatch('openMenu')
     },
     applyFilterTabs(categories) {
-      console.log('applyFilterTabs')
-      console.log(categories)
+      // console.log('applyFilterTabs')
+      // console.log(categories)
       this.$store.dispatch('setCategories', categories)
       this.loadOffers()
       /* 
@@ -315,8 +315,8 @@ export default {
         });
       });
       this.offers = filteredOffers
-      console.log('this.offers.length')
-      console.log(this.offers.length)
+      // console.log('this.offers.length')
+      // console.log(this.offers.length)
       this.pg.pageCount = Math.ceil(this.offers.length / this.pg.limit)
       */
     },
@@ -333,12 +333,12 @@ export default {
       this.pg.currentPage = page
     },
     openOffer(id) {
-      console.log('openOffer')
+      // console.log('openOffer')
       this.$store.dispatch('setSelectedOffers', [id])
       this.$router.push({ path: `/offer`, query: { offer: id } })
     },
 /*     async loadOffers() {
-      console.log('loadOffers:', this.filters, this.categories)
+      // console.log('loadOffers:', this.filters, this.categories)
       let catObj = { ...this.categories }
       let filterObj = { ...this.filters }
 
@@ -350,7 +350,7 @@ export default {
           }
         }
       }
-      console.log(filterObj)
+      // console.log(filterObj)
 
       let response = await this.$api.getOffers({ limit: this.pg.limit, skip: 0, filters: filterObj })
       this.offers = response.offers
@@ -359,23 +359,23 @@ export default {
     async loadOffers() {
       let response = await this.$api.getOffers()
       this.offers = response
-      console.log(this.offers)
+      // console.log(this.offers)
     }
   },
   async mounted() {
-    console.log('OpportunitiesDashboard - filters')
-    console.log(this.$store.getters.filters)
-    console.log(this.$store.getters.categories)
+    // console.log('OpportunitiesDashboard - filters')
+    // console.log(this.$store.getters.filters)
+    // console.log(this.$store.getters.categories)
     // uncomment to create fake data
 
     // let offers = fake_data.getOffers()
-    // console.log(offers)
+    // // console.log(offers)
     // let response = await this.$api.createOffers(offers)
     // console.log(response)
 
     // let response = await fake_data.updateOffers()
-    // console.log('updateOffers:', response)
-    // console.log('fake_data', fake_data)
+    // // console.log('updateOffers:', response)
+    // // console.log('fake_data', fake_data)
 
     // this.loadOffers()
     this.loadOffers()

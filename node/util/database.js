@@ -9,12 +9,12 @@
 //     MONGODB_URI
 //   )
 //     .then(client => {
-//       console.log('Connected!');
+//       // console.log('Connected!');
 //       _db = client.db();
 //       callback();
 //     })
 //     .catch(err => {
-//       console.log(err);
+//       // console.log(err);
 //       throw err;
 //     });
 // };

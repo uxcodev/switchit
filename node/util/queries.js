@@ -8,7 +8,7 @@ const parseFilters = (query) => {
   let filters = {}
   if (Array.isArray(query)) {
     for (let item of query) {
-      // console.log(item)
+      // // console.log(item)
       let keyvalue = item.split(":")
       filters[keyvalue[0]] = keyvalue[1]
     }
@@ -22,7 +22,7 @@ const parseFilters = (query) => {
 const valuesToNumbers = (obj) => {
   for (item in obj) {
     obj[item] = Number(obj[item])
-    // console.log(obj[item])
+    // // console.log(obj[item])
   }
   return obj
 }

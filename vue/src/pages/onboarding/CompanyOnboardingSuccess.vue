@@ -55,7 +55,7 @@ export default {
     },
   },
   mounted() {
-    // console.log('starter page')
+    // // console.log('starter page')
   }
 }
 </script>

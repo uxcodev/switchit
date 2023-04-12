@@ -62,7 +62,7 @@ export default {
       array.push(obj);
     }
 
-    // console.log(array); // Print the array to the console
+    // // console.log(array); // Print the array to the console
     return array
   },
 

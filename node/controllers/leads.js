@@ -2,61 +2,70 @@ const Lead = require("../models/lead");
 const queries = require('../util/queries')
 
 exports.getLeads = async (req, res, next) => {
-  let filters = req.query.filters
-  filters = queries.parseFilters(req.query.filter)
-  filters = queries.valuesToNumbers(filters)
+  let body = req.body.filters
+  let skip = req.body.skip || 0;
+  let limit = req.body.limit || 0;
+  let ids = req.body.ids
 
-  let skip = req.query.skip
-  let limit = req.query.limit
-  let query = { '$or': [] }
 
-  for (const key in filters) {
-    if (Object.prototype.hasOwnProperty.call(filters, key)) {
-      const [category, preference] = key.split('_');
-      if (!query['$or'].some(condition => condition[`access.${category}.status`])) {
-        query['$or'].push({ [`access.${category}.status`]: true });
-      }
+  // create the mongodb query
+
+  let query = { '$or': [] };
+  let hasTrueStatus = false;
+
+  for (const category in body) {
+    if (body[category].status) {
+
+      // return results that have any of the selected categories set to true
+      query.$or.push({ [`access.${category}.status`]: true });
+      hasTrueStatus = true;
+    }
+
+    // reformat the query for monbodb
+    for (const preference in body[category].preferences) {
+      const min = body[category].preferences[preference].values[0];
+      const max = body[category].preferences[preference].values[1];
+
       query[`access.${category}.preferences.${preference}`] = {
-        $gte: filters[`${category}_${preference}_min`],
-        $lte: filters[`${category}_${preference}_max`]
+        $gte: min,
+        $lte: max,
       };
     }
   }
 
+  if (!hasTrueStatus) {
+    for (const category in body) {
+      query.$or.push({ [`access.${category}.status`]: true });
+    }
+  }
+
+  // only return _id if ids is set to true
+  let projection = ids ? { _id: 1 } : {}
+  let leads = await Lead.find(query, projection).limit(limit).skip(skip)
   let count = await Lead.countDocuments(query)
-  let leads = await Lead.find(query).limit(limit).skip(skip)
-  // console.log(filters)
-  console.log(query)
-  console.log(count)
+
+  // if returning ids, get the _id values out of each object to return an array of values
+  if (ids === true) {
+    console.log(ids)
+    leads = leads.map((lead) => lead._id);
+  }
+
   res.status(200).json({ leads: leads, count: count })
 }
 
-exports.getFilteredLeads = async (req, res, next) => {
-  // let filters = req.query.filters ? parseFilters(req.query.filters) : {}
-  console.log(req.body)
-  let filters = req.body.filters
-  console.log(filters)
-  let skip = req.body.skip
-  console.log(skip)
-  let limit = req.body.limit
-  console.log(limit)
-  let count = await Lead.countDocuments()
-  console.log(count)
-  // let leads = await Lead.find().limit(limit).skip(skip)
-  // res.status(200).json({ leads: leads, count: count })
-}
 
 exports.getLead = async (req, res, next) => {
-  console.log(`req: ${req}`)
+  // console.log(`req: ${req}`)
   let lead = await Lead.findById(req.query.id)
   res.status(200).json(lead)
 }
+
 
 // exports.createLead = (req, res, next) => {
 //   let leadFields = req.body.fields;
 //   let profileObj = {}
 //   for (const [key, value] of Object.entries(leadFields)) {
-//     // console.log(`${key}: ${value}`)
+//     // // console.log(`${key}: ${value}`)
 //     profileObj[key] = value
 //   }
 //   const lead = new Lead(profileObj)
@@ -70,7 +79,7 @@ exports.createLeads = (req, res, next) => {
     // let leadFields = req.body.fields;
     let profileObj = {}
     for (const [key, value] of Object.entries(lead)) {
-      // console.log(`${key}: ${value}`)
+      // // console.log(`${key}: ${value}`)
       profileObj[key] = value
     }
     const newlead = new Lead(profileObj)
@@ -118,7 +127,7 @@ exports.updateLeads = async (req, res, next) => {
       await lead.save();
     }
 
-    console.log('Leads updated successfully');
+    // console.log('Leads updated successfully');
     res.status(200).json({ msg: 'Leads updated successfully' });
   } catch (err) {
     console.error('Error updating leads:', err);
@@ -131,7 +140,7 @@ exports.updateLeads = async (req, res, next) => {
 //   let lead = await Lead.findById(req.body.id)
 
 //   for (const [key, value] of Object.entries(leadFields)) {
-//     console.log(key + ": " + value)
+//     // console.log(key + ": " + value)
 //     lead[key] = value
 //   }
 //   lead.save();

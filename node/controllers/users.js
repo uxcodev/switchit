@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken')
 
 exports.createToken = async (req, res, next) => {
   let user = await User.findOne({ email: req.body.email })
-  // console.log(user)
+  // // console.log(user)
   const token = jwt.sign({ user }, 'åß∂ƒœ∑®†¥øπåß∂ƒœ∑®†¥øπ', { expiresIn: '1h' })
   // let admin = await User.findOne({ email: req.body.email, admin: true })
   // const token = jwt.sign({
@@ -12,7 +12,7 @@ exports.createToken = async (req, res, next) => {
   //   admin: user.admin,
   //   user: user
   // }, 'secret', { expiresIn: '1h' })
-  // console.log(token)
+  // // console.log(token)
 
   res.status(200).json({ token: token, email: req.body.email })
 };
@@ -32,7 +32,7 @@ exports.createUser = (req, res, next) => {
   let userFields = req.body.fields;
   let profileObj = {}
   for (const [key, value] of Object.entries(userFields)) {
-    // console.log(`${key}: ${value}`)
+    // // console.log(`${key}: ${value}`)
     profileObj[key] = value
   }
   const user = new User(profileObj)
@@ -46,7 +46,7 @@ exports.updateUser = async (req, res, next) => {
   let user = await User.findById(req.body.id)
 
   for (const [key, value] of Object.entries(userFields)) {
-    console.log(key + ": " + value)
+    // console.log(key + ": " + value)
     user[key] = value
   }
   user.save();
@@ -59,7 +59,7 @@ exports.deleteUser = async (req, res, next) => {
   let user = await User.findById(userId)
   for (const role of user.roles) {
     const companyId = role.company.toString();
-    console.log(companyId);
+    // console.log(companyId);
     let response = await Company.findOneAndUpdate(
       { _id: companyId, 'roles.user': userId },
       { $pull: { roles: { user: userId } } },

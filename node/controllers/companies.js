@@ -15,7 +15,7 @@ exports.createCompany = (req, res, next) => {
   let companyFields = req.body.fields;
   let profileObj = {}
   for (const [key, value] of Object.entries(companyFields)) {
-    // console.log(`${key}: ${value}`)
+    // // console.log(`${key}: ${value}`)
     profileObj[key] = value
   }
   const company = new Company(profileObj)
@@ -40,8 +40,8 @@ exports.signupCompany = async (req, res, next) => {
     }
     company = new Company(companyObj)
   } else {
-    console.log('company already exists')
-    console.log(company)
+    // console.log('company already exists')
+    // console.log(company)
     // res.status(200).json({ message: "Company already exists" }) // UNCOMMENT FOR PROD
     // return
   }
@@ -91,7 +91,7 @@ exports.updateCompany = async (req, res, next) => {
   let company = await Company.findById(req.body.id)
 
   for (const [key, value] of Object.entries(companyFields)) {
-    console.log(key + ": " + value)
+    // console.log(key + ": " + value)
     company[key] = value
   }
   company.save();

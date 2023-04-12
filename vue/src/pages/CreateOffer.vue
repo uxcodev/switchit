@@ -386,10 +386,10 @@ export default {
   },
   methods: {
     async createOffer() {
-      console.log('createOffer:', this.offer_obj)
+      // console.log('createOffer:', this.offer_obj)
       let leads = this.leads || [this.lead._id]
       let response = await this.$api.createOffer(this.offer_obj, leads)
-      console.log("response:",response)
+      // console.log("response:",response)
       if (response) {
         this.$router.push({ path: '/offers' })
       }
@@ -397,15 +397,15 @@ export default {
   },
   async mounted() {
     this.leads = await this.$store.getters.selectedLeads || [this.$route.query.lead]
-    console.log('leads:', this.leads)
+    // console.log('leads:', this.leads)
     if (this.leads.length === 1) {
       let id = this.leads[0]
       this.lead = await this.$api.getLead(id)
     } else {
-      console.log('bulk offers not fully supported yet')
+      // console.log('bulk offers not fully supported yet')
     }
-    console.log('this.lead', this.lead)
-    console.log('this.leads', this.leads)
+    // console.log('this.lead', this.lead)
+    // console.log('this.leads', this.leads)
   }
 }
 </script>

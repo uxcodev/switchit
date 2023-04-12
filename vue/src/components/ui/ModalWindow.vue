@@ -18,14 +18,6 @@ export default {
       appear: true,
     };
   },
-  // copy/paste this in children
-  // inject: [
-  //   "getResources",
-  //   "getSelectedResource",
-  //   "locationId",
-  //   "selectedEvent",
-  //   "eventDate"
-  // ],
   emits: ["closeModal"],
   props: [
     "component",
@@ -40,7 +32,7 @@ export default {
   },
   async mounted() {
     this.appear = true;
-    // console.log(this.getResources())
+    // // console.log(this.getResources())
   },
 };
 </script>

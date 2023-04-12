@@ -1,7 +1,6 @@
 import { createStore } from 'vuex';
 // import VueCookies from 'vue-cookies'
 import switchit from './switchit'
-// import filters from './filters_2'
 import filters from './filters'
 import menu from './menu'
 

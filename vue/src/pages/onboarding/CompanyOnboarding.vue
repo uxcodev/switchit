@@ -179,7 +179,7 @@ export default {
       this.form.user.access = this.form.company.access
       let response = await this.$api.signupCompany(this.form)
       if (response.ok) {
-        console.log(`response:`)
+        // console.log(`response:`)
         console.log(response)
         this.status = "pending"
         // this.$router.push({ path: '/signup_success' })
@@ -201,9 +201,9 @@ export default {
     // setTimeout(() => {
     //   let user = this.$store.getters.user
     //   this.status = user.status
-    //   // console.log(user)
-    //   // console.log(user.status)
-    //   // console.log(this.$auth0.user._value.email)
+    //   // // console.log(user)
+    //   // // console.log(user.status)
+    //   // // console.log(this.$auth0.user._value.email)
     //   if (user.status === "active") {
     //     this.$router.push({ path: '/dashboard' })
     //   }

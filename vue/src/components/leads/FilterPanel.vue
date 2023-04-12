@@ -64,7 +64,6 @@ export default {
     return {
       isDisabled: true,
       preferences: {},
-      categories: this.$store.getters.categories,
     }
   },
   computed: {
@@ -74,30 +73,10 @@ export default {
 
   },
   created() {
-    // get categories from store
-    const categories = this.$store.getters.categories;
-    console.log('FilterPanel categories:', categories)
-    console.log('FilterPanel filters:', this.$store.getters.filters)
-    // get list of preferences for each category. For prototype, these will be
-    // the same for every category, but this will likely change soon
-    // const prefs = this.$store.getters.preferences;
+    let filters = this.$store.getters.filters
+    this.filters = filters
 
-    const preferences = {};
-    for (let category in categories) {
-      preferences[category] = {
-        selected: false,
-        icon: categories[category].icon,
-        // preferences: prefs
-        preferences: {
-          price: { label: "Importance of cheapest price", values: [0, 10] },
-          service: { label: "Importance of best service", values: [0, 10] },
-          features: { label: "Importance of lots of features", values: [0, 10] },
-        }
-      };
-    }
-
-    this.categories = categories;
-    this.preferences = preferences;
+    this.preferences = filters;
   },
   methods: {
     closeModal() {
@@ -111,34 +90,29 @@ export default {
       this.applyFilters()
     },
     async applyFilters() {
-      setTimeout(async () => {
-        const preferences = this.preferences
-        const filters = {}
-        console.log('this.preferences')
-        console.log(this.preferences)
-        console.log('this.categories')
-        console.log(this.categories)
+        let preferences = this.preferences
+
+
+      const selectedPreferences = {};
+      let atLeastOneSelected = false;
+
+      for (const category in preferences) {
+        if (preferences[category].selected) {
+          atLeastOneSelected = true;
+          selectedPreferences[category] = preferences[category];
+        }
+      }
+
+      // If none were selected, include all categories
+      if (!atLeastOneSelected) {
         for (const category in preferences) {
-          if (preferences[category].selected) {
-            const prefs = preferences[category].preferences
-            filters[`${category}_price_min`] = prefs.price.values[0]
-            filters[`${category}_price_max`] = prefs.price.values[1]
-            filters[`${category}_service_min`] = prefs.service.values[0]
-            filters[`${category}_service_max`] = prefs.service.values[1]
-            filters[`${category}_features_min`] = prefs.features.values[0]
-            filters[`${category}_features_max`] = prefs.features.values[1]
-          }
+          selectedPreferences[category] = preferences[category];
         }
-        if (Object.keys(filters).length === 0) {
-          await this.$store.dispatch('setFilters', filters)
-        } else {
-          await this.$store.dispatch('setFilters', filters)
-          console.log('filters:', this.$store.getters.filters)
-        }
-      }, 300)
-      console.log('filters:', this.$store.getters.filters)
-
-
+      }
+        
+        console.log('preferences', selectedPreferences)
+        await this.$store.dispatch('setFilters', selectedPreferences)
+        await this.$store.dispatch('filtersChanged')
     }
   }
 };

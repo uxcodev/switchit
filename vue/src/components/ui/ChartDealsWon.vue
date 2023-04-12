@@ -31,7 +31,7 @@ export default {
   methods: {
   },
   mounted() {
-    // console.log("resources: " + this.resources);
+    // // console.log("resources: " + this.resources);
 
   },
 };

@@ -101,10 +101,10 @@
         <h1 class="table-titlebar-title">Opportunities</h1>
         <div class="table-actions">
           <div class="flex" style="color:grey" v-if="selectedLeads.length">
-            {{selectedLeads.length}} leads selected
+            {{ selectedLeads.length }} leads selected
             <a href="#" class="ml5 link" @click="clearSelection">Clear selection</a>
           </div>
-          <a href="#"  class="link" @click="selectAll">Select all {{ leadCount }} users</a>
+          <a href="#" class="link" @click="selectAll">Select all {{ leadCount }} users</a>
           <button @click="openFilters"><span class="material-symbols-outlined">tune</span>Filter</button>
         </div>
       </div>
@@ -170,7 +170,7 @@
     </div>
   </div>
   <div v-if="selectedLeads.length" class="action_panel">
-    <h2 class="mr10">Send an offer to {{ selectedLeads.length }} lead{{ selectedLeads.length >1 ? 's' : '' }}
+    <h2 class="mr10">Send an offer to {{ selectedLeads.length }} lead{{ selectedLeads.length > 1 ? 's' : '' }}
     </h2>
     <button @click="openLeads">Send offer</button>
   </div>
@@ -211,6 +211,7 @@ export default {
 
     const user = computed(() => store.getters.user);
     const filters = computed(() => store.getters.filters);
+    const filtersChanged = computed(() => store.getters.filtersChanged);
     const categories = computed(() => store.getters.categories);
 
     // ***** Selections *****
@@ -220,12 +221,13 @@ export default {
     const selectMultiple = ref(false);
 
     function toggleSelectVisible() {
+
       // Update the selected state of all leads
       leads.value = leads.value.map((lead) => ({
         ...lead,
         selected: selectVisible.value,
       }));
-      
+
       if (selectVisible.value) {
         // Add new leads to selectedLeads array
         const newLeads = leads.value.filter((lead) => !selectedLeads.value.includes(lead._id));
@@ -237,7 +239,7 @@ export default {
         );
       }
 
-      console.log('toggleSelectVisible', selectedLeads.value)
+      // console.log('toggleSelectVisible', selectedLeads.value)
     }
 
     function updateSelectedLeads(lead) {
@@ -246,10 +248,10 @@ export default {
       } else {
         selectedLeads.value = selectedLeads.value.filter((id) => id !== lead._id);
       }
-      console.log('updateSelectedLeads', selectedLeads.value)
+      // console.log('updateSelectedLeads', selectedLeads.value)
     }
 
-    async function selectAll () {
+    async function selectAll() {
       let response = await api.getLeads({
         // limit: limit,
         // skip: skip,
@@ -257,13 +259,13 @@ export default {
         ids: true
       });
       selectedLeads.value = await response.leads
-      console.log('selectAll', response.leads);
-      console.log('selectedLeads', selectedLeads.value)
+      // console.log('selectAll', response.leads);
+      // console.log('selectedLeads', selectedLeads.value)
       selectVisible.value = true
       toggleSelectVisible()
     }
 
-    async function clearSelection () {
+    async function clearSelection() {
       selectedLeads.value = []
       selectVisible.value = false
       toggleSelectVisible()
@@ -289,7 +291,10 @@ export default {
 
     // ***** Filters *****
 
-    watch(filters, () => { loadLeads() });
+    watch(filtersChanged, () => {
+      // console.log('watch filters', filtersChanged)
+      loadLeads()
+    });
 
     function openFilters() {
       store.dispatch("openMenu");
@@ -299,7 +304,6 @@ export default {
       store.dispatch("setCategories", categories);
       loadLeads();
     }
-
 
     // ***** Leads *****
 
@@ -318,30 +322,17 @@ export default {
     }
 
     async function loadLeads() {
-      let catObj = { ...categories.value };
-      let filterObj = { ...filters.value };
-
-      for (const key in filterObj) {
-        if (Object.prototype.hasOwnProperty.call(filterObj, key)) {
-          const category = key.split('_')[0];
-          if (!catObj[category].status) {
-            delete filterObj[key];
-          }
-        }
-      }
-
       let response = await api.getLeads({
         limit: pg.limit,
         skip: 0,
-        filters: filterObj,
+        filters: store.getters.filters,
       });
-
+      // console.log('response: ', response)
       leads.value = response.leads;
       leadCount.value = response.count;
 
       pg.pageCount = Math.ceil(response.count / pg.limit);
     }
-
 
     // Modal window
 
@@ -389,25 +380,25 @@ export default {
       limit: 10,
       pageCount: 0,
     });
-    
-    watch(() => pg.currentPage, async () => {
-  let limit = pg.limit;
-  let skip = (pg.currentPage - 1) * limit;
-  let response = await api.getLeads({
-    limit: limit,
-    skip: skip,
-    filters: filters.value,
-  });
-  leads.value = response.leads;
-  leads.value = leads.value.map((lead) => ({
-    ...lead,
-    selected: selectedLeads.value.includes(lead._id),
-  }));
 
-  leadCount.value = response.count;
-  console.log('watchEffect', selectedLeads.value)
-  selectVisible.value = false
-});
+    watch(() => pg.currentPage, async () => {
+      let limit = pg.limit;
+      let skip = (pg.currentPage - 1) * limit;
+      let response = await api.getLeads({
+        limit: limit,
+        skip: skip,
+        filters: filters.value,
+      });
+      leads.value = response.leads;
+      leads.value = leads.value.map((lead) => ({
+        ...lead,
+        selected: selectedLeads.value.includes(lead._id),
+      }));
+
+      leadCount.value = response.count;
+      // console.log('watchEffect', selectedLeads.value)
+      selectVisible.value = false
+    });
 
 
     return {
@@ -744,7 +735,7 @@ pre
   background-color: white
   z-index: 9999
   @include shadow()
-  
+
 @media only screen and (max-width: 767px)
   .table-row-content,
   .table-header-content

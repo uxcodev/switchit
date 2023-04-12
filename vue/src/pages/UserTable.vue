@@ -83,9 +83,9 @@ export default {
   },
   methods: {
     changeStatus(user) {
-      // console.log(user)
-      // console.log(user.status)
-      // console.log(user._id)
+      // // console.log(user)
+      // // console.log(user.status)
+      // // console.log(user._id)
       this.updateUser(user._id, { status: user.status })
     },
     async updateUser(id, fields) {
@@ -106,10 +106,10 @@ export default {
   },
   async mounted() {
     this.users = await this.$api.getUsers()
-    console.log(this.users)
-
-    // console.log('UserTable')
     // console.log(this.users)
+
+    // // console.log('UserTable')
+    // // console.log(this.users)
   },
 }
 </script>

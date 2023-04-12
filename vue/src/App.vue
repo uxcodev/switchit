@@ -47,8 +47,8 @@ export default {
         // if there is no user in the switchit db, push 
         // to onboarding
 
-        // console.log('decodedToken.user')
-        // console.log(decodedToken.user)
+        // // console.log('decodedToken.user')
+        // // console.log(decodedToken.user)
 
         if (decodedToken.user === null) {
           this.$router.push({ path: '/onboarding' })
@@ -64,7 +64,7 @@ export default {
 
         // if the user is admin, save to VueX
 
-        console.log(decodedToken)
+  
         if (decodedToken.user && decodedToken.user.admin) {
           this.$store.dispatch('isAdmin', decodedToken.user.admin)
           this.$store.dispatch('setAccess', decodedToken.user.access)

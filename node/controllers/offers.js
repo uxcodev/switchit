@@ -8,7 +8,7 @@ exports.createOffer = (req, res, next) => {
       // let leadFields = req.body.fields;
       let profileObj = {}
       for (const [key, value] of Object.entries(lead)) {
-        // console.log(`${key}: ${value}`)
+        // // console.log(`${key}: ${value}`)
         profileObj[key] = value
       }
       const newlead = new Lead(profileObj)
@@ -16,12 +16,12 @@ exports.createOffer = (req, res, next) => {
     }
      */
   let offerObj = req.body.offer
-  console.log('createOffer', offerObj)
+  // console.log('createOffer', offerObj)
   offerObj.users = []
   let leads = req.body.leads
   const statuses = ['won', 'lost', 'pending'];
 
-  // console.log('leads', leads)
+  // // console.log('leads', leads)
   for (let lead of leads) {
     offerObj.users.push({
       leadId: lead,
@@ -30,7 +30,7 @@ exports.createOffer = (req, res, next) => {
       viewed: false
     })
   }
-  // console.log(offerObj)
+  // // console.log(offerObj)
   const offer = new Offer(offerObj)
   offer.save()
   res.status(200).json(offer)

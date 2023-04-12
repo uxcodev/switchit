@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 module.exports = (req, res, next) => {
 
   // skip if local host
-  console.log(process.env.NODE_ENV)
+  // console.log(process.env.NODE_ENV)
   if (process.env.NODE_ENV === 'development') {
     next()
   } else {

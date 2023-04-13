@@ -69,8 +69,8 @@ export default {
           this.$store.dispatch('isAdmin', decodedToken.user.admin)
           this.$store.dispatch('setAccess', decodedToken.user.access)
         }
-        this.loaded = true
       }
+      this.loaded = true
     }
   },
 };

@@ -223,7 +223,7 @@ export default {
         let skip = (page - 1) * limit
         let filters = this.$store.getters.filters
         let response = await this.$api.getOffers({ limit: limit, skip: skip, filter: filters })
-        this.offers = response.offers
+        this.offers = response?.offers
         // this.pg.pageCount = Math.ceil(response.count / limit)
       }
     },

@@ -28,7 +28,7 @@ export default {
         method: method,
         url: url,
       });
-
+      response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
       console.error(err);
@@ -39,6 +39,7 @@ export default {
     try {
       let url = "https://switchitapi.azurewebsites.net/api/v1/psd2Institutions";
       const response = await _axios.get(url);
+      response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
       console.error(err);
@@ -68,6 +69,17 @@ export default {
   async getUsers() {
     try {
       const response = await _axios.get('/users/get-users');
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+    return true;
+  },
+  async getCompanies() {
+    try {
+      const response = await _axios.get('/companies/get-companies');
+      response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
       console.error(err);
@@ -78,6 +90,7 @@ export default {
   async updateLeads() {
     try {
       const response = await _axios.put('/leads/update-leads');
+      response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
       console.error(err);
@@ -90,7 +103,8 @@ export default {
       // // console.log('createOffer', leads)
       const body = { offer: offer, leads: leads }
       const response = await _axios.post('/offers/create-offer', body);
-      return response;
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
     } catch (err) {
       console.error(err);
     }
@@ -100,6 +114,7 @@ export default {
   async getOffers() {
     try {
       const response = await _axios.get(`/offers/get-offers`);
+      response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
       console.error(err);
@@ -133,6 +148,7 @@ export default {
     try {
       // console.log('api.getLeads body', body)
       const response = await _axios.post('/leads/get-leads', body);
+      response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
       console.error(err);
@@ -143,6 +159,7 @@ export default {
   async getLead(id) {
     try {
       const response = await _axios.get(`/leads/get-lead?id=${id}`);
+      response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
       console.error(err);
@@ -157,6 +174,7 @@ export default {
       };
 
       const response = await _axios.post('/leads/create-leads', body);
+      response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
       console.error(err);
@@ -172,6 +190,7 @@ export default {
       };
 
       const response = await _axios.put('/users/update-user', body);
+      response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
       console.error(err);
@@ -181,6 +200,7 @@ export default {
   async deleteUser(id) {
     try {
       const response = await _axios.delete(`/users/delete-user?id=${id}`);
+      response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
       console.error(err);
@@ -194,12 +214,50 @@ export default {
       };
 
       const response = await _axios.post('/companies/signup-company', body);
-      const data = response.data;
-      data.ok = response.ok;
-      return data;
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
     } catch (err) {
       console.error(err);
     }
-  }
+  },
+
+  async createCompany(fields) {
+    try {
+      const body = {
+        fields: fields,
+      };
+      const response = await _axios.post('/companies/create-company', body);
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
+  async updateCompany(id, fields) {
+    try {
+      const body = {
+        id: id,
+        fields: fields,
+      };
+
+      const response = await _axios.put('/companies/update-company', body);
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
+
+  async deleteCompany(id) {
+    try {
+      const response = await _axios.delete(`/companies/delete-company?id=${id}`);
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
 
 }

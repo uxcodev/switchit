@@ -68,10 +68,10 @@ const routes = [
     component: () => import('@/pages/OpportunitiesDashboard.vue')
   },
   {
-    path: '/admin',
-    name: "admin",
+    path: '/operations',
+    name: "operations",
     beforeEnter: isAuth,
-    component: () => import('@/pages/AdminDashboard.vue')
+    component: () => import('@/pages/OperationsDashboard.vue')
   },
   {
     path: '/settings',
@@ -90,6 +90,12 @@ const routes = [
     name: "onboarding",
     beforeEnter: isAuth,
     component: () => import('@/pages/onboarding/CompanyOnboarding.vue')
+  },
+  {
+    path: '/createcompany',
+    name: "createcompany",
+    // beforeEnter: isAuth,
+    component: () => import('@/pages/onboarding/CreateCompany.vue')
   },
   {
     path: '/create_offer',

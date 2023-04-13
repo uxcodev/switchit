@@ -18,7 +18,7 @@ exports.createToken = async (req, res, next) => {
 };
 
 exports.getUsers = async (req, res, next) => {
-  let users = await User.find()
+  let users = await User.find().populate('roles.company');
   res.status(200).json(users)
 }
 

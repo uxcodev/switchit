@@ -390,7 +390,7 @@ export default {
       let leads = this.leads || [this.lead._id]
       let response = await this.$api.createOffer(this.offer_obj, leads)
       // console.log("response:",response)
-      if (response) {
+      if (response?.ok) {
         this.$router.push({ path: '/offers' })
       }
     }

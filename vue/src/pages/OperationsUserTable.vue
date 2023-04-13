@@ -21,6 +21,14 @@
               <div class="field light">
                 {{ user.email }}
               </div>
+
+              <div class="field light company" v-for="role in user.roles" :key="role">
+                <span class="company-name" @click="openCompany(role.company?._id)">{{ role.company?.name }}</span>
+                <span class="country" v-for="country in role.company?.countries" :key="country">
+                  {{ country }}
+                </span>
+              </div>
+
             </div>
             <div class="access_icons">
               <!-- <span v-for="category in categories" :key="category" :class="user.access[category].status ? 'active' : ''" class="material-symbols-outlined">{{ category.icon }}</span> -->
@@ -50,7 +58,7 @@
       </div>
     </div>
     <div>
-      <button class="mt10" @click="add = false">+ Add</button>
+      <button disabled="true" class="mt10" @click="add = false">+ Add</button>
     </div>
   </div>
   <div v-if="edit">
@@ -97,6 +105,9 @@ export default {
       this.users = await this.$api.getUsers()
       console.log(response)
     },
+    openCompany(id) {
+      console.log('id: ', id)
+    },
     closeModal() {
       this.modalComponent = null
     },
@@ -109,11 +120,10 @@ export default {
     // console.log(this.users)
 
     // // console.log('UserTable')
-    // // console.log(this.users)
+    console.log('this.users: ', this.users)
   },
 }
 </script>
-
 
 <style lang="sass" scoped>
 @import "/src/styles/variables.sass"
@@ -259,6 +269,15 @@ h3
       padding: 2px 16px 2px 20px
       font-size: .7rem
       background-size: 20px
-    
 
+.company
+  display: flex
+  gap: 4px      
+  &-name
+    cursor: pointer
+    color: #0088ff
+.country
+  display: flex
+  flex-direction: row
+  gap: 4px
 </style>

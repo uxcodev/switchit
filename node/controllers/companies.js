@@ -12,13 +12,14 @@ exports.getCompanies = async (req, res, next) => {
 // }
 
 exports.createCompany = (req, res, next) => {
-  let companyFields = req.body.fields;
+  let companyFields = req.body.fields.company;
   let profileObj = {}
+  console.log(companyFields)
   for (const [key, value] of Object.entries(companyFields)) {
     // // console.log(`${key}: ${value}`)
     profileObj[key] = value
   }
-  const company = new Company(profileObj)
+  let company = new Company(profileObj)
   company.save()
   res.status(200).json(company)
 
@@ -100,6 +101,7 @@ exports.updateCompany = async (req, res, next) => {
 };
 
 exports.deleteCompany = async (req, res, next) => {
+  console.log('delete company')
   let response = await Company.deleteOne({ _id: req.query.id })
   res.status(200).json({ message: response })
 };

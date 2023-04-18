@@ -151,9 +151,9 @@ export default {
     },
     async submitForm() {
       let response = await this.$api.createCompany(this.form)
+      console.log(response)
       if (response.ok) {
         // console.log(`response:`)
-        console.log(response)
         this.status = "pending"
         this.$router.push({ path: '/operations', query: {q:'Companies'}})
       } else {

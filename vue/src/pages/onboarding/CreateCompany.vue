@@ -4,13 +4,22 @@
   </ModalWindow>
   <div class="main">
     <div class="container white">
-      <h2>Create company</h2>
+      <h2>{{ edit ? 'Edit company' : 'Create company' }}</h2>
       <form @submit.prevent class="switchit-form sm">
         <!-- <h3>{{ service.name }}</h3> -->
 
         <div class="group">
           <label for="email">Created by (email address)</label>
           <input v-model="form.company.createdby" type="text" id="first_name" class="input lg" />
+        </div>
+        <div>
+          <div class="group">
+            <label for="admin">Select a company admin</label>
+            <select name="admin" class="select" v-model="selectedAdmin" v-on:change="selectAdmin">
+              <option disabled value="">Select a user</option>
+              <option v-for="user in users" :key="user._id" :value="user._id">{{ user.first_name }} {{ user.last_name }}</option>
+            </select>
+          </div>
         </div>
         <div class="group">
           <label for="company">Company name</label>
@@ -26,7 +35,7 @@
         </div>
         <div class="group">
 
-          <label for="">Markets you are interested in serving</label>
+          <label for="">Markets the company serves</label>
 
 
           <div class="checkbox-group">
@@ -60,7 +69,7 @@
             </label>
           </div>
         </div>
-        <button class="icon" @click="submitForm">Submit request</button>
+        <button class="icon" @click="submitForm">Submit</button>
         <div v-if="errors.length" class="msg_error">{{ errors[0] }}</div>
       </form>
     </div>
@@ -115,6 +124,7 @@ export default {
 
     return {
       status: null,
+      edit: false,
       modalComponent: null,
       screen: 'UserTable',
       form: {
@@ -133,11 +143,21 @@ export default {
             auto: { status: false },
             banking: { status: false },
           },
+          roles: [{role: "owner", user: null, _id: null}],
         },
       },
+      selectedAdmin: null,
+      users: [],
       errors: [],
       country_list: ["Denmark", "Germany", "Norway", "Sweden", "United States"]
     }
+  },
+  watch: { 
+    selectedAdmin(val) {
+      console.log('watch', val)
+      this.form.company.roles[0].user = val
+    }
+
   },
   methods: {
     closeModal() {
@@ -150,12 +170,17 @@ export default {
       this.screen = page
     },
     async submitForm() {
-      let response = await this.$api.createCompany(this.form)
+      let response
+      if (this.edit) {
+        response = await this.$api.updateCompany(this.id, this.form)
+      } else {
+        response = await this.$api.createCompany(this.form)
+      }
       console.log(response)
       if (response.ok) {
         // console.log(`response:`)
         this.status = "pending"
-        this.$router.push({ path: '/operations', query: {q:'Companies'}})
+        this.$router.push({ path: '/operations', query: { q: 'Companies' } })
       } else {
         this.errors.push(response.message)
         setTimeout(() => { this.errors = [] }, 3000)
@@ -163,6 +188,18 @@ export default {
     }
   },
   async mounted() {
+    this.id = this.$route.query.id
+    this.edit = this.id ? true : false
+
+    if (this.edit) {
+      let company = await this.$api.getCompanyById(this.id)
+      console.log(company)
+      this.form.company = company
+      this.selectedAdmin = company.roles[0].user
+    }
+    console.log('edit', this.edit)
+    this.users = await this.$api.getUsers()
+    console.log('this.users: ', this.users)
   }
 }
 </script>

@@ -41,7 +41,7 @@ app.use(errorController.get404);
 mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.pn3wxtf.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`)
   .then(result => {
     const listner = app.listen(process.env.PORT || 3000, function () {
-      // console.log('Server is listening on port ' + listner.address().port);
+      console.log('Server is listening on port ' + listner.address().port);
     });
 
   }).catch(err => {

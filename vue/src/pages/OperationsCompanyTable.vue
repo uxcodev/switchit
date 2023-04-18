@@ -13,8 +13,8 @@
     <div class="table">
       <div v-for="(company, index) in companies" :key="index">
         <div class="item">
-          <div class="row">
-            <div class="field-group">
+          <div class="row"  @click="$router.push({ path: '/createcompany', query: { id: company._id } })">
+            <div class="field-group" >
               <div class="field b">
                 {{ company.name }} 
               </div>
@@ -40,15 +40,15 @@
               <span :class="company.access.auto.status ? 'active' : ''" class="material-symbols-outlined">directions_car</span>
             </div>
 
-            <div class='status_wrapper' :class="company.status">
-              <!-- <div :class="['dot', company.status]"></div> -->
-              <select name="status" class="select status" v-model="company.status" @change="changeStatus(company)">
-                <option value="new">New</option>
-                <option value="pending">Pending</option>
-                <option value="active">Approved</option>
-                <option value="rejected">Rejected</option>
-              </select>
-            </div>
+          </div>
+          <div class='status_wrapper' :class="company.status">
+            <!-- <div :class="['dot', company.status]"></div> -->
+            <select name="status" class="select status" v-model="company.status" @change="changeStatus(company)">
+              <option value="new">New</option>
+              <option value="pending">Pending</option>
+              <option value="active">Approved</option>
+              <option value="rejected">Rejected</option>
+            </select>
           </div>
           <div class="option" @click="deleteCompany(company._id)">
             <span class="material-symbols-outlined">Delete</span>

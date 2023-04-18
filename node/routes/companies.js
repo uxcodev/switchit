@@ -11,6 +11,7 @@ const isAdmin = require('../middleware/isAdmin') // uncomment this to enable
 const router = express.Router();
 
 //TESTING
+router.get("/get-company-by-id", isAdmin, feedController.getCompanyById);
 router.get("/get-companies", isAdmin, feedController.getCompanies);
 router.post("/create-company", isAuth, feedController.createCompany);
 router.post("/signup-company", feedController.signupCompany);

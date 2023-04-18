@@ -11,6 +11,11 @@ exports.getCompanies = async (req, res, next) => {
 //   res.status(200).json(company)
 // }
 
+exports.getCompanyById = async (req, res, next) => {
+  let company = await Company.findOne({ _id: req.query.id })
+  res.status(200).json(company)
+}
+
 exports.createCompany = (req, res, next) => {
   let companyFields = req.body.fields.company;
   let profileObj = {}
@@ -88,11 +93,11 @@ exports.signupCompany = async (req, res, next) => {
 };
 
 exports.updateCompany = async (req, res, next) => {
-  let companyFields = req.body.fields;
+  let companyFields = req.body.fields.company;
   let company = await Company.findById(req.body.id)
 
   for (const [key, value] of Object.entries(companyFields)) {
-    // console.log(key + ": " + value)
+    console.log(key + ": " + value)
     company[key] = value
   }
   company.save();

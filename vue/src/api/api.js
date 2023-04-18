@@ -234,12 +234,26 @@ export default {
     }
   },
 
+  async getCompanyById(id) {
+    try {
+      const response = await _axios.get(`/companies/get-company-by-id?id=${id}`);
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
+
   async updateCompany(id, fields) {
     try {
       const body = {
         id: id,
         fields: fields,
       };
+      // delete id key from fields
+      console.log('updateCompany:', body.fields)
+      delete body.fields.company._id
 
       const response = await _axios.put('/companies/update-company', body);
       response.data.ok = response?.statusText === "OK"

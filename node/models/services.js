@@ -13,12 +13,12 @@ const serviceSchema = new Schema({
     customer_number: { type: String, required: false },
     dob: { type: String, required: false },
     household_members: { type: Number, required: false },
-    phone: { type: String, required: false }
+    phone: { type: Number, required: false }
   },
   mobile: {
     invoice_debit_amount: { type: Number, required: false },
     invoice_debit_date: { type: String, required: false },
-    phone_number: { type: String, required: false },
+    phone_number: { type: Number, required: false },
     invoice_period: {
       from: { type: String, required: false },
       to: { type: String, required: false },
@@ -31,7 +31,7 @@ const serviceSchema = new Schema({
     equipment_installment: { type: String, required: false }
   },
   mortgage: {
-    loan_number: { type: String, required: false },
+    loan_number: { type: Number, required: false },
     loan_details: { type: String, required: false },
     principal_amount: { type: Number, required: false },
     interest_rate: { type: Number, required: false },
@@ -63,7 +63,7 @@ const serviceSchema = new Schema({
       speedometer: { type: String, required: false }
     },
     additional_services: { type: Object, required: false },
-    own_risk_amount: { type: String, required: false }
+    own_risk_amount: { type: Number, required: false }
   },
   home_insurance: {
     debit_amount: { type: Number, required: false },

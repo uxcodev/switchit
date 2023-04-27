@@ -3,6 +3,17 @@
     <component :is="modalComponent"></component>
   </ModalWindow>
   <div class="main">
+    <!-- back button -->
+    <div class="container mb5">
+      <div class="back-button">
+        <!-- return to previous page in router history -->
+        <button class="btn" @click="$router.go(-1)">
+          <!-- <i class="fas fa-chevron-left"></i> -->
+          <span class="material-symbols-outlined">arrow_back</span>
+          <!-- <span>Back</span> -->
+        </button>
+      </div>
+    </div>
     <div class="container white">
       <h2>{{ edit ? 'Edit company' : 'Create company' }}</h2>
       <form @submit.prevent class="switchit-form sm">
@@ -17,6 +28,7 @@
             <label for="admin">Select a company admin</label>
             <select name="admin" class="select" v-model="selectedAdmin" v-on:change="selectAdmin">
               <option disabled value="">Select a user</option>
+              <option value="">None</option>
               <option v-for="user in users" :key="user._id" :value="user._id">{{ user.first_name }} {{ user.last_name }}</option>
             </select>
           </div>
@@ -24,6 +36,10 @@
         <div class="group">
           <label for="company">Company name</label>
           <input v-model="form.company.name" placeholder="" type="text" id="company" class="input lg" />
+        </div>
+        <div class="group">
+          <label for="website">Company email</label>
+          <input v-model="form.company.contact_email" placeholder="" type="text" id="website" class="input lg" />
         </div>
         <div class="group">
           <label for="website">Company website</label>
@@ -134,6 +150,7 @@ export default {
           countries: ["Denmark",],
           status: "pending",
           createdby: this.$auth0.user._value.email,
+          contact_email: 'johndoe@somecompany.com',
           access: {
             mortgage: { status: false },
             mobile: { status: false },
@@ -143,7 +160,7 @@ export default {
             auto: { status: false },
             banking: { status: false },
           },
-          roles: [{role: "owner", user: null, _id: null}],
+          roles: [],
         },
       },
       selectedAdmin: null,
@@ -222,6 +239,11 @@ export default {
   &.clip
     max-height: 100vh
     overflow: hidden
+
+.back-button
+  width: 100%
+  button
+    padding: 4px 8px
 
 .container.white
   background-color: white

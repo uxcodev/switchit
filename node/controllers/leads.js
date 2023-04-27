@@ -1,57 +1,82 @@
-const Lead = require("../models/lead");
+const Lead = require("../models/lead_temp");
 const queries = require('../util/queries')
 
 exports.getLeads = async (req, res, next) => {
-  let body = req.body.filters
-  let skip = req.body.skip || 0;
-  let limit = req.body.limit || 0;
-  let ids = req.body.ids
+  const filters = req.body.filters || {};
+  const skip = req.body.skip || 0;
+  const limit = req.body.limit || 0;
+  const ids = req.body.ids;
 
+  // if (skip !== 999) {
+  //   console.log(JSON.stringify(filters))
+  //   return
+  // }
 
-  // create the mongodb query
+  const query = {};
 
-  let query = { '$or': [] };
-  let hasTrueStatus = false;
+  for (const category in filters) {
+    if (!Object.keys(filters[category]).length) continue;
 
-  for (const category in body) {
-    if (body[category].status) {
+    for (const dataType in filters[category]) {
+      const dataFilter = {};
 
-      // return results that have any of the selected categories set to true
-      query.$or.push({ [`access.${category}.status`]: true });
-      hasTrueStatus = true;
-    }
+      for (const filter in filters[category][dataType]) {
+        const { type, value } = filters[category][dataType][filter];
 
-    // reformat the query for monbodb
-    for (const preference in body[category].preferences) {
-      const min = body[category].preferences[preference].values[0];
-      const max = body[category].preferences[preference].values[1];
+        if (type === 'string') {
+          dataFilter[`data.${category}.${dataType}.${filter}`] = {
+            $regex: `.*${value}.*`,
+            $options: 'i',
+          };
+        } else if (type === 'identifier_number') {
+          dataFilter[`data.${category}.${dataType}.${filter}`] = {
+            $regex: `.*${value}.*`,
+          };
+        } else if (type === 'range_number' || type === 'range_amount' || type === 'range_slider') {
+          const [min, max] = value;
+          if (min !== null) {
+            dataFilter[`data.${category}.${dataType}.${filter}`] = {
+              $gte: min,
+            };
+          }
+          if (max !== null) {
+            dataFilter[`data.${category}.${dataType}.${filter}`] = {
+              ...dataFilter[`data.${category}.${dataType}.${filter}`],
+              $lte: max,
+            };
+          }
+        }
+      }
 
-      query[`access.${category}.preferences.${preference}`] = {
-        $gte: min,
-        $lte: max,
-      };
+      if (Object.keys(dataFilter).length) {
+        query[`$and`] = query[`$and`] || [];
+        query[`$and`].push(dataFilter);
+      }
     }
   }
 
-  if (!hasTrueStatus) {
-    for (const category in body) {
-      query.$or.push({ [`access.${category}.status`]: true });
-    }
+  const projection = ids ? { _id: 1 } : {};
+  const leads = await Lead.find(query, projection).limit(limit).skip(skip);
+  const count = await Lead.countDocuments(query);
+
+  if (ids) {
+    res.status(200).json({ leads: leads.map((lead) => lead._id), count: count });
+  } else {
+    res.status(200).json({ leads: leads, count: count });
   }
 
-  // only return _id if ids is set to true
-  let projection = ids ? { _id: 1 } : {}
-  let leads = await Lead.find(query, projection).limit(limit).skip(skip)
-  let count = await Lead.countDocuments(query)
+  console.log('query:', JSON.stringify(query));
+};
 
-  // if returning ids, get the _id values out of each object to return an array of values
-  if (ids === true) {
-    console.log(ids)
-    leads = leads.map((lead) => lead._id);
-  }
 
-  res.status(200).json({ leads: leads, count: count })
-}
+
+// console.log('query:', JSON.stringify(query));
+// console.log('leads:',);
+
+
+
+
+
 
 
 exports.getLead = async (req, res, next) => {

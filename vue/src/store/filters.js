@@ -1,146 +1,276 @@
+const service_data = {
+  general: {
+    identifying_data: {
+      first_name: { type: String, required: false, filter_type: "string" },
+      last_name: { type: String, required: false, filter_type: "string" },
+      address: { type: String, required: false, filter_type: "string" },
+      postal_code: { type: String, required: false, filter_type: "string" },
+      country: { type: String, required: false, filter_type: "string" },
+      customer_number: { type: String, required: false, filter_type: "string" },
+      dob: { type: String, required: false, filter_type: "string" },
+      household_members: { type: Number, required: false, filter_type: "range_number" },
+      phone: { type: Number, required: false, filter_type: "identifier_number" },
+    }
+  },
+  mobile: {
+    interaction_data: {
+      invoice_debit_amount: { type: Number, required: false, filter_type: "range_amount" },
+      invoice_debit_date: { type: String, required: false, filter_type: "date" },
+      phone_number: { type: Number, required: false, filter_type: "identifier_number" },
+      invoice_period: {
+        from: { type: String, required: false, filter_type: "string" },
+        to: { type: String, required: false, filter_type: "string" }, filter_type: "range_date"
+      },
+      plan_talk_minutes: { type: Number, required: false, filter_type: "range_number" },
+      plan_data_speed: { type: Number, required: false, filter_type: "range_number" },
+      plan_data_gb: { type: Number, required: false, filter_type: "range_number" },
+      plan_teleservice: { type: String, required: false, filter_type: "string" },
+      phone_installment: { type: String, required: false, filter_type: "string" },
+      equipment_installment: { type: String, required: false, filter_type: "string" }
+    },
+    preference_data: {
+      price: {
+        label: "Importance of cheapest price",
+        filter_type: "range_slider",
+        range: [0, 10]
+      },
+      service: {
+        label: "Importance of best service",
+        filter_type: "range_slider",
+        range: [0, 10]
+      },
+      features: {
+        label: "Importance of lots of features",
+        filter_type: "range_slider",
+        range: [0, 10]
+      }
+    }
+  },
+  mortgage: {
+    interaction_data: {
+      loan_number: { type: Number, required: false, filter_type: "identifier_number" },
+      loan_details: { type: String, required: false, filter_type: "string" },
+      principal_amount: { type: Number, required: false, filter_type: "range_amount" },
+      interest_rate: { type: Number, required: false, filter_type: "range_amount", range: [0, 10] },
+      mortgage_contribution: { type: Number, required: false, filter_type: "range_amount" },
+      interest_paid: { type: Number, required: false, filter_type: "range_amount" },
+      installment_paid: { type: Number, required: false, filter_type: "range_amount" },
+      debit_amount: { type: Number, required: false, filter_type: "range_amount" },
+      debit_date: { type: String, required: false, filter_type: "date" },
+      terms_remaining: { type: String, required: false, filter_type: "string", range: [0, 50] },
+    },
+    preference_data: {
+      price: {
+        label: "Importance of cheapest price",
+        filter_type: "range_slider",
+        range: [0, 10]
+      },
+      service: {
+        label: "Importance of best service",
+        filter_type: "range_slider",
+        range: [0, 10]
+      },
+      features: {
+        label: "Importance of lots of features",
+        filter_type: "range_slider",
+        range: [0, 10]
+      }
+    }
+  },
+  energy: {
+    interaction_data: {
+      debit_amount: { type: Number, required: false, filter_type: "range_amount" },
+      debit_date: { type: String, required: false, filter_type: "date" },
+      kwh_amount: { type: Number, required: false, filter_type: "range_amount" },
+      fees_amount: { type: Number, required: false, filter_type: "range_amount" },
+      taxes_amount: { type: Number, required: false, filter_type: "range_amount" },
+      additional_services: { type: String, required: false, filter_type: "string" },
+      prepaid_amount: { type: Number, required: false, filter_type: "range_amount" },
+    },
+    preference_data: {
+      price: {
+        label: "Importance of cheapest price",
+        filter_type: "range_slider",
+        range: [0, 10]
+      },
+      service: {
+        label: "Importance of best service",
+        filter_type: "range_slider",
+        range: [0, 10]
+      },
+      features: {
+        label: "Importance of lots of features",
+        filter_type: "range_slider",
+        range: [0, 10]
+      }
+    }
+  },
+  car_insurance: {
+    interaction_data: {
+      debit_amount: { type: Number, required: false, filter_type: "range_amount" },
+      debit_date: { type: String, required: false, filter_type: "date" },
+      valid_from: { type: String, required: false, filter_type: "string" },
+      number_plate: { type: String, required: false, filter_type: "string" },
+      vehicle: {
+        make: { type: String, required: false, filter_type: "string" },
+        model: { type: String, required: false, filter_type: "string" },
+        fuel: { type: String, required: false, filter_type: "string" },
+        speedometer: { type: String, required: false, filter_type: "string" }
+      },
+      additional_services: { type: Object, required: false },
+      own_risk_amount: { type: Number, required: false, filter_type: "range_amount" },
+    },
+    preference_data: {
+      price: {
+        label: "Importance of cheapest price",
+        filter_type: "range_slider",
+        range: [0, 10]
+      },
+      service: {
+        label: "Importance of best service",
+        filter_type: "range_slider",
+        range: [0, 10]
+      },
+      features: {
+        label: "Importance of lots of features",
+        filter_type: "range_slider",
+        range: [0, 10]
+      }
+    }
+  },
+  home_insurance: {
+    interaction_data: {
+      debit_amount: { type: Number, required: false, filter_type: "range_amount" },
+      debit_date: { type: String, required: false, filter_type: "date" },
+      valid_from: { type: String, required: false, filter_type: "string" },
+      address: { type: String, required: false, filter_type: "string" },
+      own_risk_amount: { type: Number, required: false, filter_type: "range_amount" },
+      add_ons: { type: Object, required: false, filter_type: "object" },
+      alarm_discount: { type: Boolean, required: false, filter_type: "boolean" },
+    },
+    preference_data: {
+      price: {
+        label: "Importance of cheapest price",
+        filter_type: "range_slider",
+        range: [0, 10]
+      },
+      service: {
+        label: "Importance of best service",
+        filter_type: "range_slider",
+        range: [0, 10]
+      },
+      features: {
+        label: "Importance of lots of features",
+        filter_type: "range_slider",
+        range: [0, 10]
+      }
+    }
+  },
+  broadband: {
+    interaction_data: {
+      debit_amount: { type: Number, required: false, filter_type: "range_amount" },
+      debit_date: { type: String, required: false, filter_type: "date" },
+      plan_data_speed: { type: Number, required: false, filter_type: "range_number" },
+      plan_data_gb: { type: Number, required: false, filter_type: "range_number" },
+    },
+    preference_data: {
+      price: {
+        label: "Importance of cheapest price",
+        filter_type: "range_slider",
+        range: [0, 10]
+      },
+      service: {
+        label: "Importance of best service",
+        filter_type: "range_slider",
+        range: [0, 10]
+      },
+      features: {
+        label: "Importance of lots of features",
+        filter_type: "range_slider",
+        range: [0, 10]
+      }
+    }
+  },
+}
+
+// categories should be deleted
 const categories = {
   mortgage: {
     selected: false,
     icon: "house",
-    preferences: {
-      price: {
-        label: "Importance of cheapest price",
-        values: [0, 10]
-      },
-      service: {
-        label: "Importance of best service",
-        values: [0, 10]
-      },
-      features: {
-        label: "Importance of lots of features",
-        values: [0, 10]
-      }
-    }
   },
   insurance: {
     selected: false,
     icon: "verified_user",
-    preferences: {
-      price: {
-        label: "Importance of cheapest price",
-        values: [0, 10]
-      },
-      service: {
-        label: "Importance of best service",
-        values: [0, 10]
-      },
-      features: {
-        label: "Importance of lots of features",
-        values: [0, 10]
-      }
-    }
+
   },
   banking: {
     selected: false,
     icon: "credit_card",
     preferences: {
-      price: {
-        label: "Importance of cheapest price",
-        values: [0, 10]
-      },
-      service: {
-        label: "Importance of best service",
-        values: [0, 10]
-      },
-      features: {
-        label: "Importance of lots of features",
-        values: [0, 10]
-      }
-    }
-  },
-  broadband: {
-    selected: false,
-    icon: "language",
-    preferences: {
-      price: {
-        label: "Importance of cheapest price",
-        values: [0, 10]
-      },
-      service: {
-        label: "Importance of best service",
-        values: [0, 10]
-      },
-      features: {
-        label: "Importance of lots of features",
-        values: [0, 10]
-      }
-    }
-  },
-  mobile: {
-    selected: false,
-    icon: "smartphone",
-    preferences: {
-      price: {
-        label: "Importance of cheapest price",
-        values: [0, 10]
-      },
-      service: {
-        label: "Importance of best service",
-        values: [0, 10]
-      },
-      features: {
-        label: "Importance of lots of features",
-        values: [0, 10]
-      }
-    }
-  },
-  utilities: {
-    selected: false,
-    icon: "lightbulb",
-    preferences: {
-      price: {
-        label: "Importance of cheapest price",
-        values: [0, 10]
-      },
-      service: {
-        label: "Importance of best service",
-        values: [0, 10]
-      },
-      features: {
-        label: "Importance of lots of features",
-        values: [0, 10]
-      }
-    }
-  },
-  auto: {
-    selected: false,
-    icon: "directions_car",
-    preferences: {
-      price: {
-        label: "Importance of cheapest price",
-        values: [0, 10]
-      },
-      service: {
-        label: "Importance of best service",
-        values: [0, 10]
-      },
-      features: {
-        label: "Importance of lots of features",
-        values: [0, 10]
-      }
-    }
-  },
-};
 
+    },
+    broadband: {
+      selected: false,
+      icon: "language",
+
+    },
+    mobile: {
+      selected: false,
+      icon: "smartphone",
+      preferences: {
+
+      }
+    },
+    utilities: {
+      selected: false,
+      icon: "lightbulb",
+      preferences: {
+
+      }
+    },
+    auto: {
+      selected: false,
+      icon: "directions_car",
+      preferences: {
+
+      }
+    },
+  }
+}
+
+
+/*
+HOW THIS WORKS
+ 
+1. Services get loaded from api in App.vue, and saved in store as 'services' (temporarily 'service_data' variable)
+2. When a user sets a filter, it gets saved in the 'filters' object in the store
+3. 'setFilteredServices' merges the services and filters. Anything in 'filters' overwrites the same key in 'services'.
+4. 'filtersChanged' toggles value of filters, which triggers a watcher in the opportunities dashboard to reload the loads.
+5. to reset filters, call setFilteredServices with an empty filters object
+ 
+*/
 
 export default {
   state() {
     return {
-
       categories: categories,
-      filters: { ...categories },
+      services: service_data,
+      filters: {},
+      filteredServices: service_data, // update with { ...service_data, ...filters },
       filtersChanged: false
     };
   },
   mutations: {
 
+    setServices(state, payload) {
+      state.services = payload.val
+    },
     setFilters(state, payload) {
       state.filters = payload.val
+    },
+    setFilteredServices(state, payload) {
+      state.filteredServices = payload.val
     },
     filtersChanged(state, payload) {
       state.filtersChanged = payload.val
@@ -150,9 +280,31 @@ export default {
     },
   },
   actions: {
-
+    // createServices(context, access) {
+    //   console.log('access', access)
+    //   const combined_object = {};
+    //   Object.keys(interaction_data).forEach(key => {
+    //     if (access[key]?.status === true || key === 'general') {
+    //       combined_object[key] = {
+    //         // preference_data: { ...preference_data[key] },
+    //         // interaction_data: { ...interaction_data[key] }
+    //         // combined_object[key] = {
+    //         ...interaction_data[key],
+    //         ...preference_data[key]
+    //         // };
+    //       }
+    //     }
+    //   });
+    //   context.commit('setServices', { val: combined_object });
+    //   context.commit('setFilters', { val: combined_object });
+    // },
     setFilters(context, filters) {
       context.commit('setFilters', { val: filters });
+    },
+    setFilteredServices(context, filters) {
+      let services = context.state.services;
+      let filteredServices = { ...services, ...filters };
+      context.commit('setFilteredServices', { val: filteredServices });
     },
     filtersChanged(context) {
       context.commit('filtersChanged', { val: !context.getters.filtersChanged });
@@ -176,11 +328,9 @@ export default {
         }
       }
 
-      context.commit('setFilters', { val: filteredCategories });
-      context.commit('setCategories', { val: filteredCategories });
-      // console.log('context.getters.categories')
-      // console.log(context.getters.categories)
-      // this.categories = filteredCategories
+      // context.commit('setFilters', { val: filteredCategories });
+      // context.commit('setCategories', { val: filteredCategories });
+
     },
   },
   getters: {
@@ -190,11 +340,17 @@ export default {
     filtersChanged(state) {
       return state.filtersChanged;
     },
+    filteredServices(state) {
+      return state.filteredServices;
+    },
     categories(state) {
       return state.categories;
     },
     preferences(state) {
       return state.preferences;
     },
+    services(state) {
+      return state.services;
+    }
   }
 }

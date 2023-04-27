@@ -1,0 +1,50 @@
+{
+  "auth": {
+    "log_in": "Log ind",
+    "email": "E-mail",
+    "password": "Adgangskode",
+    "forgot": "Glemt?",
+    "log_in_btn": "Log Ind",
+    "logged_out": "Du er blevet logget ud",
+    "log_in_again": "Log ind igen",
+    "enter_email_and_pass": "Indtast e-mail og adgangskode",
+    "invalid_email_or_pass": "Ugyldig e-mail eller adgangskode",
+    "signup_success_login": "Din konto er oprettet. Log ind med din nye adgangskode.",
+    "sent": "Sendt.",
+    "reset_link_sent": "Et nulstilningslink er blevet sendt til din e-mailadresse.",
+    "reset_password": "Nulstil adgangskode",
+    "reset": "Nulstil",
+    "password_changed_title": "Adgangskode ændret",
+    "password_changed_message": "Din adgangskode er blevet ændret. Du kan nu logge ind med din nye adgangskode.",
+    "return_to_login": "Tilbage til log ind",
+    "reset_password_title": "Nulstil adgangskode",
+    "password_label": "Adgangskode",
+    "password_placeholder": "adgangskode",
+    "show_password": "Vis adgangskode",
+    "hide_password": "Skjul adgangskode",
+    "save_button": "Gem"
+    },    
+	"calendar": {
+		"sunday": "Søndag",
+		"monday": "Mandag",
+		"tuesday": "Tirsdag",
+		"wednesday": "Onsdag",
+		"thursday": "Torsdag",
+		"friday": "Fredag",
+		"saturday": "Lørdag",
+		"week": "Uge",
+		"month": "Måned",
+		"day": "Dag",
+		"today": "I dag",
+		"list": "Liste"
+	},
+	"messages": {
+		"changes_have_been_saved": "Ændringer er blevet gemt"
+	},
+	"actions": {
+		"cancel": "Annuller",
+		"save": "Gem",
+		"done": "Færdig",
+		"add": "Tilføj"
+	}
+}

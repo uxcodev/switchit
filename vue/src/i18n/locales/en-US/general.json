@@ -1,0 +1,50 @@
+{
+  "auth": {
+  "log_in": "Log in",
+  "email": "Email",
+  "password": "Password",
+  "forgot": "Forgot?",
+  "log_in_btn": "Log In",
+  "logged_out": "You have been logged out",
+  "log_in_again": "Log in again",
+  "enter_email_and_pass": "Enter email and password",
+  "invalid_email_or_pass": "Invalid email or password",
+  "signup_success_login": "Your account has been created. Log in with your new password.",
+  "sent": "Sent.",
+  "reset_link_sent": "A reset link has been sent to your email address.",
+  "reset_password": "Reset Password",
+  "reset": "Reset",
+  "password_changed_title": "Password Changed",
+  "password_changed_message": "Your password has been changed. You can now log in with your new password.",
+  "return_to_login": "Return to login",
+  "reset_password_title": "Reset Password",
+  "password_label": "Password",
+  "password_placeholder": "password",
+  "show_password": "Show Password",
+  "hide_password": "Hide Password",
+  "save_button": "Save"
+  },
+  "calendar": {
+  "sunday": "Sunday",
+  "monday": "Monday",
+  "tuesday": "Tuesday",
+  "wednesday": "Wednesday",
+  "thursday": "Thursday",
+  "friday": "Friday",
+  "saturday": "Saturday",
+  "week": "Week",
+  "month": "Month",
+  "day": "Day",
+  "today": "Today",
+  "list": "List"
+  },
+  "messages": {
+  "changes_have_been_saved": "Changes have been saved"
+  },
+  "actions": {
+  "cancel": "Cancel",
+  "save": "Save",
+  "done": "Done",
+  "add": "Add"
+  }
+  }

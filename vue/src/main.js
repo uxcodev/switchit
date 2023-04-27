@@ -40,7 +40,6 @@ const auth0 = createAuth0({
 
 app.use(auth0);
 
-
 /* use Vuex store */
 
 import store from '@/store/index.js'
@@ -50,6 +49,38 @@ app.use(store)
 /* set up router */
 
 import { createRouter, createWebHistory } from 'vue-router'
+
+/* import plugins and custom components */
+
+import FilterComponent from '@/plugins/FilterComponent.vue';
+app.component('filter-component', FilterComponent);
+
+import ToastPlugin from '@/plugins/toast';
+app.use(ToastPlugin);
+
+import locale from '@/plugins/locale'
+app.use(locale)
+
+import forms from '@/plugins/forms'
+app.use(forms)
+
+
+import VueTelInput from 'vue-tel-input';
+import 'vue-tel-input/vue-tel-input.css';
+let options = {
+  defaultCountry: store.getters.country,
+  preferredCountries: ["DK", "CA"]
+}
+app.use(VueTelInput, options);
+
+// use i18n
+
+import i18n from './i18n';
+app.use(i18n)
+
+// use dayjs
+import dayjsPlugin from './plugins/dayjs';
+app.use(dayjsPlugin);
 
 /* use Router */
 
@@ -73,6 +104,12 @@ const routes = [
     name: "dashboard",
     beforeEnter: authGuard,
     component: () => import('@/pages/OpportunitiesDashboard.vue')
+  },
+  {
+    path: '/dashboard_data',
+    name: "dashboard_data",
+    beforeEnter: authGuard,
+    component: () => import('@/pages/OpportunitiesDashboardData.vue')
   },
   {
     path: '/operations',

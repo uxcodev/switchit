@@ -214,42 +214,5 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-@import "/src/styles/variables.sass"
-@import "/src/styles/mixins.sass"
-@import "@vueform/multiselect/themes/default.css"
-.img_placeholder
-  width: 100%
-.main
-  display: flex
-  flex-direction: column
-  align-items: center
-  justify-content: flex-start
-  background-color: #fafafa
-  min-height: 100vh
-  padding: 120px 20px 60px 20px
-  top: 80px
-  &.clip
-    max-height: 100vh
-    overflow: hidden
-
-.container.white
-  background-color: white
-  padding: 50px
-  border-radius: 10px
-  @include shadow()
-
-  .group
-    input:not(.reset)
-      max-width: none
-
-
-.checkbox-group
-  flex-direction: row
-  flex-wrap: wrap
-  width:400px
-  label
-    width:160px
-pre
-  color: black
 
 </style>

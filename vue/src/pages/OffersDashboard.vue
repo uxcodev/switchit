@@ -176,6 +176,7 @@
     </div>
   </div>
 </template>
+
 <script>
 
 import ModalWindow from '@/components/ui/ModalWindow.vue';
@@ -359,7 +360,7 @@ export default {
     async loadOffers() {
       let response = await this.$api.getOffers()
       this.offers = response
-      // console.log(this.offers)
+      console.log(this.offers)
     }
   },
   async mounted() {

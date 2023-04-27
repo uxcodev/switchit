@@ -19,10 +19,21 @@
                 {{ company.name }} 
               </div>
               <div class="field light">
+                websites: 
                 {{ company.website }}
               </div>
-
+              <div class="field light">
+                {{ company.contact_email }}
+              </div>
+              <div class="field light" v>
+                admin: 
+                <span class="role" v-for="role in company.roles" :key="role">
+                  {{ role.user?.email }}
+                  <!-- {{ role.user.email }} -->
+                </span>
+              </div>
               <div class="field light company">
+                markets: 
                 <span class="country" v-for="country in company.countries" :key="country">
                   {{ country }}
                 </span>
@@ -171,7 +182,7 @@ h3
     font-size: 1.5em
     color: blue
 .table
-  background: #fff
+  // background: #fff
   border-radius: 6px
   display: flex
   flex-direction: column
@@ -179,12 +190,12 @@ h3
   width: 100%
   max-width: 900px
   .item
+    background: #fff
     gap:10px
     justify-content: space-between
     align-items: center
     display: flex
     // background: #fafafa 
-    padding: 0 0 0 10px
     border-radius: 4px
     cursor: pointer
     .row
@@ -193,6 +204,7 @@ h3
       align-items: center
       justify-content: space-between
       gap: 20px
+      padding: 10px
       flex-grow:1
       &:hover
         background: #fcfcfc

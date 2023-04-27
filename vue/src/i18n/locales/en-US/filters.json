@@ -1,0 +1,12 @@
+{
+  "close": "Close",
+  "filter_opportunities": "Filter opportunities",
+  "only_checked_categories": "Only checked categories will be displayed",
+  "user_preferences": "User preferences",
+  "select_options_below_preference_data": "Select options below to show only users with those preferences",
+  "interaction_data": "Interaction data",
+  "select_options_below_interaction_data": "Select options below to filter based on interaction data",
+  "identifying_data": "Identifying data",
+  "select_options_below_identifying_data": "Select options below to filter based on identifying data",
+  "capitalize": "{{ string.charAt(0).toUpperCase() + string.slice(1) }}"
+}

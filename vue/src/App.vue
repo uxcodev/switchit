@@ -13,12 +13,13 @@
 import MainNav from "@/components/layout/MainNav.vue";
 // import api from "@/api/switchit";
 import jwt_decode from "jwt-decode";
-import FilterPanel from "./components/leads/FilterPanel.vue";
+// import FilterPanel from "./components/leads/FilterPanel.vue";
+import FilterPanel from "./components/leads/FilterPanelData.vue";
 
 export default {
   components: {
     MainNav,
-    FilterPanel
+    FilterPanel,
   },
   name: "App",
   data() {
@@ -68,6 +69,7 @@ export default {
         if (decodedToken.user && decodedToken.user.admin) {
           this.$store.dispatch('isAdmin', decodedToken.user.admin)
           this.$store.dispatch('setAccess', decodedToken.user.access)
+          // this.$store.dispatch('createServices', decodedToken.user.access)
         }
       }
       this.loaded = true

@@ -122,28 +122,6 @@ export default {
     return true;
   },
 
-  // async getLeads(query) {
-  //   // // console.log('api getLeads query:', query)
-  //   // // console.log('api getLeads preferences:', store.getters.preferences)
-  //   let limit = query.limit || 0
-  //   let skip = query.skip || 0
-  //   let ids = query.ids || false
-  //   // // console.log('ids', ids)
-  //   let filters = Object.keys(query.filters).length ? query.filters : store.getters.filters;
-
-  //   let filterString = '';
-  //   for (let filter in filters) {
-  //     filterString += `&filter=${filter}:${filters[filter]}`;
-  //   }
-
-  //   try {
-  //     const response = await _axios.get(`/leads/get-leads?limit=${limit}&skip=${skip}${filterString}&ids=${ids}`);
-  //     return response.data;
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  //   return true;
-  // },
   async getLeads(body) {
     try {
       // console.log('api.getLeads body', body)

@@ -5,7 +5,8 @@
       <router-link to="/dashboard" v-if="isActive" :class="{ icon: true, active: $route.name === 'dashboard' }"><span class="material-symbols-outlined">dashboard</span></router-link>
       <router-link to="/operations" v-if="isAdmin" :class="{ icon: true, active: $route.name === 'operations' }"><span class="material-symbols-outlined">group</span></router-link>
       <router-link to="/settings" v-if="isActive" :class="{ icon: true, active: $route.name === '' }"><span class="material-symbols-outlined">settings</span></router-link>
-      <LoginButton v-if="!isAuthenticated"></LoginButton>
+      <LanguagePicker class="icon"/>
+<LoginButton v-if="!isAuthenticated"></LoginButton>
       <LogoutButton v-else></LogoutButton>
     </div>
   </div>
@@ -15,9 +16,10 @@
 import SwitchitIcon from "@/components/assets/SwitchitIcon.vue";
 import LoginButton from "../auth/LoginButton.vue";
 import LogoutButton from "../auth/LogoutButton.vue";
+import LanguagePicker from "../ui/LanguagePicker.vue";
 
 export default {
-  components: { SwitchitIcon, LoginButton, LogoutButton },
+  components: { SwitchitIcon, LoginButton, LogoutButton, LanguagePicker },
   data() {
     return {
       isDisabled: true,
@@ -83,13 +85,16 @@ $transition-sidebar: 0
   .icon
     color: white
     font-weight: 700
-    font-size: 30px
+    // font-size: 30px
     color: $icon-dark
     width: 40px
     height: 40px
     text-decoration: none
     padding: 6px
     overflow: hidden
+    display: flex
+    align-items: center
+    justify-content: center
 
     &.active
       color: $icon-light

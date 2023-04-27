@@ -1,14 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;700")
 @import url("https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined:wght@100")
 @import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200")
-@import "ui"
-@import "checkbox"
-@import "slider"
+@import "@vueform/multiselect/themes/default.css"
 @import "forms"
 @import "mixins"
 @import "variables"
 @import "material"
 @import 'material-design-colors/colors'
+@import "ui"
+@import "checkbox"
+@import "slider"
+@import "filters"
 
 *,
 *:after,
@@ -94,6 +96,13 @@ section
   display: flex
   flex-direction: column
   gap: 20px
+
+
+  &.white
+    background-color: white
+    padding: 50px
+    border-radius: 10px
+    @include shadow()
 
   .ph_pills
     height: 20px

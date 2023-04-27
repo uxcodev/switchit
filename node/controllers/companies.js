@@ -2,7 +2,7 @@ const Company = require("../models/company");
 const User = require("../models/user");
 
 exports.getCompanies = async (req, res, next) => {
-  let companies = await Company.find()
+  let companies = await Company.find().populate("roles.user")
   res.status(200).json(companies)
 }
 

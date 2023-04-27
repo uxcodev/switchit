@@ -1,0 +1,194 @@
+@import "variables"
+
+// TRANSITIONS
+$transition-sidebar: .2s ease-in-out
+
+// SIDEBAR
+.sidebar 
+  position: fixed
+  top: 0
+  right: -20px
+  opacity: 1
+  visibility: visible
+  width: 520px
+  max-width: 95%
+  height: 100%
+  transition: $transition-sidebar
+  box-shadow: rgba(0, 0, 0, 0.1) -10px 0 10px
+  z-index: 99
+  padding: 40px 60px 40px 40px
+  background-color: $panel-dark
+  color: $white
+  overflow-y: scroll
+
+  h1, h2 
+
+    color: inherit
+  
+
+  h1 
+    font-size: 1.8em
+  
+
+  h2 
+    font-size: 1.4em
+  
+
+  p 
+    margin: 0
+    color: $gray
+    line-height: 120%
+    margin-top: 6px
+  
+
+  section 
+    display: flex
+    flex-direction: column
+    gap: 20px
+    color: inherit
+  
+  .filters
+    display: flex
+    flex-direction: column
+    gap: 20px
+  .filter 
+    display: flex
+    flex-direction: column
+    // gap: 4px
+    input
+      height: 30px
+      font-family: inherit
+      padding: 4px 8px  
+      border: 1px solid rgba(255, 255, 255, 0.8)
+      border-radius: 2px
+      width: auto
+      flex: 1
+
+    .input_group
+      flex: 1
+      width: auto
+      input
+        width: 100%
+        font-size: inherit
+          
+      .legend
+        font-size: .8em
+        opacity: .5
+    label 
+      margin-bottom: 4px
+      font-size: 1.1em
+    
+    .number,
+    .date 
+      display: flex
+      justify-content: space-between
+      gap: 10px
+    
+    &.slider 
+      margin-bottom: 4px
+      gap: 10px
+
+      .slider_container
+        padding: 0 0 0 6px
+        .legend 
+          margin-top: 4px
+          font-size: .8em
+          opacity: .5
+          display: flex
+          justify-content: space-between
+    
+  
+
+  label 
+    color: inherit
+  
+
+  .close 
+    cursor: pointer
+    position: fixed
+    top: 20px
+    right: 20px
+  
+
+  &-hidden 
+    transform: translateX(300px)
+    opacity: 0
+    visibility: hidden
+  
+
+  &-content 
+    display: flex
+    flex-direction: column
+    flex-basis: auto
+    flex-wrap: nowrap
+    padding: 30px
+    gap: 40px
+
+    ul 
+      li, a, div 
+        color: inherit
+        margin: 8px 0
+        list-style: none
+        text-decoration: none
+        cursor: pointer
+      
+
+      .active 
+        color: $primary
+      
+    
+
+    select 
+      color: inherit
+      font-size: inherit
+      font-weight: inherit
+      text-transform: uppercase
+      padding: 2px 4px
+    
+  
+
+  .checkboxes 
+    display: flex
+    flex-direction: column
+    gap: 20px
+
+    .checkbox 
+      display: flex
+      &-text 
+        display: flex
+        align-items: center
+        gap: 10px
+      
+      &-link
+       opacity: .7
+       cursor: pointer 
+       
+
+      &-icon 
+        color: $primary
+        font-size: 2em
+      
+      .hidden
+        display: none
+      .checkmark 
+        color: $primary
+        transform: scale(0.75)
+      
+    
+// .filter-form
+//   display: flex
+//   flex-direction: column
+//   margin: 1.2em 0 0 0
+//   label
+//     margin: 0 0 0.2em 0
+//   .group
+//     // display: flex
+//     // flex-direction: column  
+
+//   input
+//     height: 40px
+//     font-family: inherit
+//     padding: 4px 8px  
+//     border: 1px solid rgba(255, 255, 255, 0.8)
+//     border-radius: 2px
+

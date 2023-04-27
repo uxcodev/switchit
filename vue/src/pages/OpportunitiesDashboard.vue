@@ -259,6 +259,7 @@ export default {
         ids: true
       });
       selectedLeads.value = await response.leads
+      console.log('selectedLeads', selectedLeads.value)
       // console.log('selectAll', response.leads);
       // console.log('selectedLeads', selectedLeads.value)
       selectVisible.value = true
@@ -308,7 +309,9 @@ export default {
     // ***** Leads *****
 
     onMounted(async () => {
-      await loadLeads();
+      // let response = await fake_data.getLeads()
+      // console.log('generateLeadData:', response)
+      await loadLeads(); // real leads from db
     });
 
     function openLead(id) {
@@ -325,7 +328,7 @@ export default {
       let response = await api.getLeads({
         limit: pg.limit,
         skip: 0,
-        filters: store.getters.filters,
+        filters: store.getters.filters || null,
       });
       // console.log('response: ', response)
       leads.value = response.leads;

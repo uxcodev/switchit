@@ -1,0 +1,12 @@
+{
+  "close": "Luk",
+  "filter_opportunities": "Filtrér muligheder",
+  "only_checked_categories": "Kun markerede kategorier vises",
+  "user_preferences": "Brugerpræferencer",
+  "select_options_below_preference_data": "Vælg nedenstående indstillinger for at vise kun brugere med disse præferencer",
+  "interaction_data": "Interaktionsdata",
+  "select_options_below_interaction_data": "Vælg nedenstående indstillinger for at filtrere baseret på interaktionsdata",
+  "identifying_data": "Identificerende data",
+  "select_options_below_identifying_data": "Vælg nedenstående indstillinger for at filtrere baseret på identificerende data",
+  "capitalize": "{{ string.charAt(0).toUpperCase() + string.slice(1) }}"
+}

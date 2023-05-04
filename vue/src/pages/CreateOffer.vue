@@ -296,7 +296,7 @@
 <script>
 
 import ModalWindow from '@/components/ui/ModalWindow.vue';
-
+import format_data from '@/helpers/format_data'
 
 export default {
   components: {
@@ -396,6 +396,7 @@ export default {
     }
   },
   async mounted() {
+    
     this.leads = await this.$store.getters.selectedLeads || [this.$route.query.lead]
     // console.log('leads:', this.leads)
     if (this.leads.length === 1) {
@@ -406,6 +407,11 @@ export default {
     }
     // console.log('this.lead', this.lead)
     // console.log('this.leads', this.leads)
+    setTimeout(async () => {
+      let filters = this.offer_obj.criteria
+      filters = await format_data.formatOfferCriteria(filters)
+      console.log('filters:', filters)
+    }, 500)
   }
 }
 </script>

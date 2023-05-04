@@ -133,18 +133,18 @@ export default {
       let empty = this.isValueEmpty(value)
 
       if (!empty) {
-        console.log('value: ', value)
+        // console.log('value: ', value)
         this.filterObj[category] ??= {};
         this.filterObj[category][dataType] ??= {};
         this.filterObj[category][dataType][key] ??= {};
         this.filterObj[category][dataType][key].value = value;
         this.filterObj[category][dataType][key].type = filterType;
-        console.log(dataType, 'this.filterObj', this.filterObj)
+        // console.log(dataType, 'this.filterObj', this.filterObj)
       } else {
-        console.log('delete:', category, dataType, key)
-        console.log(this.filterObj[category])
-        console.log(this.filterObj[category][dataType])
-        console.log(this.filterObj[category][dataType][key])
+        // console.log('delete:', category, dataType, key)
+        // console.log(this.filterObj[category])
+        // console.log(this.filterObj[category][dataType])
+        // console.log(this.filterObj[category][dataType][key])
 
         delete this.filterObj[category][dataType][key];
 

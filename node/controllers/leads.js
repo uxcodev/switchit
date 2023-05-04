@@ -1,16 +1,12 @@
-const Lead = require("../models/lead_temp");
+const Lead = require("../models/lead");
 const queries = require('../util/queries')
 
 exports.getLeads = async (req, res, next) => {
   const filters = req.body.filters || {};
+  console.log('filters:', JSON.stringify(filters))
   const skip = req.body.skip || 0;
   const limit = req.body.limit || 0;
   const ids = req.body.ids;
-
-  // if (skip !== 999) {
-  //   console.log(JSON.stringify(filters))
-  //   return
-  // }
 
   const query = {};
 
@@ -24,29 +20,74 @@ exports.getLeads = async (req, res, next) => {
         const { type, value } = filters[category][dataType][filter];
 
         if (type === 'string') {
-          dataFilter[`data.${category}.${dataType}.${filter}`] = {
-            $regex: `.*${value}.*`,
-            $options: 'i',
-          };
-        } else if (type === 'identifier_number') {
-          dataFilter[`data.${category}.${dataType}.${filter}`] = {
-            $regex: `.*${value}.*`,
-          };
-        } else if (type === 'range_number' || type === 'range_amount' || type === 'range_slider') {
-          const [min, max] = value;
-          if (min !== null) {
+          if (value !== '') {
             dataFilter[`data.${category}.${dataType}.${filter}`] = {
-              $gte: min,
-            };
-          }
-          if (max !== null) {
-            dataFilter[`data.${category}.${dataType}.${filter}`] = {
-              ...dataFilter[`data.${category}.${dataType}.${filter}`],
-              $lte: max,
+              $regex: `.*${value}.*`,
+              $options: 'i',
             };
           }
         }
+        else if (type === 'identifier_number') {
+          if (value !== '') {
+            dataFilter[`data.${category}.${dataType}.${filter}`] = {
+              $regex: `.*${value}.*`,
+            };
+          }
+        }
+
+        else if (type === 'range_number' || type === 'range_amount' || type === 'range_slider') {
+          const [min, max] = value;
+          const rangeFilter = {};
+          if (min !== null && min !== '') {
+            rangeFilter.$gte = min;
+          }
+          if (max !== null && max !== '') {
+            rangeFilter.$lte = max;
+          }
+          if (Object.keys(rangeFilter).length) {
+            dataFilter[`data.${category}.${dataType}.${filter}`] = rangeFilter;
+          }
+        }
+        else if (type === 'date') {
+          const [from, to] = value;
+          const dateFilter = {};
+          if (from) {
+            dateFilter.$gte = new Date(from);
+          }
+          if (to) {
+            dateFilter.$lte = new Date(to)
+          }
+          dataFilter[`data.${category}.${dataType}.${filter}`] = dateFilter;
+        }
+        else if (type === 'range_date') {
+          const { from: [start_from, start_to], to: [end_from, end_to] } = value;
+          const startFilter = {};
+          const endFilter = {};
+
+          if (start_from) {
+            startFilter.$gte = new Date(start_from);
+          }
+          if (start_to) {
+            startFilter.$lte = new Date(start_to);
+          }
+          if (end_from) {
+            endFilter.$gte = new Date(end_from);
+          }
+          if (end_to) {
+            endFilter.$lte = new Date(end_to);
+          }
+
+          if (Object.keys(startFilter).length) {
+            dataFilter[`data.${category}.${dataType}.${filter}.from`] = startFilter;
+          }
+          if (Object.keys(endFilter).length) {
+            dataFilter[`data.${category}.${dataType}.${filter}.to`] = endFilter;
+          }
+        }
+
       }
+
+
 
       if (Object.keys(dataFilter).length) {
         query[`$and`] = query[`$and`] || [];
@@ -58,7 +99,7 @@ exports.getLeads = async (req, res, next) => {
   const projection = ids ? { _id: 1 } : {};
   const leads = await Lead.find(query, projection).limit(limit).skip(skip);
   const count = await Lead.countDocuments(query);
-
+  console.log('count:', count)
   if (ids) {
     res.status(200).json({ leads: leads.map((lead) => lead._id), count: count });
   } else {
@@ -67,17 +108,6 @@ exports.getLeads = async (req, res, next) => {
 
   console.log('query:', JSON.stringify(query));
 };
-
-
-
-// console.log('query:', JSON.stringify(query));
-// console.log('leads:',);
-
-
-
-
-
-
 
 exports.getLead = async (req, res, next) => {
   // console.log(`req: ${req}`)
@@ -177,3 +207,23 @@ exports.updateLeads = async (req, res, next) => {
 //   let response = await Lead.deleteOne({ _id: req.query.id })
 //   res.status(200).json({ message: response })
 // };
+
+
+const filters = {
+  filters: {
+    "general": { "identifying_data": { "household_members": { "value": [1, 8], "type": "range_number" } } },
+    "mobile": {
+      "interaction_data": {
+        "invoice_debit_amount": { "value": ["", 1000], "type": "range_amount" },
+        "phone_number": { "value": 2, "type": "identifier_number" },
+        "invoice_period": { "value": { "from": [null, "2013-02-05"], "to": [null, null] }, "type": "range_date" },
+      },
+    },
+  },
+};
+const query = {
+  "$and": [
+    { "data.general.identifying_data.household_members": { "$gte": 1, "$lte": 8 } },
+    { "data.mobile.interaction_data.invoice_debit_amount": { "$lte": 1000 }, "data.mobile.interaction_data.phone_number": { "$regex": ".*2.*" } },
+  ],
+};

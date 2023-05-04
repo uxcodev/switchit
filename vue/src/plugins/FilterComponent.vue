@@ -108,11 +108,11 @@
     End date:
     <div class="date">
       <div class="input_group">
-        <input type="date" :class="filterRangeEnd[0] ? '' : 'inactive'" v-model="filterRangeEnd[2]" @input="onFilterChanged" />
+        <input type="date" :class="filterRangeEnd[0] ? '' : 'inactive'" v-model="filterRangeEnd[0]" @input="onFilterChanged" />
         <div class="legend">from</div>
       </div>
       <div class="input_group">
-        <input type="date" :class="filterRangeEnd[1] ? '' : 'inactive'" v-model="filterRangeEnd[3]" @input="onFilterChanged" />
+        <input type="date" :class="filterRangeEnd[1] ? '' : 'inactive'" v-model="filterRangeEnd[1]" @input="onFilterChanged" />
         <div class="legend">to</div>
       </div>
     </div>
@@ -152,7 +152,7 @@ export default {
     onFilterChanged() {
       clearTimeout(this.timer)
       this.timer = setTimeout(() => {
-        console.log('this.value', this.filterRange)
+        // console.log('this.value', this.filterRange)
         let value;
         if (this.type === 'range_date') {
           value = { from: this.filterRange, to: this.filterRangeEnd };
@@ -170,7 +170,7 @@ export default {
             value: value
           });
         }
-        console.log(value)
+        console.log('value: ', value)
       }, 1000);
     }
   },

@@ -9,7 +9,7 @@
         <button v-for="(scr, index) in screens" :key="index" @click="changePage(scr)">{{ scr }}</button>
       </div>
       <div class="option-group">
-        <button @click="openModal('ImportPeople')">Import</button>
+        <button disabled @click="openModal('ImportPeople')">Import</button>
       </div>
     </div>
     <keep-alive>
@@ -87,7 +87,7 @@ export default {
 
 .header
   display: flex
-  justify-content: flex-start  
+  justify-content: space-between  
   width: 100%
   max-width: 900px
   .button-group

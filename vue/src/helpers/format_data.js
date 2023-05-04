@@ -11,24 +11,25 @@ export default {
           const valueArray = Array.isArray(dataTypeData.value) ? dataTypeData.value : [dataTypeData.value];
           valueArray.forEach((filterData, index) => {
             // console.log('filterData', filterData, dataTypeData, dataType, 'index', index)
+            console.log('filterData', filterData, 'dataType', dataTypeData.type)
             const filter = index === 0 ? 'from' : 'to';
             result += `    ${filter}: `;
-            if (filterData && filterData.type === 'range_date') {
+            if (filterData && dataTypeData.type === 'range_date') {
               const { from: [start_from, start_to], to: [end_from, end_to] } = filterData.value;
               console.log('start_from', start_from, 'start_to', start_to, 'end_from', end_from, 'end_to', end_to);
+              console.log('filterdata.value', filterData.value);
               result += `From ${start_from || 'beginning'} to ${start_to || 'end'} and from ${end_from || 'beginning'} to ${end_to || 'end'}`;
-            } else if (filterData && filterData.type === 'range_amount') {
+            } else if (filterData && dataTypeData.type === 'range_amount') {
               const [min, max] = filterData.value;
-              console.log('min', min, 'max', max);
               result += `Between ${min ?? '0'} and ${max ?? 'no maximum'}`;
-            } else if (filterData && filterData.type === 'date') {
+            } else if (filterData && dataTypeData.type === 'date') {
               const [before, after] = filterData.value;
               console.log('before', before, 'after', after);
               result += `${before ? 'Before ' + before : 'Any date'} and ${after ? 'after ' + after : 'any date'}`;
-            } else if (filterData && filterData.type === 'range_slider') {
+            } else if (filterData && dataTypeData.type === 'range_slider') {
               const [min, max] = filterData.value;
               result += `Between ${min} and ${max}`;
-            } else if (filterData && filterData.type === 'identifier_number') {
+            } else if (filterData && dataTypeData.type === 'identifier_number') {
               result += filterData.value;
             } else {
               result += 'N/A';

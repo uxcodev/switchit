@@ -409,7 +409,8 @@ export default {
     // console.log('this.leads', this.leads)
     setTimeout(async () => {
       let filters = this.offer_obj.criteria
-      filters = await format_data.formatOfferCriteria(filters)
+      // filters = await format_data.formatOfferCriteria(filters)
+      console.log('format_data', format_data)
       console.log('filters:', filters)
     }, 500)
   }

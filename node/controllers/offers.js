@@ -30,7 +30,7 @@ exports.createOffer = (req, res, next) => {
       viewed: false
     })
   }
-  // // console.log(offerObj)
+  console.log('offerObj: ', offerObj)
   const offer = new Offer(offerObj)
   offer.save()
   res.status(200).json(offer)

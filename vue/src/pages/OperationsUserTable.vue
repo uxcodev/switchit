@@ -32,13 +32,12 @@
             </div>
             <div class="access_icons">
               <!-- <span v-for="category in categories" :key="category" :class="user.access[category].status ? 'active' : ''" class="material-symbols-outlined">{{ category.icon }}</span> -->
-              <span :class="user.access.mortgage.status ? 'active' : ''" class="material-symbols-outlined">house</span>
-              <span :class="user.access.insurance.status ? 'active' : ''" class="material-symbols-outlined">verified_user</span>
-              <span :class="user.access.banking.status ? 'active' : ''" class="material-symbols-outlined">credit_card</span>
-              <span :class="user.access.broadband.status ? 'active' : ''" class="material-symbols-outlined">language</span>
-              <span :class="user.access.mobile.status ? 'active' : ''" class="material-symbols-outlined">smartphone</span>
-              <span :class="user.access.utilities.status ? 'active' : ''" class="material-symbols-outlined">lightbulb</span>
-              <span :class="user.access.auto.status ? 'active' : ''" class="material-symbols-outlined">directions_car</span>
+              <span :class="user.access.mortgage?.status ? 'active' : ''" class="material-symbols-outlined">house</span>
+              <span :class="user.access.home_insurance?.status ? 'active' : ''" class="material-symbols-outlined">verified_user</span>
+              <span :class="user.access.car_insurance?.status ? 'active' : ''" class="material-symbols-outlined">directions_car</span>
+              <span :class="user.access.broadband?.status ? 'active' : ''" class="material-symbols-outlined">language</span>
+              <span :class="user.access.mobile?.status ? 'active' : ''" class="material-symbols-outlined">smartphone</span>
+              <span :class="user.access.energy?.status ? 'active' : ''" class="material-symbols-outlined">lightbulb</span>
             </div>
 
             <div class='status_wrapper' :class="user.status">

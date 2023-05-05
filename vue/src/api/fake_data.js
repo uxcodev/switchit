@@ -147,8 +147,7 @@ export default {
     }
 
 
-    let response = await _axios.post('/leads/create-leads', { leads: array });
-    console.log(response.data);
+    await _axios.post('/leads/create-leads', { leads: array });
     return array;
 
   },

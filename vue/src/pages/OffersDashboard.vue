@@ -597,6 +597,8 @@ pre
   flex-direction: column
   gap: 20px
   color: #666
+  max-width: 100%
+  overflow: hidden
   &-rows
     background-color: white
     border-radius:10px

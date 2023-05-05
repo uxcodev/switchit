@@ -1,8 +1,8 @@
 <!-- Toast.vue -->
 <template>
-  <transition name="fade">
-    <div v-if="visible" class="toast" :class="type">
-      <span v-if="icon" class="icon material-symbols-outlined">{{icon}}</span>
+  <transition name="toast">
+    <div v-if="visible" class="toast" :class="type" :key="message">
+      <span v-if="icon" class="icon material-symbols-outlined">{{ icon }}</span>
       <span class="toast-msg">{{ message }}</span>
     </div>
   </transition>
@@ -10,52 +10,44 @@
 
 <script>
 export default {
-  props: {
-    message: {
-      type: String,
-      default: '',
-    },
-    type: {
-      type: String,
-      default: 'check',
-    },
-    icon: {
-      type: String,
-      default: null,
-    },
-    duration: {
-      type: Number,
-      default: 3000,
-    },
-  },
+
   data() {
     return {
       visible: false,
+      message: '',
+      type: '',
+      icon: '',
+      duration: 0,
     };
   },
   methods: {
-    show(updatedProps) {
-    Object.assign(this.$data, this.$options.data.call(this), updatedProps);
-    this.visible = true;
-    if (this.duration !== 0) {
-      setTimeout(() => {
-        this.visible = false;
-      }, this.duration);
-    }
-  },
+    show(params) {
+      console.log('new params', params)
+      console.log(this.message, this.type, this.icon, this.duration)
+      Object.assign(this.$data, this.$options.data.call(this), params);
+      this.visible = true;
+      if (this.duration !== 0) {
+        setTimeout(() => {
+          this.visible = false;
+        }, this.duration);
+      }
+    },
   },
 };
 </script>
 
 <style>
-/* .fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s;
+.toast-enter-active,
+.toast-leave-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.3s ease;
 }
-.fade-enter,
-.fade-leave-to {
+.toast-enter,
+.toast-leave-to {
   opacity: 0;
-} */
+  transform: translateY(40px);
+}
 .toast {
   display: flex;
   align-items: center;
@@ -69,15 +61,19 @@ export default {
   border-radius: 5px;
   z-index: 1000;
 }
+
 .toast.info {
   background-color: #007bff;
 }
+
 .toast.warning {
   background-color: #ffc107;
 }
+
 .toast.error {
   background-color: #dc3545;
 }
+
 .toast.success {
   background-color: #28a745;
 }
@@ -92,5 +88,4 @@ export default {
     border-radius: 0px;
     height: 60px;
   }
-}
-</style>
+}</style>

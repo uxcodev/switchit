@@ -2,7 +2,7 @@
 // import Toast from '@/components/ui/ToastNotification.vue';
 
 import { createVNode, render } from 'vue';
-import Toast from '@/components/ui/ToastNotification.vue';
+import Toast from '@/plugins/ToastNotification.vue';
 
 export default {
   install: (app, options) => {
@@ -11,12 +11,12 @@ export default {
 
     app.config.globalProperties.$toast = {
       show(params) {
-        toast.props = { ...toast.props, ...params };
+        // toast.props = { ...toast.props, ...params };
         render(toast, container);
         if (!container.isConnected) {
           document.body.appendChild(container);
         }
-        toast.component.proxy.show();
+        toast.component.proxy.show(params);
       },
     };
 

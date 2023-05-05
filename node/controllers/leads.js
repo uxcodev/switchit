@@ -13,7 +13,13 @@ exports.getLeads = async (req, res, next) => {
   for (const category in filters) {
     if (!Object.keys(filters[category]).length) continue;
 
+    const status = filters[category]['status'];
+    if (status !== undefined && status) {
+      query[`data.${category}.status`] = true;
+    }
+
     for (const dataType in filters[category]) {
+      if (dataType === 'status') continue;
       const dataFilter = {};
 
       for (const filter in filters[category][dataType]) {
@@ -28,12 +34,20 @@ exports.getLeads = async (req, res, next) => {
           }
         }
         else if (type === 'identifier_number') {
-          if (value !== '') {
-            dataFilter[`data.${category}.${dataType}.${filter}`] = {
-              $regex: `.*${value}.*`,
-            };
+          const [min, max] = value;
+          const rangeFilter = {};
+          if (min !== null && min !== '') {
+            rangeFilter.$gte = min;
+          }
+          if (max !== null && max !== '') {
+            rangeFilter.$lte = max;
+          }
+          if (Object.keys(rangeFilter).length) {
+            dataFilter[`data.${category}.${dataType}.${filter}`] = rangeFilter;
           }
         }
+
+
 
         else if (type === 'range_number' || type === 'range_amount' || type === 'range_slider') {
           const [min, max] = value;
@@ -83,10 +97,11 @@ exports.getLeads = async (req, res, next) => {
           if (Object.keys(endFilter).length) {
             dataFilter[`data.${category}.${dataType}.${filter}.to`] = endFilter;
           }
+        } else if (type === 'boolean' && value) {
+          dataFilter[`data.${category}.${dataType}.${filter}`] = value;
         }
 
       }
-
 
 
       if (Object.keys(dataFilter).length) {
@@ -95,6 +110,8 @@ exports.getLeads = async (req, res, next) => {
       }
     }
   }
+
+  console.log('query:', JSON.stringify(query))
 
   const projection = ids ? { _id: 1 } : {};
   const leads = await Lead.find(query, projection).limit(limit).skip(skip);
@@ -189,41 +206,3 @@ exports.updateLeads = async (req, res, next) => {
     res.status(500).json({ error: 'Error updating leads' });
   }
 }
-
-// exports.updateLead = async (req, res, next) => {
-//   let leadFields = req.body.fields;
-//   let lead = await Lead.findById(req.body.id)
-
-//   for (const [key, value] of Object.entries(leadFields)) {
-//     // console.log(key + ": " + value)
-//     lead[key] = value
-//   }
-//   lead.save();
-
-//   res.status(200).json({ message: "posted" })
-// };
-
-// exports.deleteLead = async (req, res, next) => {
-//   let response = await Lead.deleteOne({ _id: req.query.id })
-//   res.status(200).json({ message: response })
-// };
-
-
-const filters = {
-  filters: {
-    "general": { "identifying_data": { "household_members": { "value": [1, 8], "type": "range_number" } } },
-    "mobile": {
-      "interaction_data": {
-        "invoice_debit_amount": { "value": ["", 1000], "type": "range_amount" },
-        "phone_number": { "value": 2, "type": "identifier_number" },
-        "invoice_period": { "value": { "from": [null, "2013-02-05"], "to": [null, null] }, "type": "range_date" },
-      },
-    },
-  },
-};
-const query = {
-  "$and": [
-    { "data.general.identifying_data.household_members": { "$gte": 1, "$lte": 8 } },
-    { "data.mobile.interaction_data.invoice_debit_amount": { "$lte": 1000 }, "data.mobile.interaction_data.phone_number": { "$regex": ".*2.*" } },
-  ],
-};

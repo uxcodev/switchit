@@ -4,237 +4,184 @@
       close
     </div>
     <div class="sidebar-content">
+
+      <!-- Checkboxes for categories -->
+
       <section>
         <div>
-          <h1>Filter opportunities</h1>
-          <p>Only checked categories will be displayed</p>
+          <h1>{{ $t('filter_opportunities') }}</h1>
+          <p>{{ $t('only_checked_categories') }}</p>
         </div>
         <div class="checkboxes">
-          <div v-for="(category, key) in preferences" :key="key" class="checkbox">
+          <div v-for="(categoryData, category) in this.services" :key="category" class="checkbox">
             <label class="checkbox-label">
-              <input v-show="false" v-model="category.selected" @change="checkCategory" type="checkbox" :id="category" />
+              <input v-model="selectedCategories" type="checkbox" @change="onCheckboxChange" :value="category" />
               <span class="checkmark"></span>
               <span class="checkbox-text">
-                <span class="checkbox-icon material-symbols-outlined">{{ category.icon }}
+                <span class="checkbox-icon material-symbols-outlined">{{ categoryData.icon }}
                 </span>
-                {{ capitalize(key) }}
+                {{ $t(category) }}
               </span>
             </label>
+            <div :class="filterObj[category] ? 'checkbox-link' : 'hidden'" @click="clearFilter(category)">Clear filter</div>
           </div>
         </div>
       </section>
-      <section>
-        <div>
-          <h2>User preferences</h2>
-          <p>Select options below to show only users with those preferences</p>
-        </div>
-      </section>
-      <div v-for="(filter, key) in preferences" :key="key">
-        <section v-if="preferences[key].selected">
-          <h1>{{ capitalize(key) }}</h1>
-          <div v-for="preference in preferences[key].preferences" :key="preference" class="preference">
-            <label>{{ preference.label }}</label>
-            <div>
-              <Slider v-model="preference.values" :min="0" :max="10" showTooltip="drag" @change="applyFilters()" tooltipPosition="bottom" class="slider" />
-              <div class="legend">
-                <span>
-                  Not important
-                </span>
-                <span>
-                  Very important
-                </span>
+      <section v-if="Object.keys(visibleFilters).length > 0 || selectedCategories.length > 0">
+        <div v-for="(categoryData, category) in visibleFilters" :key="category">
+          <h1 class="">{{ $t(category) }}</h1>
+
+          <!-- Filters -->
+
+          <div v-if="selectedCategories.includes(category)">
+
+            <div class="filters" v-for="(fields, dataType) in categoryData" :key="dataType">
+              <div>
+                <h2 class="mt5 mb1">{{ $t(dataType) }}</h2>
+                <p>{{ $t(`select_options_below_${dataType}`) }}</p>
+              </div>
+              <div class="filter" v-for="(filter, key) in fields" :key="key" :class="dataType === 'preference_data' ? 'slider' : ''">
+                <filter-component v-if="resetCategory !== category" :filter-data="filter" :dataType="dataType" :filter-key="key" :category="category" @filter-changed="applyFilter" />
               </div>
             </div>
           </div>
-        </section>
-      </div>
+
+        </div>
+      </section>
+
+
     </div>
+
   </div>
 </template>
-
 <script>
-import Slider from '@vueform/slider'
+// import Slider from '@vueform/slider'
 
 export default {
   name: "TheSidebar",
   components: {
-    Slider,
+    // Slider,
   },
   data() {
     return {
       isDisabled: true,
-      preferences: {},
+      categoryAccess: this.$store.getters.categories,
+      selectedCategories: [],
+      resetCategory: null,
+      filteredServices: this.$store.getters.services,
+      filterObj: {},
+      visibleFilters: {},
     }
   },
   computed: {
     isOpen() {
       return this.$store.getters.isOpen;
     },
+    services() {
+      // return services from store, but only where the category is active in categoryAccess
+      const services = this.$store.getters.services;
+      const filteredServices = {};
 
+      for (const [key, value] of Object.entries(services)) {
+        // if (this.categoryAccess[key]?.status === true) {  // use this line instead of the next to make tab filters affect available filters in the filters panel
+        if (this.categoryAccess[key]) {
+          filteredServices[key] = value;
+        }
+      }
+
+      return filteredServices;
+    },
   },
-  created() {
-    let filters = this.$store.getters.filters
-    this.filters = filters
-
-    this.preferences = filters;
+  watch: {
+    selectedCategories: {
+      handler(categories) {
+        this.visibleFilters = {};
+        for (const category of categories) {
+          this.visibleFilters[category] ??= { ...this.services[category] };
+        }
+      },
+      deep: true,
+    },
+    filtersObj: {
+      handler(filters) {
+        // check filters keys to see if any of them match selectedCategories. 
+        console.log('filters: ', filters)
+      },
+      deep: true,
+    },
   },
   methods: {
     closeModal() {
       this.$router.push({ path: '/dashboard' })
       this.$store.dispatch('closeMenu')
     },
-    capitalize: (s) => {
-      return s ? s[0].toUpperCase() + s.slice(1) : ""
+    clearFilter(category) {
+      delete this.filterObj[category];
+      this.resetCategory = category;
+      this.$nextTick(() => {
+        this.resetCategory = null;
+      })
+      setTimeout(() => {
+        this.resetCategory = null;
+      }, 0)
+      this.saveFilters();
     },
-    checkCategory() {
-      this.applyFilters()
+    isValueEmpty(val) {
+      if (val === null || val === undefined) {
+        return true;
+      } else if (Array.isArray(val)) {
+        return val.every(this.isValueEmpty);
+      } else if (typeof val === 'object') {
+        return Object.values(val).every(this.isValueEmpty);
+      } else if (typeof val === 'string') {
+        return val.trim() === '';
+      } else {
+        return false;
+      }
     },
-    async applyFilters() {
-        let preferences = this.preferences
 
 
-      const selectedPreferences = {};
-      let atLeastOneSelected = false;
+    applyFilter({ category, key, value, dataType, filterType }) {
+      let empty = this.isValueEmpty(value)
 
-      for (const category in preferences) {
-        if (preferences[category].selected) {
-          atLeastOneSelected = true;
-          selectedPreferences[category] = preferences[category];
+      if (!empty) {
+        // console.log('value: ', value)
+        this.filterObj[category] ??= {};
+        this.filterObj[category][dataType] ??= {};
+        this.filterObj[category][dataType][key] ??= {};
+        this.filterObj[category][dataType][key].value = value;
+        this.filterObj[category][dataType][key].type = filterType;
+        // console.log(dataType, 'this.filterObj', this.filterObj)
+      } else {
+        // console.log('delete:', category, dataType, key)
+        // console.log(this.filterObj[category])
+        // console.log(this.filterObj[category][dataType])
+        // console.log(this.filterObj[category][dataType][key])
+
+        delete this.filterObj[category][dataType][key];
+
+        // Remove parent keys if they are empty
+        if (Object.keys(this.filterObj[category][dataType]).length === 0) {
+          delete this.filterObj[category][dataType];
+        }
+        if (Object.keys(this.filterObj[category]).length === 0) {
+          delete this.filterObj[category];
         }
       }
 
-      // If none were selected, include all categories
-      if (!atLeastOneSelected) {
-        for (const category in preferences) {
-          selectedPreferences[category] = preferences[category];
-        }
-      }
-        
-        console.log('preferences', selectedPreferences)
-        await this.$store.dispatch('setFilters', selectedPreferences)
-        await this.$store.dispatch('filtersChanged')
+      this.saveFilters();
+    },
+    saveFilters() {
+      console.log('this.filterObj', this.filterObj)
+      this.$store.dispatch('setFilters', this.filterObj)
+      this.$store.dispatch('filtersChanged')
+      setTimeout(() => {
+        let filters = this.$store.getters.filters
+        console.log('filters', filters)
+      }, 1000)
     }
-  }
+  },
 };
 </script>
 
-<style lang="sass" scoped>
-@import "/src/styles/styles.sass"
 
-
-// TRANSITIONS
-$transition-sidebar: .2s ease-in-out
-
-.material-symbols-outlined
-  font-variation-settings: "FILL" 0, "wght" 100, "GRAD" 0, "opsz" 40
-
-h1
-  margin: 0
-  font-size: 1.8em
-  color: inherit
-h2
-  font-size: 1.4em
-  margin: 0
-  color: inherit
-p
-  margin: 0
-  color: rgba(255, 255, 255, .5)
-
-section
-  display: flex
-  flex-direction: column
-  gap: 20px  
-  color: inherit
-p
-  line-height: 120%
-  margin-top: 6px
-.preference
-  display: flex
-  flex-direction: column
-  gap: 6px
-  label
-    margin-bottom: 10px  
-    font-size: 1.1em
-  .legend
-    margin-top: 4px
-    font-size: .8em
-    opacity: .5
-    display: flex
-    justify-content: space-between
-  .slider
-    margin-bottom: 4px // https://github.com/vueform/slider#multiple-slider
-    
-.sidebar
-  position: fixed
-  top: 0
-  right: -20px
-  opacity: 1
-  visibility: visible
-  width: 520px
-  max-width: 95%
-  height: 100%
-  transition: $transition-sidebar
-  box-shadow: rgba(0, 0, 0, 0.1) -10px 0 10px
-  z-index: 99
-  padding: 40px 60px 40px 40px
-  background-color: $panel-dark
-  color: rgba(255, 255, 255, .8)
-  overflow-y: scroll
-  
-  label
-    color: inherit
-  .close
-    cursor: pointer
-    position: fixed
-    top: 20px
-    right: 20px
-
-  &-hidden
-    transform: translateX(300px)
-    opacity: 0
-    visibility: hidden
-
-  &-content
-    display: flex
-    flex-direction: column
-    flex-basis: auto
-    flex-wrap: nowrap
-    padding: 30px
-    gap: 40px
-
-    ul
-      li, a, div
-        color: inherit
-        margin: 8px 0
-        list-style: none
-        text-decoration: none
-        cursor: pointer
-
-      .active
-        color: #03D0BF
-
-    select
-      color: inherit
-      font-size: inherit
-      font-weight: inherit
-      text-transform: uppercase
-      padding: 2px 4px
-
-  .checkboxes
-    display: flex
-    flex-direction: column
-    gap: 20px
-    .checkbox
-      &-text
-        display: flex
-        align-items: center
-        gap: 10px
-      &-icon
-        color: $primary
-        font-size: 2em
-      .checkmark
-        color: $primary
-        transform: scale(0.75)
-      
-      
-</style>

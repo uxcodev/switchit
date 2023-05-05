@@ -17,10 +17,14 @@
 
   <!-- Numerical identifier (account number, phone, etc)-->
 
-  <div v-if="type === 'identifier_number'">
+  <div class="number" v-if="type === 'identifier_number'">
     <div class="input_group">
-      <input type="number" :class="filterValue ? '' : 'inactive'" v-model="filterValue" placeholder="0" @input="onFilterChanged" />
-      <div class="legend">includes</div>
+      <input type="number" :class="filterRange[0] ? '' : 'inactive'" placeholder="0" v-model="filterRange[0]" @input="onFilterChanged" />
+      <div class="legend">from</div>
+    </div>
+    <div class="input_group">
+      <input type="number" :class="filterRange[1] ? '' : 'inactive'" placeholder="0" v-model="filterRange[1]" @input="onFilterChanged" />
+      <div class="legend">to</div>
     </div>
   </div>
 
@@ -144,7 +148,7 @@ export default {
       filterValue: this.filterData.value || null,
       filterRange: this.value?.length ? [this.value[0], this.value[1]] : [null, null],
       filterRangeEnd: [null, null],
-      types_ranges: ['date', 'range_slider', 'range_number', 'range_amount'],
+      types_ranges: ['date', 'range_slider', 'range_number','identifier_number', 'range_amount'],
       timer: null
     };
   },

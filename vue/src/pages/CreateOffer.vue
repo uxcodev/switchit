@@ -309,6 +309,7 @@ export default {
       modalComponent: null,
       screen: 'UserTable',
       selectAll: false,
+      categoryAccess: this.$store.getters.categories,
       leads: [],
       lead: {
         value: null

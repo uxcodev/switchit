@@ -7,12 +7,13 @@
     <div class="filter" :class="all ? 'active' : ''" @click="changeFilters('all')"><span>All</span></div>
     <div v-for="(cat, key) in categories" :key="key" @click="changeFilters(key)" class="filter" :class="cat.status ? 'active' : ''">
       <span class="icon material-symbols-outlined"> {{ categories[key].icon }}</span>
-      <span class="text">{{ key }}</span>
+      <span class="text">{{ $t(key) }}</span>
     </div>
   </div>
 </template>
 
 <script>
+
 export default {
   props: {
     resources: Array,
@@ -51,6 +52,7 @@ export default {
     for (let cat in this.categories) {
       this.categories[cat].status = false
     }
+    console.log('categories: ', this.$store.getters.categories)
   },
 };
 </script>

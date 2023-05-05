@@ -1,3 +1,4 @@
+// this will be replaced with data from the backend
 const service_data = {
   general: {
     identifying_data: {
@@ -193,55 +194,41 @@ const service_data = {
   },
 }
 
-// categories should be deleted
+// I'd like to not have to hard code this, but is there somewhere this could be stored in backend?
 const categories = {
+  mobile: {
+    selected: false,
+    icon: "smartphone",
+  },
   mortgage: {
     selected: false,
     icon: "house",
   },
-  insurance: {
+  energy: {
+    selected: false,
+    icon: "lightbulb",
+  },
+  car_insurance: {
+    selected: false,
+    icon: "directions_car",
+  },
+  home_insurance: {
     selected: false,
     icon: "verified_user",
-
   },
-  banking: {
+  broadband: {
     selected: false,
-    icon: "credit_card",
-    preferences: {
-
-    },
-    broadband: {
-      selected: false,
-      icon: "language",
-
-    },
-    mobile: {
-      selected: false,
-      icon: "smartphone",
-      preferences: {
-
-      }
-    },
-    utilities: {
-      selected: false,
-      icon: "lightbulb",
-      preferences: {
-
-      }
-    },
-    auto: {
-      selected: false,
-      icon: "directions_car",
-      preferences: {
-
-      }
-    },
-  }
+    icon: "language",
+  },
+  // banking: {
+  //   selected: false,
+  //   icon: "credit_card",
+  // },
 }
 
 
 /*
-HOW THIS WORKS
+HOW THIS WORKS (needs updating)
  
 1. Services get loaded from api in App.vue, and saved in store as 'services' (temporarily 'service_data' variable)
 2. When a user sets a filter, it gets saved in the 'filters' object in the store
@@ -262,7 +249,6 @@ export default {
     };
   },
   mutations: {
-
     setServices(state, payload) {
       state.services = payload.val
     },
@@ -314,23 +300,18 @@ export default {
     },
     setAccess(context, access) {
 
-      // console.log('setAccess')
-
       const filteredCategories = {};
-
-      for (const category in access) {
+      let categories = context.getters.categories;
+      for (const category in categories) {
         if (access[category].status === true) {
-
           filteredCategories[category] = {
             ...access[category],
             ...categories[category]
           };
         }
       }
-
-      // context.commit('setFilters', { val: filteredCategories });
-      // context.commit('setCategories', { val: filteredCategories });
-
+      context.commit('setFilters', { val: filteredCategories });
+      context.commit('setCategories', { val: filteredCategories });
     },
   },
   getters: {

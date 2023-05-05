@@ -134,7 +134,7 @@
                 {{ lead.userId }}
               </div>
               <div class="access_icons table-row-content-lg">
-                <span v-for="(acc, key) in lead.access" :key="key" :class="acc.status ? 'active' : ''" class="material-symbols-outlined">{{ categories[key] ? categories[key].icon : '' }}</span>
+                <span v-for="(acc, key) in lead.data" :key="key" :class="acc.status ? 'active' : ''" class="material-symbols-outlined">{{ categories[key] ? categories[key].icon : '' }}</span>
               </div>
               <div class="table-row-content-sm">
                 {{ lead.value }} €
@@ -154,7 +154,7 @@
         <div class="disabled" v-if="!displayedPages.includes(1)">...</div>
         <div v-for="page in displayedPages" :key="page" @click="gotoPage(page)" :class="page === pg.currentPage ? 'active' : ''">{{ page }}</div>
         <div class="disabled" v-if="!displayedPages.includes(pg.pageCount)">...</div>
-        <div @click="pg_last" v-if="!displayedPages.includes(pg.pageCount)">{{pg.pageCount}}</div>
+        <div @click="pg_last" v-if="!displayedPages.includes(pg.pageCount)">{{ pg.pageCount }}</div>
         <div class="pagination-forward active" @click="pg_forward">
           <span class="material-symbols-outlined">chevron_right</span>
         </div>
@@ -210,8 +210,7 @@ export default {
     const isAdmin = computed(() => store.getters.isAdmin);
 
     async function createFakeData() {
-      let leads = await fake_data.getLeads()
-      console.log('leads', leads)
+      await fake_data.getLeads()
       this.$toast.show({
         message: '20 new leads created',
         type: 'success',
@@ -264,7 +263,6 @@ export default {
         ids: true
       });
       selectedLeads.value = await response.leads
-      console.log('selectedLeads', selectedLeads.value)
       // console.log('selectAll', response.leads);
       // console.log('selectedLeads', selectedLeads.value)
       selectVisible.value = true
@@ -280,7 +278,6 @@ export default {
     // ***** Filters *****
 
     watch(filtersChanged, () => {
-      // console.log('watch filters', filtersChanged)
       loadLeads()
     });
 
@@ -289,16 +286,26 @@ export default {
     }
 
     function applyFilterTabs(categories) {
-      store.dispatch("setCategories", categories);
-      loadLeads();
+      const filterObj = { ...store.getters.filters };
+
+      for (const category in categories) {
+        filterObj[category] = {
+          ...filterObj[category],
+          status: categories[category].status ? true : undefined
+        };
+      }
+
+      store.dispatch('setFilters', filterObj);
+      store.dispatch('filtersChanged');
     }
+
+
+
 
     // ***** Leads *****
 
     onMounted(async () => {
-      // let response = await fake_data.getLeads()
-      // console.log('generateLeadData:', response)
-      await loadLeads(); // real leads from db
+      await loadLeads();
     });
 
     function openLead(id) {
@@ -317,7 +324,6 @@ export default {
         skip: 0,
         filters: store.getters.filters || null,
       });
-      // console.log('response: ', response)
       leads.value = response.leads;
       leadCount.value = response.count;
 
@@ -395,17 +401,10 @@ export default {
 
     const displayedPages = computed(() => {
       const width = window.innerWidth;
-      const maxPages = width < 600 ? Math.floor(width / 80) : 10; // Maximum number of pages to show
-      const currentPage = pg.currentPage;
-      const pageCount = pg.pageCount;
+      const maxPages = width < 600 ? Math.floor(width / 80) : 10;
 
-      console.log(`currentPage: ${currentPage}, pageCount: ${pageCount}, limit: ${pg.limit}`);
-
-      let startPage = Math.max(1, currentPage - Math.floor(maxPages / 2));
-      let endPage = Math.min(pageCount, startPage + maxPages - 1);
-      // let endPage = startPage + maxPages - 1;
-
-      console.log(`startPage: ${startPage}, endPage: ${endPage}`);
+      let startPage = Math.max(1, pg.currentPage - Math.floor(maxPages / 2));
+      let endPage = Math.min(pg.pageCount, startPage + maxPages - 1);
 
       if (endPage - startPage + 1 < maxPages) {
         startPage = Math.max(1, endPage - maxPages + 1);
@@ -429,7 +428,6 @@ export default {
       }));
 
       leadCount.value = response.count;
-      // console.log('watchEffect', selectedLeads.value)
       selectVisible.value = false
     });
 

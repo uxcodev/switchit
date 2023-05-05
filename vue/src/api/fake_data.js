@@ -52,7 +52,7 @@ export default {
       };
 
       const mobile = {
-        invoice_debit_amount: parseFloat(faker.finance.amount(0, 1000, 2)),
+        invoice_debit_amount: parseFloat(faker.finance.amount(50, 1000, 2)),
         invoice_debit_date: faker.date.past(),
         phone_number: faker.phone.number(),
         invoice_period: {
@@ -63,27 +63,27 @@ export default {
         plan_data_speed: parseInt(faker.random.numeric(3)),
         plan_data_gb: parseInt(faker.random.numeric(2)),
         plan_teleservice: faker.random.word(),
-        phone_installment: parseFloat(faker.finance.amount(0, 1000, 2)),
+        phone_installment: parseFloat(faker.finance.amount(20, 1000, 2)),
         equipment_installment: parseFloat(faker.finance.amount(0, 1000, 2)),
       };
 
       const mortgage = {
-        loan_number: parseInt(faker.random.numeric({ min: 1000, max: 9999 })),
+        loan_number: getRandomNumber(100000, 999999),
         loan_details: faker.lorem.sentence(),
-        principal_amount: parseFloat(faker.finance.amount(0, 1000, 2)),
+        principal_amount: parseFloat(faker.finance.amount(50, 1000, 2)),
         interest_rate: parseFloat(faker.finance.amount(1, 5, 1)),
         mortgage_contribution: parseFloat(faker.finance.amount(1, 5, 1)),
-        interest_paid: parseFloat(faker.finance.amount(0, 1000, 2)),
-        installment_paid: parseFloat(faker.finance.amount(0, 1000, 2)),
-        debit_amount: parseFloat(faker.finance.amount(0, 1000, 2)),
+        interest_paid: parseFloat(faker.finance.amount(50, 1000, 2)),
+        installment_paid: parseFloat(faker.finance.amount(50, 1000, 2)),
+        debit_amount: parseFloat(faker.finance.amount(50, 1000, 2)),
         debit_date: faker.date.past(),
         terms_remaining: parseInt(faker.random.numeric(2)),
       };
 
       const energy = {
-        debit_amount: parseFloat(faker.finance.amount(0, 1000, 2)),
+        debit_amount: parseFloat(faker.finance.amount(50, 1000, 2)),
         debit_date: faker.date.past(),
-        kwh_amount: parseInt(faker.random.numeric({ min: 100, max: 1000 })),
+        kwh_amount: getRandomNumber(100, 1000),
         fees_amount: parseFloat(faker.finance.amount(0, 1000, 2)),
         taxes_amount: parseFloat(faker.finance.amount(0, 100, 2)),
         additional_services: faker.random.word(),

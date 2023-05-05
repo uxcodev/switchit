@@ -1,0 +1,37 @@
+// Fade objects in and out of view
+// to use: <Transition name="fade">... 
+
+.fade-enter-active,
+.fade-leave-active
+  transition: all 0.15s ease
+
+.fade-enter-from,
+.fade-leave-to
+  opacity: 0
+
+.height-enter-active,
+.height-leave-active
+  transition: all .2s ease
+
+.height-enter-from,
+.height-leave-to
+  height: 0px
+
+.height-enter-to,
+.height-leave-from
+  height: 118px
+  // opacity: 0
+
+// Actions panel (Save / Cancel buttons, etc)
+  
+.actions-enter-active,
+.actions-leave-active
+  transition: all 0.5s ease
+
+.actions-enter-from,
+.actions-leave-to
+  transform: translateY(100%)
+
+.actions-enter-to,
+.actions-leave-from
+  transform: translateY(0)

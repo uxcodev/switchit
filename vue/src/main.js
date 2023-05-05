@@ -79,8 +79,13 @@ import i18n from './i18n';
 app.use(i18n)
 
 // use dayjs
+
 import dayjsPlugin from './plugins/dayjs';
 app.use(dayjsPlugin);
+
+// check if mobile
+store.dispatch('isMobile')
+console.log('isMobile', store.getters.isMobile)
 
 /* use Router */
 

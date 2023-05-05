@@ -3,6 +3,7 @@ import { createStore } from 'vuex';
 import switchit from './switchit'
 import filters from './filters'
 import import_test from './import_test'
+import mobile from './mobile';
 import menu from './menu'
 
 const store = createStore({
@@ -10,7 +11,8 @@ const store = createStore({
     menu: menu,
     switchit: switchit,
     filters: filters,
-    import_test: import_test
+    import_test: import_test,
+    mobile: mobile,
   },
 });
 

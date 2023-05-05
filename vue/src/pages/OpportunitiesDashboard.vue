@@ -6,7 +6,7 @@
     <div class="container">
       <div class="header_options">
         <FilterTabs @applyFilterTabs="applyFilterTabs" />
-        <div title="create 20 leads" v-if="isAdmin" class="icon button" @click="createFakeData"><span class="material-symbols-outlined">input_circle</span></div>
+        <div title="create 20 leads" v-if="isAdmin" class="icon button" @click="createFakeData"><span class="material-symbols-outlined">list_alt_add</span></div>
       </div>
 
       <section>
@@ -193,6 +193,7 @@ export default {
   setup() {
     const instance = getCurrentInstance();
     const api = instance.appContext.config.globalProperties.$api;
+    const $toast = instance.appContext.config.globalProperties.$toast
     const router = useRouter();
     const store = useStore();
     const modalComponent = ref(null);
@@ -206,18 +207,6 @@ export default {
     const filtersChanged = computed(() => store.getters.filtersChanged);
     const categories = computed(() => store.getters.categories);
 
-    // ***** Fake data *****
-    const isAdmin = computed(() => store.getters.isAdmin);
-
-    async function createFakeData() {
-      await fake_data.getLeads()
-      this.$toast.show({
-        message: '20 new leads created',
-        type: 'success',
-        icon: 'check',
-        duration: 3000,
-      });
-    }
     // ***** Selections *****
 
     const selectedLeads = ref([])
@@ -328,6 +317,22 @@ export default {
       leadCount.value = response.count;
 
       pg.pageCount = Math.ceil(response.count / pg.limit);
+    }
+
+
+    // ***** Fake data *****
+    const isAdmin = computed(() => store.getters.isAdmin);
+
+    async function createFakeData() {
+      // console.log(fake_data)
+      await fake_data.getLeads()
+      loadLeads()
+      $toast.show({
+        message: '20 new leads created',
+        type: 'success',
+        icon: 'check',
+        duration: 3000,
+      });
     }
 
     // Modal window

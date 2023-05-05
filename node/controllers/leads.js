@@ -157,7 +157,7 @@ exports.createLeads = (req, res, next) => {
     const newlead = new Lead(profileObj)
     newlead.save()
   }
-  res.status(200)
+  res.status(200).json(leads)
 }
 
 function getRandom(min, max, decimals = 0) {

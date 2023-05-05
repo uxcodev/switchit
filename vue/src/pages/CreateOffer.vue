@@ -8,7 +8,7 @@
       <section>
         <button @click="createOffer" class="right">Submit offer</button>
         <h1>Create offer</h1>
-        <div class="ph_boxes stats">
+        <div v-if='lead.value' class="ph_boxes stats">
           <!-- <div v-for="i in 3" :key='i'><span :class='i'></span></div> -->
           <div class="card stats-rating">
             <div class="card-top">
@@ -16,7 +16,7 @@
                 User ID: {{ lead.userId }}
               </div>
               <div v-else class="stats-title">
-                Users selected: {{  leads.length }}
+                Users selected: {{ leads.length }}
               </div>
             </div>
             <div class="card-bottom">
@@ -59,7 +59,7 @@
               <div class="offer-group-input_group wide">
                 <input v-model="offer_obj.offer_details.name" class="input" />
               </div>
-              </div>
+            </div>
             <div class="offer-group-item">
               <label>Start date</label>
               <div class="offer-group-input_group wide">
@@ -88,55 +88,32 @@
             </div>
           </div>
         </div>
-        
-      </section>
-      <section>
 
-        <h1>Mortgage</h1>
+      </section>
+      <section v-for="(value, category) in categoryAccess" :key="category">
+        <h1>{{ $t(category) }}</h1>
         <div class="cards_lg switchit-form">
           <!-- <div v-for="i in 2" :key='i'><span :class='i'></span></div> -->
-          <div class="card_lg white offer-group">
+          <div class="card_lg white offer-group" v-if="lead.value">
             <div class="offer-group-header">
               <div class="offer-group-header-title">
-                User's current mortgage
+                User's current {{ $t(category) }} plan
               </div>
               <button style="opacity:0">Upload offer</button>
             </div>
-            <div class="offer-group-items" v-if="lead.value">
-              <div class="offer-group-item">
-                <label>Rate</label>
-                <div class="offer-group-input_group">
-                  <div>{{ lead.access.mortgage.data.rate }}</div>
-                  <div class="symbol">%</div>
+            <!-- <pre>category: {{ $t(category)}}</pre> -->
+            <!-- look for results in lead.data where key name matches 'category' -->
+  
+            <!-- <pre>{{ lead.data[category].interaction_data}}</pre> -->
+            <div v-for="(value, key) in lead.data[category]?.interaction_data" :key='key'>
+              <div v-if="typeof value === 'object'">
+                <label>{{ $t(key) }}</label>
+                <div class="ml4" v-for="(value2, key2) in value" :key='key2'>
+                  {{ $t(key2) }} : {{ value2 }}
                 </div>
               </div>
-              <div class="offer-group-item">
-                <label>Rate type</label>
-                <div class="offer-group-input_group">
-                  <div>{{ lead.access.mortgage.data.rate_type }}</div>
-                  <div class="symbol"></div>
-                </div>
-              </div>
-              <div class="offer-group-item">
-                <label>One-time cost</label>
-                <div class="offer-group-input_group">
-                  <div>{{ lead.access.mortgage.data.one_time_cost }}</div>
-                  <div class="symbol">€</div>
-                </div>
-              </div>
-              <div class="offer-group-item">
-                <label>Monthly cost</label>
-                <div class="offer-group-input_group">
-                  <div>{{ lead.access.mortgage.data.monthly_cost }}</div>
-                  <div class="symbol">€</div>
-                </div>
-              </div>
-              <div class="offer-group-item">
-                <label>Downpayment</label>
-                <div class="offer-group-input_group">
-                  <div>{{ lead.access.mortgage.data.downpayment }}</div>
-                  <div class="symbol">%</div>
-                </div>
+              <div v-else>
+                {{ $t(key) }} : {{ value }}
               </div>
             </div>
           </div>
@@ -147,148 +124,23 @@
               </div>
               <button>Upload offer</button>
             </div>
-
-            <div class="offer-group-items">
-              <div class="offer-group-item">
-                <label>Rate</label>
-                <div class="offer-group-input_group">
-                  <input v-model="offer_obj.offer.mortgage.rate" class="input" />
-                  <div class="symbol">%</div>
-                </div>
-              </div>
-              <div class="offer-group-item">
-                <label>Rate type</label>
-                <div class="offer-group-input_group">
-                  <select v-model="offer_obj.offer.mortgage.rate_type" class="select">
-                    <option>Fixed</option>
-                    <option>Variable</option>
-                  </select>
-                  <div class="symbol"></div>
-                </div>
-              </div>
-              <div class="offer-group-item">
-                <label>One-time cost</label>
-                <div class="offer-group-input_group">
-                  <input v-model="offer_obj.offer.mortgage.one_time_cost" class="input" />
-                  <div class="symbol">€</div>
-                </div>
-              </div>
-              <div class="offer-group-item">
-                <label>Monthly cost</label>
-                <div class="offer-group-input_group">
-                  <input v-model="offer_obj.offer.mortgage.monthly_cost" class="input" />
-                  <div class="symbol">€</div>
-                </div>
-              </div>
-              <div class="offer-group-item">
-                <label>Downpayment</label>
-                <div class="offer-group-input_group">
-                  <input v-model="offer_obj.offer.mortgage.downpayment" class="input" />
-                  <div class="symbol">%</div>
-                </div>
+            <div class="offer-group-item" v-for="(value, key) in offer_obj.offer[category]" :key='key'>
+              <!-- console log the key -->
+              <label>{{ $t(key) }}</label>  
+              <div class="offer-group-input_group">
+                <div class="symbol">{{ value.prefix }}</div>
+                <select v-if="value.type === 'dropdown'" v-model="value.value" class="select">
+                  <option v-for="(option, key) in value.options" :key="key">{{ option }}</option>
+                </select>
+                <input v-else v-model="value.value" class="input" />
+                <div class="symbol">{{ value.suffix }}</div>
+                <!-- if value.type is 'dropdown', add a dropdown -->
               </div>
             </div>
           </div>
         </div>
       </section>
-      <section>
-        <h1>Insurance</h1>
-        <div class="cards_lg switchit-form">
-          <!-- <div v-for="i in 2" :key='i'><span :class='i'></span></div> -->
-          <div class="card_lg white offer-group">
-            <div class="offer-group-header">
-              <div class="offer-group-header-title">
-                User's current insurance policy
-              </div>
-              <button style="opacity:0">Upload offer</button>
-            </div>
-            <div class="offer-group-items" v-if="lead.value">
-              <div class="offer-group-item">
-                <label>Premium</label>
-                <div class="offer-group-input_group">
-                  <div>{{ lead.access.insurance.data.premium }}</div>
-                  <div class="symbol">%</div>
-                </div>
-              </div>
-              <div class="offer-group-item">
-                <label>Body injury liability</label>
-                <div class="offer-group-input_group">
-                  <div>{{ lead.access.insurance.data.injury_liability }}</div>
-                  <div class="symbol"></div>
-                </div>
-              </div>
-              <div class="offer-group-item">
-                <label>Property liability</label>
-                <div class="offer-group-input_group">
-                  <div>{{ lead.access.insurance.data.property_liability }}</div>
-                  <div class="symbol">€</div>
-                </div>
-              </div>
-              <div class="offer-group-item">
-                <label>Collision deductible</label>
-                <div class="offer-group-input_group">
-                  <div>{{ lead.access.insurance.data.collision_deductible }}</div>
-                  <div class="symbol">€</div>
-                </div>
-              </div>
-              <div class="offer-group-item">
-                <label>Comprehensive deductible</label>
-                <div class="offer-group-input_group">
-                  <div>{{ lead.access.insurance.data.comprehensive_deductible }}</div>
-                  <div class="symbol">€</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="card_lg white offer-group">
-            <div class="offer-group-header">
-              <div class="offer-group-header-title">
-                Enter your offer below
-              </div>
-              <button>Upload offer</button>
-            </div>
 
-            <div class="offer-group-items">
-              <div class="offer-group-item">
-                <label>Premium</label>
-                <div class="offer-group-input_group">
-                  <input v-model="offer_obj.offer.insurance.premium" class="input" />
-                  <div class="symbol">%</div>
-                </div>
-              </div>
-              <div class="offer-group-item">
-                <label>Body injury liability</label>
-                <div class="offer-group-input_group">
-                  <input v-model="offer_obj.offer.insurance.injury_liability" class="input" />
-                  <div class="symbol">€</div>
-                </div>
-              </div>
-              <div class="offer-group-item">
-                <label>Property liability</label>
-                <div class="offer-group-input_group">
-                  <input v-model="offer_obj.offer.insurance.property_liability" class="input" />
-                  <div class="symbol">€</div>
-                </div>
-              </div>
-              <div class="offer-group-item">
-                <label>Collision deductible</label>
-                <div class="offer-group-input_group">
-                  <input v-model="offer_obj.offer.insurance.collision_deductible" class="input" />
-                  <div class="symbol">€</div>
-                </div>
-              </div>
-              <div class="offer-group-item">
-                <label>Comprehensive deductible</label>
-                <div class="offer-group-input_group">
-                  <input v-model="offer_obj.offer.insurance.comprehensive_deductible" class="input" />
-                  <div class="symbol">€</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </section>
       <!-- <pre> {{ lead }}</pre> -->
     </div>
   </div>
@@ -325,26 +177,49 @@ export default {
         },
         criteria: this.$store.getters.filters,
         offer: {
+          mobile: {
+            plan_talk_minutes: {value: 1000, type: 'Number', suffix: 'mins'},
+            plan_data_gb: {value: 10, type: 'Number', suffix: 'GB'},
+            plan_data_speed: {value: 100, type: 'Number', suffix: 'Mbps'},
+            phone_installment: {value: 0, type: 'Number', suffix: '€'},
+            equipment_installment: {value: 0, type: 'Number', suffix: '€'},
+          },
           mortgage: {
-            rate: 3.45,
-            rate_type: "Fixed",
-            one_time_cost: 0,
-            monthly_cost: 1117,
-            downpayment: 25,
+            rate: {value: 3.45, type: 'Number', suffix: '%'},
+            rate_type: {value: "Fixed", type: 'dropdown', options: ['Fixed', 'Variable']},
+            one_time_cost: {value: 1500, type: 'Number', suffix: '€'},
+            monthly_cost: {value: 795, type: 'Number', suffix: '€'},
+            downpayment: {value: 25000, type: 'Number', suffix: '€'},
           },
-          insurance: {
-            premium: 150,
-            injury_liability: 300000,
-            property_liability: 100000,
-            collision_deductible: 1000,
-            comprehensive_deductible: 500
+          energy: {
+            kwh_rate: {value: 0.15, type: 'Number', suffix: '€'},
           },
-          banking: {},
-          broadband: {},
-          mobile: {},
-          utilities:{},
-          auto: {},
-       }
+          car_insurance: {
+            premium: {value: 150, type: 'Number', suffix: '€'},
+            injury_liability: {value: 300000, type: 'Number', suffix: '€'},
+            property_liability: {value: 100000, type: 'Number', suffix: '€'},
+            collision_deductible: {value: 1000, type: 'Number', suffix: '€'},
+            comprehensive_deductible: {value: 500, type: 'Number', suffix: '€'},
+            glass_damage: {value: true, type: 'Boolean'},
+            theft_protection: {value: true, type: 'Boolean'},
+            roadside_assistance: {value: true, type: 'Boolean'},
+          },
+          home_insurance: {
+            premium: {value: 150, type: 'Number', suffix: '€'},
+            injury_liability: {value: 300000, type: 'Number', suffix: '€'},
+            property_liability: {value: 100000, type: 'Number', suffix: '€'},
+            comprehensive_deductible: {value: 500, type: 'Number', suffix: '€'},
+            fire_protection: {value: true, type: 'Boolean'},
+            water_damage_protection: {value: true, type: 'Boolean'},
+            storm_damage_protection: {value: true, type: 'Boolean'},
+          },
+          broadband: {
+            debit_amount: {value: 100, type: 'Number', suffix: 'Mbps'},
+            plan_data_speed: {value: 500, type: 'Number', suffix: 'Mbps'},
+            plan_data_gb: {value: 200, type: 'Number', suffix: 'GB'},
+          },
+
+        }
       },
       count: 0,
       chartData: {
@@ -390,27 +265,23 @@ export default {
       // console.log('createOffer:', this.offer_obj)
       let leads = this.leads || [this.lead._id]
       let response = await this.$api.createOffer(this.offer_obj, leads)
-      // console.log("response:",response)
+      console.log("response:",response)
       if (response?.ok) {
         this.$router.push({ path: '/offers' })
       }
     }
   },
   async mounted() {
-    
+
     this.leads = await this.$store.getters.selectedLeads || [this.$route.query.lead]
-    // console.log('leads:', this.leads)
     if (this.leads.length === 1) {
       let id = this.leads[0]
       this.lead = await this.$api.getLead(id)
-    } else {
-      // console.log('bulk offers not fully supported yet')
     }
-    // console.log('this.lead', this.lead)
-    // console.log('this.leads', this.leads)
+    console.log('this.lead:', this.lead)
+    console.log('this.leads:', this.leads)
     setTimeout(async () => {
       let filters = this.offer_obj.criteria
-      // filters = await format_data.formatOfferCriteria(filters)
       console.log('format_data', format_data)
       console.log('filters:', filters)
     }, 500)
@@ -448,7 +319,7 @@ section
     justify-content: space-between
     align-items: center
     gap: 10px
-    width: 120px
+    width: 180px
     input,
     select,
     textarea

@@ -100,7 +100,7 @@ export default {
 
   async createOffer(offer, leads) {
     try {
-      // // console.log('createOffer', leads)
+      console.log('createOffer', leads)
       const body = { offer: offer, leads: leads }
       const response = await _axios.post('/offers/create-offer', body);
       response.data.ok = response?.statusText === "OK"

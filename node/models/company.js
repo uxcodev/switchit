@@ -14,36 +14,37 @@ const companySchema = new Schema({
     user: { type: ObjectId, ref: 'User', required: false },
     role: { type: String, required: false },
   }],
-  access: {
-    mortgage: {
-      status: { type: Boolean, required: false },
-      title: { type: String, required: false }
-    },
-    insurance: {
-      status: { type: Boolean, required: false },
-      title: { type: String, required: false }
-    },
-    banking: {
-      status: { type: Boolean, required: false },
-      title: { type: String, required: false }
-    },
-    broadband: {
-      status: { type: Boolean, required: false },
-      title: { type: String, required: false }
-    },
-    mobile: {
-      status: { type: Boolean, required: false },
-      title: { type: String, required: false }
-    },
-    utilities: {
-      status: { type: Boolean, required: false },
-      title: { type: String, required: false }
-    },
-    auto: {
-      status: { type: Boolean, required: false },
-      title: { type: String, required: false }
-    },
-  },
+  access: { type: Object, required: false },
+  // access: {
+  //   mortgage: {
+  //     status: { type: Boolean, required: false },
+  //     title: { type: String, required: false }
+  //   },
+  //   insurance: {
+  //     status: { type: Boolean, required: false },
+  //     title: { type: String, required: false }
+  //   },
+  //   banking: {
+  //     status: { type: Boolean, required: false },
+  //     title: { type: String, required: false }
+  //   },
+  //   broadband: {
+  //     status: { type: Boolean, required: false },
+  //     title: { type: String, required: false }
+  //   },
+  //   mobile: {
+  //     status: { type: Boolean, required: false },
+  //     title: { type: String, required: false }
+  //   },
+  //   utilities: {
+  //     status: { type: Boolean, required: false },
+  //     title: { type: String, required: false }
+  //   },
+  //   auto: {
+  //     status: { type: Boolean, required: false },
+  //     title: { type: String, required: false }
+  //   },
+  // },
 }
 );
 

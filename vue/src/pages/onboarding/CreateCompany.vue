@@ -2,7 +2,7 @@
   <ModalWindow v-if="modalComponent" :component="modalComponent" @closeModal="closeModal">
     <component :is="modalComponent"></component>
   </ModalWindow>
-  <div class="main">
+  <div v-if="loaded" class="main">
     <!-- back button -->
     <div class="container mb5">
       <div class="back-button">
@@ -47,7 +47,7 @@
         </div>
         <div class="group">
           <label for="website">Countries the company is active in</label>
-          <Multiselect v-model="form.company.countries" mode="tags" :searchable="true" :close-on-select="false" :options="country_list" />
+          <Multiselect v-model="form.company.countries" mode="tags" @select="countrySelected" :searchable="true" :close-on-select="false" :options="country_options" />
         </div>
         <div class="group">
 
@@ -55,7 +55,11 @@
 
 
           <div class="checkbox-group">
-            <label class="checkbox-label">
+            <label v-for="(category, key) in form.company.access" :key="key" class="checkbox-label">
+              <input class="checkbox" type="checkbox" v-model="category.status" :id="category.name" />{{ $t(key) }}
+              <span class="checkmark"></span>
+            </label>
+            <!-- <label class="checkbox-label">
               <input class="checkbox" type="checkbox" v-model="form.company.access.mortgage.status" id="mortgage" />Mortgage
               <span class="checkmark"></span>
             </label>
@@ -82,7 +86,7 @@
             <label class="checkbox-label">
               <input class="checkbox" type="checkbox" v-model="form.company.access.banking.status" id="banking" />Banking
               <span class="checkmark"></span>
-            </label>
+            </label> -->
           </div>
         </div>
         <button class="icon" @click="submitForm">Submit</button>
@@ -139,42 +143,88 @@ export default {
   data() {
 
     return {
+      loaded: false,
       status: null,
       edit: false,
       modalComponent: null,
       screen: 'UserTable',
+      categories: this.$store.getters.categories,
       form: {
         company: {
-          name: `test company ${Math.floor(Math.random() * (11111 - 99999))}`,
-          website: "uxco.co",
+          name: `TestCompany`,
+          // name: `test company ${Math.floor(Math.random() * (11111 - 99999))}`,
+          website: "example.com",
           countries: ["Denmark",],
           status: "pending",
           createdby: this.$auth0.user._value.email,
           contact_email: 'johndoe@somecompany.com',
-          access: {
-            mortgage: { status: false },
-            mobile: { status: false },
-            utilities: { status: false },
-            insurance: { status: false },
-            broadband: { status: false },
-            auto: { status: false },
-            banking: { status: false },
-          },
+          access: {},
           roles: [],
         },
       },
       selectedAdmin: null,
       users: [],
       errors: [],
-      country_list: ["Denmark", "Germany", "Norway", "Sweden", "United States"]
+      country_options: [
+        {
+          label: "Denmark", value: {
+            name: "Denmark",
+            dial_code: "+45",
+            code: "DK"
+          },
+        },
+        {
+          label: "Sweden", value: {
+            name: "Sweden",
+            dial_code: "+46",
+            code: "SE"
+          }
+        },
+        {
+          label: "Norway", value: {
+            name: "Norway",
+            dial_code: "+47",
+            code: "NO"
+          }
+        },
+        {
+          label: "Germany", value: {
+            name: "Germany",
+            dial_code: "+49",
+            code: "DE"
+          }
+        },
+        {
+          label: "United States", value: {
+            name: "United States",
+            dial_code: "+1",
+            code: "US"
+          }
+        },
+        {
+          label: "––––––––––",
+          value: null,
+          disabled: true
+        }
+      ]
     }
   },
-  watch: { 
+  watch: {
     selectedAdmin(val) {
       console.log('watch', val)
-      this.form.company.roles[0].user = val
+      if (this.edit) {
+        // look in this.form.company.roles for a result where role === 'ownner', and change 'user' to val
+        const owner = this.form.company.roles.find(role => role.role === 'owner')
+        if (owner) {
+          owner.user = val
+        } else {
+          return false
+        }
+      } else {
+        this.form.company.roles.push({ role: 'owner', user: val })
+      }
+      // this.form.company.roles[0].user = val
     }
-
   },
   methods: {
     closeModal() {
@@ -191,7 +241,14 @@ export default {
       if (this.edit) {
         response = await this.$api.updateCompany(this.id, this.form)
       } else {
-        response = await this.$api.createCompany(this.form)
+        // response = await this.$api.createCompany(this.form)
+
+        let body = {
+          name: this.form.company.name,
+          homepage: this.form.company.website,
+          description: "Lorem ipsum dolor sit amet",
+        }
+        response = await this.$api.switchit_createCompany(body)
       }
       console.log(response)
       if (response.ok) {
@@ -202,21 +259,49 @@ export default {
         this.errors.push(response.message)
         setTimeout(() => { this.errors = [] }, 3000)
       }
+    },
+    async countrySelected() {
+      // TEMP for testing
+      console.log('countrySelected', this.form.company.countries)
     }
   },
   async mounted() {
-    this.id = this.$route.query.id
-    this.edit = this.id ? true : false
+    try {
+      console.log('categories', this.categories)
+      this.id = this.$route.query.id
+      this.edit = this.id ? true : false
 
-    if (this.edit) {
-      let company = await this.$api.getCompanyById(this.id)
-      console.log(company)
-      this.form.company = company
-      this.selectedAdmin = company.roles[0].user
+      let countries = await this.$api.getCountries()
+
+      let country_options = countries.map(country => ({
+        label: country.name,
+        value: country
+      }));
+
+      this.country_options.push(...country_options)
+
+      this.users = await this.$api.getUsers()
+      console.log('this.users: ', this.users)
+
+      if (this.edit) {
+        let company = await this.$api.getCompanyById(this.id)
+        console.log(company)
+        this.form.company = company
+        this.selectedAdmin = company?.roles[0]?.user || null
+      } else {
+        for (const prop in this.categories) {
+          if (Object.hasOwnProperty.call(this.categories, prop)) {
+            this.form.company.access[prop] = { status: false };
+          }
+        }
+      }
+      
+      console.log('this.form.company.access', this.form.company.access)
+      console.log('edit', this.edit)
+      this.loaded = true
+    } catch (error) {
+      this.$toast_error.show(error)
     }
-    console.log('edit', this.edit)
-    this.users = await this.$api.getUsers()
-    console.log('this.users: ', this.users)
   }
 }
 </script>

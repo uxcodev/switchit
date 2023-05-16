@@ -134,7 +134,7 @@
                 {{ lead.userId }}
               </div>
               <div class="access_icons table-row-content-lg">
-                <span v-for="(acc, key) in lead.data" :key="key" :class="acc.status ? 'active' : ''" class="material-symbols-outlined">{{ categories[key] ? categories[key].icon : '' }}</span>
+                <IconsCategoryAccess :access="lead.data"/>
               </div>
               <div class="table-row-content-sm">
                 {{ lead.value }} €
@@ -170,9 +170,11 @@
 <script>
 import ModalWindow from "@/components/ui/ModalWindow.vue";
 import FilterTabs from "../components/ui/FilterTabs.vue";
+import IconsCategoryAccess from "@/components/ui/IconsCategoryAccess.vue";
 import ChartDealsWon from "../components/ui/ChartDealsWon.vue";
 import { Chart as ChartJS, ArcElement, Tooltip } from "chart.js";
 import { Doughnut } from "vue-chartjs";
+
 
 import { ref, computed, watch, onMounted, reactive, toRefs, getCurrentInstance } from "vue";
 import { useStore } from "vuex";
@@ -188,6 +190,7 @@ export default {
     FilterTabs,
     ChartDealsWon,
     Doughnut,
+    IconsCategoryAccess
   },
 
   setup() {

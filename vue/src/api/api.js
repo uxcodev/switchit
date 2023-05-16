@@ -20,9 +20,27 @@ _axios.interceptors.request.use((config) => {
 
 export default {
 
+
+
+  // Switchit API calls
+
+  async switchit_createCompany(body) {
+    try {
+      let url = "https://switchitapi.azurewebsites.net/api/v1/companys";
+      const response = await _axios.post(url, body);
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
+
+  // TESTING 
+
   async whateverApiCall(method, path) {
     try {
-      let url = "https://switchitapi.azurewebsites.net/api/v1/" + path;
+      let url = "https://switchitapi.azurewebsites.net/api/" + path;
 
       const response = await _axios({
         method: method,
@@ -35,6 +53,18 @@ export default {
     }
   },
 
+  // Temporary Node API calls
+
+  async getCountries() {
+    try {
+      let url = "https://switchitapi.azurewebsites.net/api/countrydialcodes";
+      const response = await _axios.get(url);
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
   async getPsd2Institutions() {
     try {
       let url = "https://switchitapi.azurewebsites.net/api/v1/psd2Institutions";

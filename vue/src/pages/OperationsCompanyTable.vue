@@ -35,21 +35,13 @@
               <div class="field light company">
                 markets: 
                 <span class="country" v-for="country in company.countries" :key="country">
-                  {{ country }}
+                  {{ country.name }}
                 </span>
               </div>
 
             </div>
-            <div class="access_icons">
-              <!-- <span v-for="category in categories" :key="category" :class="company.access[category].status ? 'active' : ''" class="material-symbols-outlined">{{ category.icon }}</span> -->
-              <span :class="company.access.mortgage?.status ? 'active' : ''" class="material-symbols-outlined">house</span>
-              <span :class="company.access.home_insurance?.status ? 'active' : ''" class="material-symbols-outlined">verified_user</span>
-              <span :class="company.access.broadband?.status ? 'active' : ''" class="material-symbols-outlined">language</span>
-              <span :class="company.access.mobile?.status ? 'active' : ''" class="material-symbols-outlined">smartphone</span>
-              <span :class="company.access.energy?.status ? 'active' : ''" class="material-symbols-outlined">lightbulb</span>
-              <span :class="company.access.car_insurance?.status ? 'active' : ''" class="material-symbols-outlined">directions_car</span>
-            </div>
-
+            <IconsCategoryAccess :access="company.access"/>
+            
           </div>
           <div class='status_wrapper' :class="company.status">
             <!-- <div :class="['dot', company.status]"></div> -->
@@ -64,7 +56,7 @@
             <span class="material-symbols-outlined">Delete</span>
           </div>
         </div>
-      </div>
+      </div> 
     </div>
     <div>
       <button class="mt10"  @click="$router.push({ path: '/createcompany' })" >+ Add</button>
@@ -80,9 +72,11 @@
 </template>
 <script>
 
+import IconsCategoryAccess from '@/components/ui/IconsCategoryAccess.vue';
 
 export default {
   components: {
+    IconsCategoryAccess
   },
   provide() {
     return {

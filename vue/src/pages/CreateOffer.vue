@@ -52,8 +52,8 @@
 
       <section class="offer-group-general">
         <h1>Offer details</h1>
-        <div class="cards_lg  switchit-form">
-          <div class="card_lg white offer-group">
+        <div class="cards lg  switchit-form">
+          <div class="card lg white offer-group">
             <div class="offer-group-item">
               <label>Offer name</label>
               <div class="offer-group-input_group wide">
@@ -79,7 +79,7 @@
               </div>
             </div>
           </div>
-          <div class="card_lg white offer-group">
+          <div class="card lg white offer-group">
             <div class="offer-group-item h100">
               <label>Details</label>
               <div class="offer-group-input_group xwide h100">
@@ -92,9 +92,9 @@
       </section>
       <section v-for="(value, category) in categoryAccess" :key="category">
         <h1>{{ $t(category) }}</h1>
-        <div class="cards_lg switchit-form">
+        <div class="cards lg switchit-form">
           <!-- <div v-for="i in 2" :key='i'><span :class='i'></span></div> -->
-          <div class="card_lg white offer-group" v-if="lead.value">
+          <div class="card lg white offer-group" v-if="lead.value">
             <div class="offer-group-header">
               <div class="offer-group-header-title">
                 User's current {{ $t(category) }} plan
@@ -117,7 +117,7 @@
               </div>
             </div>
           </div>
-          <div class="card_lg white offer-group">
+          <div class="card lg white offer-group">
             <div class="offer-group-header">
               <div class="offer-group-header-title">
                 Enter your offer below
@@ -173,7 +173,7 @@ export default {
           start_date: "01/01/24",
           expiry_date: "01/01/25",
           term: "1 year",
-          details: "Get a free donut",
+          details: "Lorem ipsum dolor sit amet",
         },
         criteria: this.$store.getters.filters,
         offer: {

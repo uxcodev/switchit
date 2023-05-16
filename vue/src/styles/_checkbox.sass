@@ -42,11 +42,14 @@
     height: 20px
     width: 20px
     border-radius: $input-border-radius
-    background-color: none
-    border: 1px solid #aaa
+    background-color: $input-background
+    border: rgba(black, .1) solid 1px
     display: flex
     align-items: center
     justify-content: center
+    &.transparent
+      background-color: rgba(black, 0.1)
+      border: rgba(white, .3) solid 1px
 
   /* On mouse-over, add a grey background color */
   &:hover input~.checkmark
@@ -55,7 +58,6 @@
   /* When the check-box button is checked, add a green background */
   & input:checked~.checkmark
     background-color: $ui-active
-
     border: 1px solid #333
 
   /* Create the indicator (the check symbol - hidden when not checked) */

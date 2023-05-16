@@ -35,7 +35,7 @@
               <div class="field light company">
                 markets: 
                 <span class="country" v-for="country in company.countries" :key="country">
-                  {{ country.name }}
+                  {{ country?.name || country}}
                 </span>
               </div>
 

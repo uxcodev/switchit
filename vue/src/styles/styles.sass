@@ -105,140 +105,145 @@ section
     border-radius: 10px
     @include shadow()
 
-  .ph_pills
-    height: 20px
-    display: flex
-    flex-direction: row
-    // justify-content: center
+.ph_pills
+  height: 20px
+  display: flex
+  flex-direction: row
+  // justify-content: center
+  align-items: center
+  gap: 6px
+  .ph_pill
+    flex: 0
+    justify-content: center
     align-items: center
-    gap: 6px
-    .ph_pill
-      flex: 0
-      justify-content: center
-      align-items: center
-      padding: 2px 8px
-      background-color: rgba(255,255,255,.3)
-      color: rgba(0,0,0,.3)
-      width: auto
-      height: auto
-      border-radius: 20px
-      &.active
-        background-color: rgba(255,255,255,1)
-        color: #546E7A
+    padding: 2px 8px
+    background-color: rgba(255,255,255,.3)
+    color: rgba(0,0,0,.3)
+    width: auto
+    height: auto
+    border-radius: 20px
+    &.active
+      background-color: rgba(255,255,255,1)
+      color: #546E7A
 
-  .table-titlebar
+.table-titlebar
+  display: flex
+  flex-direction: row
+  justify-content: space-between
+  align-items: center
+
+  button
+    background-color: #00C6C6
+    border-radius: 25px
+    color: white
+    border: 0
+
+// .ph_boxes
+//     display: flex
+//     flex-direction: row
+//     gap: 16px
+//     div
+//       flex:1
+//       background-color: white
+//       // width: 100px
+//       height: 100px
+//       border-radius: 10px
+.stats
+  display: flex
+  flex-direction: row
+  gap: 20px
+  .card
+    flex: 1
+    display: flex
+    flex-direction: column
+    justify-content: space-between
+    background-color: white
+    padding: 16px
+    // width: 100px
+    min-height: 120px
+    border-radius: 10px
+
+    &-top
+      display: flex
+      flex-direction: column
+      gap: 4px
+
+    &-bottom
+      color: #aaa
+
+    .rating
+      display: flex
+      align-items: center
+      font-size: 20px
+      color: #666
+      gap: 6px
+      .stars
+        display: flex
+        align-items: center
+        color: #00C6C6
+        span
+          width: 20px
+          heith: 20px
+  &-title
+    font-size: 1.2em
+    color: #aaa
+
+  &-deals-won,
+  &-deal-size
+    padding: 0
+    justify-content: flex-start !important
+    gap: 16px
+    &-number
+      font-size: 1.8em
+      color: #666
+
+.cards.lg
+  display: flex
+  flex-direction: row
+  flex-wrap: wrap
+  gap: 16px
+.card.lg
+  display: flex
+  flex-direction: column
+  flex: 1
+  gap: 16px
+  min-height: 200px
+  border-radius: 10px
+  padding: 20px
+  // color: white
+  background: white
+
+  &.green
+    background-color: #00C6C6
+  &.blue
+    background-color: #019CCD
+  &-content
+    flex: 1
     display: flex
     flex-direction: row
     justify-content: space-between
     align-items: center
+    font-size: 1.2em
+    .large
+      font-size: 1.8em
 
-    button
-      background-color: #00C6C6
-      border-radius: 25px
-      color: white
-      border: 0
+.white
+  input, select, textarea
+    background: #f5f5f5
+    border: 1px solid #eee        
+.ph_header
+  display: flex
+  background-color: #ccc
+  height: 40px
+  width: 100%
+  border-radius: 10px
 
-  // .ph_boxes
-  //     display: flex
-  //     flex-direction: row
-  //     gap: 16px
-  //     div
-  //       flex:1
-  //       background-color: white
-  //       // width: 100px
-  //       height: 100px
-  //       border-radius: 10px
-  .stats
-    display: flex
-    flex-direction: row
-    gap: 20px
-    .card
-      flex: 1
-      display: flex
-      flex-direction: column
-      justify-content: space-between
-      background-color: white
-      padding: 16px
-      // width: 100px
-      min-height: 120px
-      border-radius: 10px
-
-      &-top
-        display: flex
-        flex-direction: column
-        gap: 4px
-
-      &-bottom
-        color: #aaa
-
-      .rating
-        display: flex
-        align-items: center
-        font-size: 20px
-        color: #666
-        gap: 6px
-        .stars
-          display: flex
-          align-items: center
-          color: #00C6C6
-          span
-            width: 20px
-            heith: 20px
-    &-title
-      font-size: 1.2em
-      color: #aaa
-
-    &-deals-won,
-    &-deal-size
-      padding: 0
-      justify-content: flex-start !important
-      gap: 16px
-      &-number
-        font-size: 1.8em
-        color: #666
-
-  .cards_lg
-    display: flex
-    flex-direction: row
-    flex-wrap: wrap
-    gap: 16px
-  .card_lg
-    display: flex
-    flex-direction: column
-    flex: 1
-    gap: 16px
-    min-height: 200px
-    border-radius: 10px
-    padding: 20px
-    // color: white
-    background: white
-
-    &.green
-      background-color: #00C6C6
-    &.blue
-      background-color: #019CCD
-    &-content
-      flex: 1
-      display: flex
-      flex-direction: row
-      justify-content: space-between
-      align-items: center
-      font-size: 1.2em
-      .large
-        font-size: 1.8em
-  .ph_header
-    display: flex
-    background-color: #ccc
-    height: 40px
-    width: 100%
-    border-radius: 10px
-
-  .ph_table
-    display: flex
-    background-color: #eee
-    height: 400px
-    width: 100%
-    border-radius: 10px
+.ph_table
+  display: flex
+  background-color: #eee
+  height: 400px
+  width: 100%
+  border-radius: 10px
 
 .ph_boxes
   display: flex
@@ -282,18 +287,25 @@ pre
     padding: 10px
     border-radius: 10px
     color: rgba(255,255,255,0.7)
-
+        
   &-header,
   &-row
-    &-check
-      width: 50px
-      display: flex
-    &-sm
-      width: 100px
-    &-med
-      width: 150px
-    &-lg
-      flex: 1
+    &-content
+      &-check
+        width: 50px
+        display: flex
+      &-xs  
+        width: 60px
+
+      &-sm
+        width: 100px
+
+      &-med
+        width: 150px
+
+      &-lg
+        flex: 1
+
   .last
     display: flex
     justify-content: flex-end
@@ -323,6 +335,11 @@ pre
     background: $bright-aqua
     border-radius: 20px
 
+.wrap
+  flex-wrap: wrap 
+
+.bold
+  font-weight: bold  
 @media only screen and (max-width: 767px)
   .main
     margin-left: 0px

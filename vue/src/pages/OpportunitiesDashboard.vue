@@ -51,36 +51,36 @@
           </div>
         </div>
       </section>
-      <div class="cards_lg">
+      <div class="cards lg">
         <!-- <div v-for="i in 2" :key='i'><span :class='i'></span></div> -->
-        <div class="card_lg green">
+        <div class="card lg green">
           <div class="ph_pills">
             <div class="ph_pill active">Open</div>
             <div class="ph_pill">Won</div>
             <div class="ph_pill">Lost</div>
           </div>
-          <div class="card_lg-content">
-            <div class="card_lg-content-left">
+          <div class="card lg-content">
+            <div class="card lg-content-left">
               <div>Open offers:</div>
               <div class="mt4 large">141</div>
             </div>
-            <div class="card_lg-content-right">
+            <div class="card lg-content-right">
               <span class="material-symbols-outlined">keyboard_arrow_right</span>
             </div>
           </div>
         </div>
-        <div class="card_lg blue">
+        <div class="card lg blue">
           <div class="ph_pills">
             <div class="ph_pill active">Open</div>
             <div class="ph_pill">Won</div>
             <div class="ph_pill">Lost</div>
           </div>
-          <div class="card_lg-content">
-            <div class="card_lg-content-left">
+          <div class="card lg-content">
+            <div class="card lg-content-left">
               <div>Value of open offers:</div>
               <div class="mt4"><span class="large">210,543€</span> / mth</div>
             </div>
-            <div class="card_lg-content-right">
+            <div class="card lg-content-right">
               <span class="material-symbols-outlined">keyboard_arrow_right</span>
             </div>
           </div>
@@ -103,7 +103,7 @@
           <div class="table-header-check">
             <label class="checkbox-label">
               <input class="checkbox" type="checkbox" v-model="selectVisible" @change="toggleSelectVisible" id="select_all" />
-              <span class="checkmark"></span>
+              <span class="checkmark transparent"></span>
             </label>
           </div>
           <div class="table-header-content">
@@ -613,12 +613,12 @@ section
         font-size: 1.8em 
         color: #666       
         
-  .cards_lg
+  .cards.lg
     display: flex
     flex-direction: row
     flex-wrap: wrap
     gap: 16px
-  .card_lg
+  .card.lg
     display: flex
     flex-direction: column
     flex:1

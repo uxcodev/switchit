@@ -16,7 +16,7 @@
     color: #aaa
   .input:disabled
     color: #999
-    border: 1px solid #ddd
+    border: $input-border
     background: #f1f1f1
     cursor: default
   .help
@@ -35,7 +35,8 @@ label
   appearance: none
   font-family: inherit
   font-size: $body-font
-  border: 1px solid $input-border-color
+  border: 1px solid $input-border
+  background: $input-background
   border-radius: $input-border-radius
   height: 40px
   padding: 8px
@@ -90,5 +91,12 @@ label
   --ms-tag-font-size: $body-font-size
   --ms-tag-font-weight: 400
 
+.multiselect
+  border: $input-border !important
+
 .multiselect-wrapper
   min-height: 40px !important
+  background-color: $input-background !important
+  input
+    border: none !important
+    background: none !important

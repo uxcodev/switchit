@@ -20,6 +20,27 @@ export default {
       },
     };
 
+    app.config.globalProperties.$toast_warn = {
+      show(message) {
+        // toast.props = { ...toast.props, ...params };
+        render(toast, container);
+        if (!container.isConnected) {
+          document.body.appendChild(container);
+        }
+        console.log('message', message)
+        toast.component.proxy.show(
+          {
+            message: message,
+            type: "warning",
+            icon: "warning",
+            duration: 6000,
+            key: Date.now(),
+          }
+        );
+      },
+    };
+
+
     app.provide('toast', app.config.globalProperties.$toast);
   },
 };

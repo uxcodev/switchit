@@ -21,7 +21,7 @@ exports.createCompany = (req, res, next) => {
   let profileObj = {}
   console.log(companyFields)
   for (const [key, value] of Object.entries(companyFields)) {
-    // // console.log(`${key}: ${value}`)
+    console.log(`${key}: ${value}`)
     profileObj[key] = value
   }
   let company = new Company(profileObj)

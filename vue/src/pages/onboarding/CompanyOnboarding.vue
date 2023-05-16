@@ -75,7 +75,7 @@
     <div class="container clip">
       <!-- <h2>Settings</h2>  -->
       <div class="ph_content">
-        <div class="cards_lg">
+        <div class="cards lg">
           <!-- <div v-for="i in 2" :key='i'><span :class='i'></span></div> -->
           <div class="banner_lg">
             <h1>

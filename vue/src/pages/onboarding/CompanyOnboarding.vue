@@ -134,7 +134,7 @@ export default {
         },
         company: {
           name: "UXCO",
-          website: "uxco.co",
+          website: "example.com",
           countries: ["Denmark",],
           status: "pending",
           access: {

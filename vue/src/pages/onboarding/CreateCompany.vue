@@ -241,14 +241,18 @@ export default {
       if (this.edit) {
         response = await this.$api.updateCompany(this.id, this.form)
       } else {
-        // response = await this.$api.createCompany(this.form)
+        // Node API
+        response = await this.$api.createCompany(this.form)
 
+        // Switchit Official API
+/* 
         let body = {
           name: this.form.company.name,
           homepage: this.form.company.website,
           description: "Lorem ipsum dolor sit amet",
         }
         response = await this.$api.switchit_createCompany(body)
+ */
       }
       console.log(response)
       if (response.ok) {

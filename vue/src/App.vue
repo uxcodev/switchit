@@ -31,6 +31,19 @@ export default {
   watch: {
     async auth0User(auth0User) {
       if (auth0User) {
+        let access_token = await localStorage.getItem('access_token')
+
+        if (!access_token) {
+          access_token = await this.$auth0.getAccessTokenSilently()
+          console.log('generated new token:', access_token)
+          localStorage.setItem('access_token', access_token)
+        }
+
+        setTimeout(() => {
+          let acc_token = localStorage.getItem('access_token')
+          console.log('access_token', acc_token)
+        }, 1000);
+        // *** ID TOKEN ***
 
         // create token on backend from logged in email
         // this also checks switchit db for a user, and
@@ -64,7 +77,6 @@ export default {
 
         // if the user is admin, save to VueX
 
-  
         if (decodedToken.user && decodedToken.user.admin) {
           this.$store.dispatch('isAdmin', decodedToken.user.admin)
           this.$store.dispatch('setAccess', decodedToken.user.access)
@@ -74,6 +86,18 @@ export default {
       this.loaded = true
     }
   },
+  async mounted() {
+    // *** ACCESS TOKEN ***
+
+    let access_token = await localStorage.getItem('access_token')
+
+    if (!access_token) {
+      console.log('getting new token')
+      access_token = await this.$auth0.getAccessTokenSilently()
+      localStorage.setItem('access_token', access_token)
+    }
+    // console.log('access_token ', access_token)
+  }
 };
 </script>
 

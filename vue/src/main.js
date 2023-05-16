@@ -29,16 +29,18 @@ const auth0 = createAuth0({
   domain: process.env.VUE_APP_AUTH0_DOMAIN,
   clientId: process.env.VUE_APP_AUTH0_CLIENTID,
   authorizationParams: {
-    redirect_uri: window.location.origin
+    redirect_uri: window.location.origin,
+    audience: process.env.VUE_APP_AUTH0_AUDIENCE
   },
   cacheLocation: 'localstorage',
   // useRefreshTokens: true,
-  audience: `${window.location.origin}/api/v2/`,
+  // audience: `${window.location.origin}/api/v2/`,
   responseType: 'token id_token',
   scope: 'openid profile'
 })
 
 app.use(auth0);
+
 
 /* use Vuex store */
 

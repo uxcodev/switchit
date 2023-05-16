@@ -20,6 +20,26 @@ export default {
       },
     };
 
+    app.config.globalProperties.$toast_error = {
+      show(error) {
+        // toast.props = { ...toast.props, ...params };
+        render(toast, container);
+        if (!container.isConnected) {
+          document.body.appendChild(container);
+        }
+        console.log('error', error)
+        toast.component.proxy.show(
+          {
+            message: error.message,
+            type: "error",
+            icon: "error",
+            duration: 6000,
+            key: Date.now(),
+          }
+        );
+      },
+    };
+
     app.config.globalProperties.$toast_warn = {
       show(message) {
         // toast.props = { ...toast.props, ...params };
@@ -40,7 +60,8 @@ export default {
       },
     };
 
-
     app.provide('toast', app.config.globalProperties.$toast);
+    app.provide('toast_warn', app.config.globalProperties.$toast_warn);
+    app.provide('toast_error', app.config.globalProperties.$toast_error);
   },
 };

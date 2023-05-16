@@ -165,6 +165,12 @@ const routes = [
     beforeEnter: isAuth,
     component: () => import('@/pages/onboarding/CompanyOnboardingSuccess.vue')
   },
+  {
+    path: '/api',
+    name: "api_testing",
+    beforeEnter: isAuth,
+    component: () => import('@/pages/testing/ApiTesting.vue')
+  },
 ]
 
 const router = createRouter({

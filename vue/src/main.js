@@ -19,29 +19,6 @@ const plugin = {
 }
 app.use(plugin)
 
-
-/* use Auth0 */
-
-import { createAuth0 } from '@auth0/auth0-vue';
-
-
-const auth0 = createAuth0({
-  domain: process.env.VUE_APP_AUTH0_DOMAIN,
-  clientId: process.env.VUE_APP_AUTH0_CLIENTID,
-  authorizationParams: {
-    redirect_uri: window.location.origin,
-    // audience: process.env.VUE_APP_AUTH0_AUDIENCE
-  },
-  cacheLocation: 'localstorage',
-  // useRefreshTokens: true,
-  audience: `https://switchit.ai/api`,
-  responseType: 'token id_token',
-  scope: 'openid profile'
-})
-
-app.use(auth0);
-
-
 /* use Vuex store */
 
 import store from '@/store/index.js'
@@ -95,6 +72,7 @@ import { authGuard } from "@auth0/auth0-vue";
 
 const isAuth = async () => {
   if (!auth0.isAuthenticated) {
+    console.log('!isAuthenticated')
     auth0.loginWithRedirect({
       appState: {
         target: window.location.href,
@@ -102,6 +80,7 @@ const isAuth = async () => {
     });
     return false
   }
+  console.log('isAuthenticated')
 }
 
 const routes = [
@@ -138,7 +117,7 @@ const routes = [
   {
     path: '/onboarding',
     name: "onboarding",
-    // beforeEnter: isAuth,
+    beforeEnter: isAuth,
     component: () => import('@/pages/onboarding/CompanyOnboarding.vue')
   },
   {
@@ -180,5 +159,28 @@ const router = createRouter({
 })
 
 app.use(router)
+
+/* use Auth0 */
+
+import { createAuth0 } from '@auth0/auth0-vue';
+
+
+const auth0 = createAuth0({
+  domain: process.env.VUE_APP_AUTH0_DOMAIN,
+  clientId: process.env.VUE_APP_AUTH0_CLIENTID,
+  authorizationParams: {
+    audience: process.env.VUE_APP_AUTH0_AUDIENCE,
+    redirect_uri: window.location.origin
+  },
+  cacheLocation: 'localstorage',
+  // useRefreshTokens: true,
+  // audience: process.env.VUE_APP_AUTH0_AUDIENCE,
+  // responseType: 'token id_token',
+  // scope: 'openid profile'
+})
+
+app.use(auth0);
+
+
 app.mount('#app')
 

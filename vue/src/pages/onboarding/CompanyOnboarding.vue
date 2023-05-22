@@ -2,8 +2,8 @@
   <ModalWindow v-if="modalComponent" :component="modalComponent" @closeModal="closeModal">
     <component :is="modalComponent"></component>
   </ModalWindow>
-  <CompanyOnboardingBackup v-if="version === 1"></CompanyOnboardingBackup>
-  <CreateCompany v-if="version === 2"></CreateCompany>
+  <CompanyOnboardingBackup v-if="version === 1">hi</CompanyOnboardingBackup>
+  <CreateCompany v-if="version === 2">hey</CreateCompany>
 </template>
 <script>
 
@@ -94,6 +94,7 @@ export default {
     }
   },
   async mounted() {
+    console.log('companyOnboarding mounted')
     setTimeout(() => {
       let user = this.$store.getters.user
       this.status = user ? user.status || 'new' : 'new'

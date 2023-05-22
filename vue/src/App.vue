@@ -49,12 +49,12 @@ export default {
         // this also checks switchit db for a user, and
         // returns the user info in the token
 
-        let token = await this.$api.createToken(auth0User.email)
+        let switchit_token = await this.$api.createToken(auth0User.email)
 
         // get the user info from the returned token and
         // save it in VueX
 
-        let decodedToken = await jwt_decode(token)
+        let decodedToken = await jwt_decode(switchit_token)
         await this.$store.dispatch('setUser', decodedToken.user)
 
         // if there is no user in the switchit db, push 

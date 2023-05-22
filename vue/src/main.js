@@ -30,11 +30,11 @@ const auth0 = createAuth0({
   clientId: process.env.VUE_APP_AUTH0_CLIENTID,
   authorizationParams: {
     redirect_uri: window.location.origin,
-    audience: process.env.VUE_APP_AUTH0_AUDIENCE
+    // audience: process.env.VUE_APP_AUTH0_AUDIENCE
   },
   cacheLocation: 'localstorage',
   // useRefreshTokens: true,
-  // audience: `${window.location.origin}/api/v2/`,
+  audience: `https://switchit.ai/api`,
   responseType: 'token id_token',
   scope: 'openid profile'
 })
@@ -95,7 +95,6 @@ import { authGuard } from "@auth0/auth0-vue";
 
 const isAuth = async () => {
   if (!auth0.isAuthenticated) {
-    // console.log("not authenticated")
     auth0.loginWithRedirect({
       appState: {
         target: window.location.href,
@@ -139,7 +138,7 @@ const routes = [
   {
     path: '/onboarding',
     name: "onboarding",
-    beforeEnter: isAuth,
+    // beforeEnter: isAuth,
     component: () => import('@/pages/onboarding/CompanyOnboarding.vue')
   },
   {

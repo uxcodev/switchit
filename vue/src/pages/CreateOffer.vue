@@ -23,12 +23,11 @@
               <!-- Read reviews → -->
             </div>
           </div>
-          <div class="card stats-deals-won">
+          <!-- <div class="card stats-deals-won">
             <div class="stats-title">
               Average spending
             </div>
-            <!-- <ChartDealsWon /> -->
-          </div>
+          </div> -->
           <div class="card stats-deal-size">
             <div class="stats-title">
               <div>
@@ -106,14 +105,16 @@
   
             <!-- <pre>{{ lead.data[category].interaction_data}}</pre> -->
             <div v-for="(value, key) in lead.data[category]?.interaction_data" :key='key'>
-              <div v-if="typeof value === 'object'">
+              <div class="lead_data_obj" v-if="typeof value === 'object'">
                 <label>{{ $t(key) }}</label>
-                <div class="ml4" v-for="(value2, key2) in value" :key='key2'>
-                  {{ $t(key2) }} : {{ value2 }}
+                <div class="lead_data ml4" v-for="(value2, key2) in value" :key='key2'>
+                  <label>{{ $t(key2) }}</label>
+                <div class="value">{{ value2 }}</div>
                 </div>
               </div>
-              <div v-else>
-                {{ $t(key) }} : {{ value }}
+              <div class="lead_data" v-else>
+                <label>{{ $t(key) }}</label>
+                <div class="value">{{ value }}</div>
               </div>
             </div>
           </div>
@@ -332,6 +333,17 @@ section
     &.xwide
       width: 100%   
       height: 100%  
+
+.lead_data
+  display: flex
+  justify-content: space-between
+  label, .value
+    width: 50%
+.lead_data_obj
+  flex-direction: column
+  gap: 10px
+  
+    
 .h100
   height: 100%
   </style>

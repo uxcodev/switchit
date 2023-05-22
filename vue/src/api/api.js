@@ -73,18 +73,45 @@ export default {
     }
   },
 
-  async switchit_getCompany(id) {
+  async switchit_getFullCompanies() {
     try {
-      /* 
       let includeCompanyDomains = true;
       let includeCompanyCountrys = true;
       let includeCompanyIbans = true;
       let includeCompanyServiceTypes = true;
       let includeCompanyPsd2Handles = true;
 
-      // let url = `https://switchitapi.azurewebsites.net/api/v1/companys/${id}&includeCompanyDomains=${includeCompanyDomains}&includeCompanyCountrys=${includeCompanyCountrys}&includeCompanyIbans=${includeCompanyIbans}&includeCompanyServiceTypes=${includeCompanyServiceTypes}&includeCompanyPsd2Handles=${includeCompanyPsd2Handles}`;
-        */
+      let url = `https://switchitapi.azurewebsites.net/api/v1/companies?includeCompanyDomains=${includeCompanyDomains}&includeCompanyCountrys=${includeCompanyCountrys}&includeCompanyIbans=${includeCompanyIbans}&includeCompanyServiceTypes=${includeCompanyServiceTypes}&includeCompanyPsd2Handles=${includeCompanyPsd2Handles}`;
+      const response = await _axios.get(url);
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
+  async switchit_getCompany(id) {
+    try {
       let url = `https://switchitapi.azurewebsites.net/api/v1/companys/${id}`;
+      let response = await _axios.get(url)
+      console.log(response)
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
+  async switchit_getFullCompany(id) {
+    try {
+
+      let includeCompanyDomains = true;
+      let includeCompanyCountrys = true;
+      let includeCompanyIbans = true;
+      let includeCompanyServiceTypes = true;
+      let includeCompanyPsd2Handles = true;
+
+      let url = `https://switchitapi.azurewebsites.net/api/v1/companys/${id}?includeCompanyDomains=${includeCompanyDomains}&includeCompanyCountrys=${includeCompanyCountrys}&includeCompanyIbans=${includeCompanyIbans}&includeCompanyServiceTypes=${includeCompanyServiceTypes}&includeCompanyPsd2Handles=${includeCompanyPsd2Handles}`;
+
+      // let url = `https://switchitapi.azurewebsites.net/api/v1/companys/${id}`;
       let response = await _axios.get(url)
       console.log(response)
       return response.data;
@@ -142,12 +169,12 @@ export default {
       };
 
       // let url = apiUrl + "/users/create-token";
-      const response = await _axios.post("/users/create-token", body);
-      const data = response.data;
+      const response = (await _axios.post("/users/create-token", body)).data;
+      const switchit_token = response.token;
 
       // save the token in local storage
-      localStorage.setItem('switchit_token', data.token);
-      return data.token;
+      localStorage.setItem('switchit_token', switchit_token);
+      return switchit_token;
     } catch (err) {
       console.error(err);
     }

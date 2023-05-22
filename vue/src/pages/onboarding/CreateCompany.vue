@@ -3,9 +3,9 @@
     <div class="container white">
       <h2 v-if="isAdmin">{{ isEditing ? 'Edit company' : 'Create company' }}</h2>
       <h2 v-else>Request access to Switchit</h2>
-        <div v-if="loading">
-      <LoaderAni />
-    </div>
+      <div v-if="loading">
+        <LoaderAni />
+      </div>
       <form v-else @submit.prevent="submitForm" class="switchit-form sm">
         <div class="group" v-if="isAdmin">
           <label for="email">Created by (email address)</label>
@@ -39,7 +39,7 @@
           <input v-model="form.company.website" placeholder="" type="text" id="website" class="input lg" />
         </div>
         <div class="group">
-          <label for="website">{{ isAdmin ? "Countries the company is active in" : "Countries you are active in"}}</label>
+          <label for="website">{{ isAdmin ? "Countries the company is active in" : "Countries you are active in" }}</label>
           <Multiselect v-model="form.company.countries" mode="tags" @select="countrySelected" :searchable="true" :close-on-select="false" :options="country_options" />
         </div>
         <div class="group">
@@ -144,13 +144,13 @@ export default {
       screen: 'UserTable',
       categories: this.$store.getters.categories,
       user: {
-          first_name: "",
-          last_name: "",
-          email: this.$auth0.user._value.email,
-          admin: false,
-          status: "pending",
-          access: {}
-        },
+        first_name: "",
+        last_name: "",
+        email: this.$auth0.user._value.email,
+        admin: false,
+        status: "pending",
+        access: {}
+      },
       form: {
         company: {
           name: `TestCompany`,
@@ -168,11 +168,11 @@ export default {
       users: [],
       errors: [],
       country_options: [
-        {label: "Denmark", value: "DK"},
-        {label: "Sweden", value: "SE"},
-        {label: "Norway", value: "NO"},
-        {label: "Germany", value: "DE"},
-        {label: "United States", value: "US"},
+        { label: "Denmark", value: "DK" },
+        { label: "Sweden", value: "SE" },
+        { label: "Norway", value: "NO" },
+        { label: "Germany", value: "DE" },
+        { label: "United States", value: "US" },
       ]
     }
   },
@@ -253,15 +253,15 @@ export default {
     try {
 
       setTimeout(() => {
-      let user = this.$store.getters.user
-      this.status = user ? user.status || 'new' : 'new'
-      // this.status = user.status
-      if (this.status === 'pending') {
-        this.$router.push({ path: '/signup_success' })
-      } else if (user.status === "active") {
+        let user = this.$store.getters.user
+        this.status = user ? user.status || 'new' : 'new'
+        // this.status = user.status
+        if (this.status === 'pending') {
+          this.$router.push({ path: '/signup_success' })
+        } else if (user.status === "active") {
           // this.$router.push({ path: '/dashboard' })
-      }
-    }, 500)
+        }
+      }, 500)
 
       console.log('categories', this.categories)
       this.id = this.$route.query.id

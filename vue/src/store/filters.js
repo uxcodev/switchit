@@ -324,6 +324,7 @@ export default {
       console.log('filteredCategories', filteredCategories)
       context.commit('setFilters', { val: filteredCategories });
       context.commit('setCategories', { val: filteredCategories });
+      console.log('setAccess finished')
     },
   },
   getters: {

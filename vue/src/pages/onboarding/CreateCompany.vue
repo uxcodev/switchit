@@ -20,6 +20,12 @@
           </select>
         </div>
         <div class="group" v-if="!isAdmin">
+          <label for="firstName">Requested by</label>
+          <div class="inline">
+            <input disabled v-model="user.email" placeholder="" type="text" id="email" class="input lg mr3" />
+          </div>
+        </div>
+        <div class="group" v-if="!isAdmin">
           <label for="firstName">Your name</label>
           <div class="inline">
             <input v-model="user.first_name" placeholder="First name" type="text" id="first_name" class="input lg mr3" />
@@ -30,9 +36,9 @@
           <label for="company">Company name</label>
           <input v-model="form.company.name" placeholder="" type="text" id="company" class="input lg" />
         </div>
-        <div class="group">
+        <div class="group" v-if="isAdmin">
           <label for="website">Company email</label>
-          <input v-model="form.company.contact_email" placeholder="" type="text" id="website" class="input lg" />
+          <input v-model="form.company.contact_email" placeholder="" type="text" id="company_email" class="input lg" />
         </div>
         <div class="group">
           <label for="website">Company website</label>
@@ -51,34 +57,6 @@
               <input class="checkbox" type="checkbox" v-model="category.status" :id="category.name" />{{ $t(key) }}
               <span class="checkmark"></span>
             </label>
-            <!-- <label class="checkbox-label">
-              <input class="checkbox" type="checkbox" v-model="form.company.access.mortgage.status" id="mortgage" />Mortgage
-              <span class="checkmark"></span>
-            </label>
-            <label class="checkbox-label">
-              <input class="checkbox" type="checkbox" v-model="form.company.access.mobile.status" id="mobile" />Mobile
-              <span class="checkmark"></span>
-            </label>
-            <label class="checkbox-label">
-              <input class="checkbox" type="checkbox" v-model="form.company.access.utilities.status" id="energy" />Energy
-              <span class="checkmark"></span>
-            </label>
-            <label class="checkbox-label">
-              <input class="checkbox" type="checkbox" v-model="form.company.access.insurance.status" id="insurance" />Insurance
-              <span class="checkmark"></span>
-            </label>
-            <label class="checkbox-label">
-              <input class="checkbox" type="checkbox" v-model="form.company.access.broadband.status" id="broadband" />Broadband
-              <span class="checkmark"></span>
-            </label>
-            <label class="checkbox-label">
-              <input class="checkbox" type="checkbox" v-model="form.company.access.auto.status" id="auto" />Auto
-              <span class="checkmark"></span>
-            </label>
-            <label class="checkbox-label">
-              <input class="checkbox" type="checkbox" v-model="form.company.access.banking.status" id="banking" />Banking
-              <span class="checkmark"></span>
-            </label> -->
           </div>
         </div>
         <button class="icon">Submit</button>
@@ -88,10 +66,8 @@
   </div>
   <div v-if="status === 'pending'" class="main clip" v-show="!isAdmin">
     <div class="container clip">
-      <!-- <h2>Settings</h2>  -->
       <div class="ph_content">
         <div class="cards lg">
-          <!-- <div v-for="i in 2" :key='i'><span :class='i'></span></div> -->
           <div class="banner_lg">
             <h1>
               Your account is pending approval.
@@ -106,24 +82,12 @@
       </div>
 
     </div>
-    <!-- <h3>{{ user.status }}</h3> -->
-    <!-- <div>
-      <pre>
-        <code>
-        {{ user }}
-      </code>
-      </pre>
-    </div> -->
-    <!-- <keep-alive>
-      <component v-if="$auth0.isAuthenticated.value" :is="screen"></component>
-    </keep-alive> -->
   </div>
 </template>
 <script>
 
 import Multiselect from '@vueform/multiselect'
 import LoaderAni from '@/components/ui/LoaderAni.vue'
-// import api from "@/api/switchit";
 
 export default {
   components: {
@@ -143,23 +107,25 @@ export default {
       modalComponent: null,
       screen: 'UserTable',
       categories: this.$store.getters.categories,
+      activeUser: this.$store.getters.activeUser,
       user: {
         first_name: "",
         last_name: "",
         email: this.$auth0.user._value.email,
         admin: false,
         status: "pending",
-        access: {}
+        access: {},
+        _id: null
       },
       form: {
         company: {
-          name: `TestCompany`,
+          name: ``,
           // name: `test company ${Math.floor(Math.random() * (11111 - 99999))}`,
-          website: "example.com",
+          website: "",
           countries: [],
           status: "pending",
           createdby: this.$auth0.user._value.email,
-          contact_email: 'johndoe@somecompany.com',
+          contact_email: '',
           access: {},
           roles: [],
         },
@@ -216,32 +182,50 @@ export default {
       this.screen = page
     },
     async submitForm() {
-      console.log('submitForm')
-      let response
-      if (this.isEditing) {
-        response = await this.$api.updateCompany(this.id, this.form)
-      } else {
-        // Node API
-        response = await this.$api.createCompany(this.form)
 
-        // Switchit Official API
-        /* 
-                let body = {
-                  name: this.form.company.name,
-                  homepage: this.form.company.website,
-                  description: "Lorem ipsum dolor sit amet",
-                }
-                response = await this.$api.switchit_createCompany(body)
-         */
-      }
-      console.log(response)
-      if (response.ok) {
-        // console.log(`response:`)
-        this.status = "pending"
-        this.$router.push({ path: '/operations', query: { q: 'Companies' } })
-      } else {
-        this.errors.push(response.message)
-        setTimeout(() => { this.errors = [] }, 3000)
+      try {
+
+        console.log('submitForm')
+        let response
+
+        // Node API
+/* 
+        if (this.isAdmin) {
+          if (this.isEditing) {
+            response = await this.$api_node.updateCompany(this.id, this.form)
+          } else {
+            response = await this.$api_node.createCompany(this.form)
+          }
+          if (response.ok) {
+            this.$router.push({ path: '/operations', query: { q: 'Companies' } })
+          }
+        }
+        else {
+          let fields = {
+            ...this.form,
+            user: this.user
+          }
+          response = await this.$api_node.signupCompany(fields)
+          fields = {
+            ...this.user
+          }
+          console.log('updateUser fields: ', fields)
+          // response = await this.$api_node.updateUser(fields)
+        }
+ */
+        // **** Switchit Official API ****
+
+        let body = {
+          name: this.form.company.name,
+          homepage: this.form.company.website,
+          description: "Lorem ipsum dolor sit amet",
+        }
+        response = await this.$switchit.createCompany(body)
+         
+
+        console.log(response)
+      } catch (error) {
+        this.$toast_error.show(error)
       }
     },
     async countrySelected() {
@@ -249,58 +233,54 @@ export default {
       console.log('countrySelected', this.form.company.countries)
     }
   },
-  async mounted() {
+  async created() {
     try {
-
-      setTimeout(() => {
-        let user = this.$store.getters.user
-        this.status = user ? user.status || 'new' : 'new'
-        // this.status = user.status
-        if (this.status === 'pending') {
-          this.$router.push({ path: '/signup_success' })
-        } else if (user.status === "active") {
-          // this.$router.push({ path: '/dashboard' })
-        }
-      }, 500)
-
-      console.log('categories', this.categories)
+      console.log('createCompany created');
+      console.log('createCompany active user', this.activeUser);
+      // check if editing
       this.id = this.$route.query.id
       this.isEditing = this.id ? true : false;
 
-      let countries = await this.$api.getCountries()
-
+      // populate the countries dropdown
+      let countries = await this.$api_node.getCountries()
       let country_options = countries.map(country => ({
         label: country.name,
         value: country.code
       }));
 
       this.country_options.push(...country_options)
-
-      this.users = await this.$api.getUsers()
-      console.log('this.users: ', this.users)
-      console.log('this.isEditing: ', this.isEditing)
-
-      if (this.isEditing) {
-        let company = await this.$api.getCompanyById(this.id);
-        this.form.company = company;
+      
+      // populate the users and company differently depending on whether admin, and whether editing
+      
+      if (this.isAdmin) {
+        this.users = this.isAdmin ? await this.$api_node.getUsers() : null
+        let company = this.isEditing ? await this.$api_node.getCompanyById(this.id) : null
+        this.form.company = company || this.form.company;
         this.selectedAdmin = company?.roles[0]?.user || null;
       } else {
-        for (const prop in this.categories) {
-          if (Object.hasOwnProperty.call(this.categories, prop)) {
-            this.form.company.access[prop] = { status: false };
-          }
-        }
-        if (!this.isAdmin) {  // if the user is not a superadmin
-          this.form.company.createdby = this.$auth0.user._value.email;  // auto-fill the creator
-          this.form.company.roles.push({ role: 'owner', user: this.$auth0.user._value._id });  // auto-fill the admin
-          this.form.company.status = 'pending';  // auto-set the status
+        this.form.company.createdby = this.$auth0.user._value.email;
+        this.user.first_name = this.$auth0.user._value.given_name;
+        this.user.last_name = this.$auth0.user._value.family_name;
+        this.form.company.contact_email = this.$auth0.user._value.email;
+        this.form.company.status = 'pending';
+        this.form.company.roles.push({ role: 'owner', user: this.activeUser._id }); 
+        this.user._id = this.activeUser?._id;
+      }
+
+      for (const prop in this.categories) {
+        if (Object.hasOwnProperty.call(this.categories, prop)) {
+          this.form.company.access[prop] = { status: false };
         }
       }
 
-      console.log('this.isAdmin', this.isAdmin)
-      console.log('this.form.company.access', this.form.company.access)
-      console.log('isEditing', this.isEditing)
-      console.log('this.form.company', this.form.company)
+
+    } catch (error) {
+      this.$toast_error.show(error)
+    }
+  },
+
+  async mounted() {
+    try {
       this.loaded = true
     } catch (error) {
       this.$toast_error.show(error)

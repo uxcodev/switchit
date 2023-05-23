@@ -17,7 +17,7 @@
         </div>
         <div class="group">
           <label for="email">Your email</label>
-          <input v-model="form.user.email" type="text" id="first_name" disabled class="input lg" />
+          <input v-model="form.user.email" type="text" id="first_name" :disabled="false" class="input lg" />
         </div>
         <div class="group">
           <label for="company">Company name</label>
@@ -124,6 +124,7 @@ export default {
       status: null,
       modalComponent: null,
       screen: 'UserTable',
+      auth0Email: false, //this.$auth0.user._value.email,
       form: {
         user: {
           first_name: "Nick",
@@ -155,15 +156,12 @@ export default {
   },
   computed: {
     user() {
-      return this.$store.getters.user
+      return this.$store.getters.activeUser
     }
   },
   watch: {
     user(user) {
       this.status = user.status
-      // if (user.status === "active") {
-      //   this.$router.push({ path: '/dashboard' })
-      // }
     }
   },
   methods: {
@@ -178,7 +176,7 @@ export default {
     },
     async submitForm() {
       this.form.user.access = this.form.company.access
-      let response = await this.$api.signupCompany(this.form)
+      let response = await this.$api_node.signupCompany(this.form)
       if (response.ok) {
         // console.log(`response:`)
         console.log(response)
@@ -191,25 +189,6 @@ export default {
     }
   },
   async mounted() {
-    setTimeout(() => {
-      let user = this.$store.getters.user
-      this.status = user ? user.status || 'new' : 'new'
-      // this.status = user.status
-      if (this.status === 'pending') {
-        // this.$router.push({ path: '/signup_success' })
-      }
-    }, 500)
-    // setTimeout(() => {
-    //   let user = this.$store.getters.user
-    //   this.status = user.status
-    //   // // console.log(user)
-    //   // // console.log(user.status)
-    //   // // console.log(this.$auth0.user._value.email)
-    //   if (user.status === "active") {
-    //     this.$router.push({ path: '/dashboard' })
-    //   }
-    //   // this.user = this.$store.getters.user
-    // }, 1000)
   }
 }
 </script>

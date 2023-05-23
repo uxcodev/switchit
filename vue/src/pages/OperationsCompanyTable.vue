@@ -100,12 +100,12 @@ export default {
       this.updateCompany(company._id, { status: company.status })
     },
     async updateCompany(id, fields) {
-      let response = await this.$api.updateCompany(id, fields)
+      let response = await this.$api_node.updateCompany(id, fields)
       console.log(response)
     },
     async deleteCompany(id) {
-      let response = await this.$api.deleteCompany(id)
-      this.companies = await this.$api.getCompanies()
+      let response = await this.$api_node.deleteCompany(id)
+      this.companies = await this.$api_node.getCompanies()
       console.log(response)
     },
     openCompany(id) {
@@ -119,7 +119,7 @@ export default {
     },
   },
   async mounted() {
-    this.companies = await this.$api.getCompanies()
+    this.companies = await this.$api_node.getCompanies()
     // console.log(this.companies)
 
     // // console.log('CompanyTable')

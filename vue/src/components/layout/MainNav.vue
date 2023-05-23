@@ -33,7 +33,7 @@ export default {
       return this.$store.getters.isAdmin
     },
     isActive() {
-      return this.$store.getters.user ? this.$store.getters.user.status === 'active' : false
+      return this.$store.getters.activeUser ? this.$store.getters.activeUser.status === 'active' : false
     }
   },
   methods: {

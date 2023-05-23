@@ -89,12 +89,12 @@ export default {
       this.updateUser(user._id, { status: user.status })
     },
     async updateUser(id, fields) {
-      let response = await this.$api.updateUser(id, fields)
+      let response = await this.$api_node.updateUser(id, fields)
       console.log(response)
     },
     async deleteUser(id) {
-      let response = await this.$api.deleteUser(id)
-      this.users = await this.$api.getUsers()
+      let response = await this.$api_node.deleteUser(id)
+      this.users = await this.$api_node.getUsers()
       console.log(response)
     },
     openCompany(id) {
@@ -108,7 +108,7 @@ export default {
     },
   },
   async mounted() {
-    this.users = await this.$api.getUsers()
+    this.users = await this.$api_node.getUsers()
     // console.log(this.users)
 
     // // console.log('UserTable')

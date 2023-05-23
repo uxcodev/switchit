@@ -195,7 +195,7 @@ export default {
 
   setup() {
     const instance = getCurrentInstance();
-    const api = instance.appContext.config.globalProperties.$api;
+    const api = instance.appContext.config.globalProperties.$api_node;
     const $toast = instance.appContext.config.globalProperties.$toast
     const router = useRouter();
     const store = useStore();
@@ -205,7 +205,7 @@ export default {
     const leads = ref([]); // loaded leads
     const leadCount = ref(0); // total number of leads matching filters
 
-    const user = computed(() => store.getters.user);
+    const user = computed(() => store.getters.activeUser);
     const filters = computed(() => store.getters.filters);
     const filtersChanged = computed(() => store.getters.filtersChanged);
     const categories = computed(() => store.getters.categories);

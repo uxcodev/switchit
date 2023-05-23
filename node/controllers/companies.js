@@ -35,71 +35,54 @@ exports.createCompany = (req, res, next) => {
 };
 
 exports.signupCompany = async (req, res, next) => {
-
   try {
+    const companyFields = req.body.fields.company;
+    const userFields = req.body.fields.user;
 
-    let companyFields = req.body.fields.company;
-    let companyObj = {}
-    let company
-    let user
-
-    // see if company is already in database
-    // if so, return. if not, create it
-
-    company = await Company.findOne({ website: companyFields.website }, { strictQuery: true },)
+    let company = await Company.findOne({ website: companyFields.website }, { strictQuery: true });
     if (!company) {
+      let companyObj = {}
       for (const [key, value] of Object.entries(companyFields)) {
         companyObj[key] = value
       }
-      company = new Company(companyObj)
+      company = new Company(companyObj);
     } else {
-      // console.log('company already exists')
-      // console.log(company)
-      // res.status(200).json({ message: "Company already exists" }) // UNCOMMENT FOR PROD
-      // return
+      for (const [key, value] of Object.entries(companyFields)) {
+        company[key] = value;
+      }
     }
+    await company.save();
 
-    // see if user is already in database, if not create it
-
-    let userFields = req.body.fields.user;
-    userExists = await User.findOne({ email: userFields.email })
-
-    if (!userExists) {
+    let user = await User.findOne({ email: userFields.email });
+    if (!user) {
       let userObj = {}
       for (const [key, value] of Object.entries(userFields)) {
         userObj[key] = value
       }
-      user = new User(userObj)
-      user.roles = []
-
-      // add role to user
-
-      user.roles.push({
+      user = new User(userObj);
+      user.roles = [{
         company: company._id,
         role: "owner"
-      })
-
-      // add role to company
+      }];
 
       company.roles = [{
         user: user._id,
         role: "owner"
-      }]
+      }];
 
-      company.save()
-      user.save()
-
-      // return created company
-      res.status(200).json(company)
+      await Promise.all([user.save(), company.save()]);
+      res.status(201).json(company);
     } else {
-      res.status(409).json({ message: "User already exists" })
-      return
+      for (const [key, value] of Object.entries(userFields)) {
+        user[key] = value
+      }
+      await user.save();
+      res.status(200).json({ message: "Company and user updated" });
     }
   } catch (error) {
     console.log(error)
+    res.status(409).json({ message: error.message })
   }
-
-
 };
 
 exports.updateCompany = async (req, res, next) => {

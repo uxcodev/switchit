@@ -106,24 +106,24 @@ export default {
         homepage: "example.com",
         description: "Lorem ipsum dolor sit amet",
       }
-      let response = await this.$api.switchit_createCompany(body)
+      let response = await this.$switchit.createCompany(body)
       console.log('response: ', response)
     },
     async getCompanies() {
-      this.companies  = (await this.$api.switchit_getCompanies()).model
+      this.companies  = (await this.$switchit.getCompanies()).model
       console.log('this.companies: ', this.companies)
     },
     async getFullCompanies() {
-      this.companies  = (await this.$api.switchit_getFullCompanies()).model
+      this.companies  = (await this.$switchit.getFullCompanies()).model
       console.log('this.companies: ', this.companies)
     },
     async getCompany(id) {
-      let response = (await this.$api.switchit_getCompany(id)).model
+      let response = (await this.$switchit.getCompany(id)).model
       this.companies.push(response)
       console.log('response: ', response)
     },
     async getFullCompany(id) {
-      let response = (await this.$api.switchit_getFullCompany(id)).model
+      let response = (await this.$switchit.getFullCompany(id)).model
       this.companies.push(response)
       console.log('response: ', response)
     }

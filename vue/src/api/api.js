@@ -1,4 +1,4 @@
-// import store from '@/store/index.js'
+import store from '@/store/index.js'
 import axios from 'axios';
 
 const _axios = axios.create({
@@ -11,11 +11,11 @@ const _axios = axios.create({
 
 _axios.interceptors.request.use(async (config) => {
   let token = localStorage.getItem('access_token')
-  // if (!token) {
-  //   console.log('no token found')
-  //   token = await this.$auth0.getAccessTokenSilently();
-  //   console.log('token', token)
-  // }
+  if (!token) {
+    console.log('no token found')
+    token = await this.$auth0.getAccessTokenSilently();
+    console.log('token', token)
+  }
 
   config.headers.Authorization = `Bearer ${token}`;
   return config;
@@ -28,20 +28,11 @@ _axios.interceptors.response.use((response) => {
 }, (error) => {
   if (error.response.status === 401) {
     console.log('401 error')
-    // localStorage.removeItem('access_token');
-    // window.location.href = "/login";
-    // reload window
-    // console.log('token has been removed')
-    // window.location.reload();
   }
   return Promise.reject(error);
 });
 
-
-
 export default {
-
-
 
   // Switchit API calls
 
@@ -109,7 +100,6 @@ export default {
 
       let url = `https://switchitapi.azurewebsites.net/api/v1/companys/${id}?includeCompanyDomains=${includeCompanyDomains}&includeCompanyCountrys=${includeCompanyCountrys}&includeCompanyIbans=${includeCompanyIbans}&includeCompanyServiceTypes=${includeCompanyServiceTypes}&includeCompanyPsd2Handles=${includeCompanyPsd2Handles}`;
 
-      // let url = `https://switchitapi.azurewebsites.net/api/v1/companys/${id}`;
       let response = await _axios.get(url)
       console.log(response)
       return response.data;
@@ -158,6 +148,7 @@ export default {
       console.error(err);
     }
   },
+
   async createToken(email) {
     try {
       // create JWT token in backend
@@ -177,6 +168,16 @@ export default {
     }
   },
 
+
+  async getActiveUser(email) {  //getUser
+    try {
+      const user = (await _axios.get(`/users/get-active-user?email=${email}`)).data;
+      store.dispatch('setActiveUser', user)
+      return user;
+    } catch (err) {
+      console.error(err);
+    }
+  },
 
   async getUsers() {
     try {
@@ -271,6 +272,20 @@ export default {
       console.error(err);
     }
     return true;
+  },
+
+  async createUser(fields) {
+    try {
+      const body = {
+        fields: fields,
+      };
+
+      const response = await _axios.post('/users/create-user', body);
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
   },
 
   async updateUser(id, fields) {

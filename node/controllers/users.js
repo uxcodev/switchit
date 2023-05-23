@@ -1,20 +1,15 @@
 const User = require("../models/user");
 const Company = require("../models/company");
-const jwt = require('jsonwebtoken')
+// const jwt = require('jsonwebtoken')
 
-exports.createToken = async (req, res, next) => {
+exports.getUser = async (req, res, next) => {
   let user = await User.findOne({ email: req.body.email })
-  // // console.log(user)
-  const token = jwt.sign({ user }, 'åß∂ƒœ∑®†¥øπåß∂ƒœ∑®†¥øπ', { expiresIn: '1h' })
-  // let admin = await User.findOne({ email: req.body.email, admin: true })
-  // const token = jwt.sign({
-  //   email: req.body.email,
-  //   admin: user.admin,
-  //   user: user
-  // }, 'secret', { expiresIn: '1h' })
-  // // console.log(token)
+  res.status(200).json(user)
+};
 
-  res.status(200).json({ token: token, email: req.body.email })
+exports.getActiveUser = async (req, res, next) => {
+  let user = await User.findOne({ email: req.query.email })
+  res.status(200).json(user)
 };
 
 exports.getUsers = async (req, res, next) => {

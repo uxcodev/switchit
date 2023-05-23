@@ -21,6 +21,7 @@
 
 import ModalWindow from '@/components/ui/ModalWindow.vue';
 import Users from './OperationsUserTable.vue';
+import NodeCompanies from './OperationsCompanyTable_Node.vue';
 import Companies from './OperationsCompanyTable.vue';
 import ImportPeople from '@/components/import/ImportPeople.vue';
 export default {
@@ -28,13 +29,14 @@ export default {
     ModalWindow,
     Users,
     Companies,
+    NodeCompanies,
     ImportPeople
   },
   data() {
     return {
       modalComponent: null,
       isModalVisible: false,
-      screens: ['Users', 'Companies'],
+      screens: ['Users', 'Companies', 'NodeCompanies'],
       screen: null,
     }
   },

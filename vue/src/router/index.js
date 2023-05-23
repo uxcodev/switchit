@@ -50,6 +50,12 @@ const routes = [
     component: () => import('@/pages/onboarding/CreateCompany.vue')
   },
   {
+    path: '/createcompanynode',
+    name: "createcompanynode",
+    // beforeEnter: isAuth,
+    component: () => import('@/pages/onboarding/CreateCompany_Node.vue')
+  },
+  {
     path: '/create_offer',
     name: "create_offer",
     props: true,

@@ -42,10 +42,10 @@ export default {
       const response = await _axios.post(url, body);
       response.data.ok = response?.statusText === "OK"
 
-      if (response.status === 401) {
-        localStorage.removeItem('access_token');
-        window.location.href = "/login";
-      }
+      // if (response.status === 401) {
+      //   localStorage.removeItem('access_token');
+      //   window.location.href = "/login";
+      // }
       return response.data;
     } catch (err) {
       console.error(err);
@@ -108,5 +108,21 @@ export default {
     }
   },
 
+  async getServiceTypes() {
+    try {
+      return (await _axios.get("https://switchitapi.azurewebsites.net/api/v1/servicetypes")).data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
 
+  async addServicesToCompany(serviceTypes) {
+    try {
+      let url = "https://switchitapi.azurewebsites.net/api/v1/companyservicetypes";
+      const response = await _axios.post(url, serviceTypes);
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  }
 }

@@ -13,27 +13,17 @@
     <div class="table">
       <div v-for="(company, index) in companies" :key="index">
         <div class="item">
-          <div class="row"  @click="$router.push({ path: '/createcompany', query: { id: company._id } })">
+          <div class="row"  @click="$router.push({ path: '/createcompanynode', query: { id: company._id } })">
             <div class="field-group" >
               <div class="field b">
                 {{ company.name }} 
               </div>
-              <div class="help">
-                {{ company.id }} 
-              </div>
               <div class="field light">
-                website: 
-                {{ company.homePage }}
+                websites: 
+                {{ company.website }}
               </div>
               <div class="field light">
                 {{ company.contact_email }}
-              </div>
-              <div class="field light" v>
-                domain: 
-                <span class="role" v-for="domain in company.domains" :key="domain">
-                  {{ domain.domainName }}
-                  <!-- {{ role.user.email }} -->
-                </span>
               </div>
               <div class="field light" v>
                 admin: 
@@ -43,14 +33,14 @@
                 </span>
               </div>
               <div class="field light company">
-                countries: 
+                markets: 
                 <span class="country" v-for="country in company.countries" :key="country">
                   {{ country?.name || country}}
                 </span>
               </div>
 
             </div>
-            <IconsCategoryAccess v-if="company.access" :access="company.access"/>
+            <IconsCategoryAccess :access="company.access"/>
             
           </div>
           <div class='status_wrapper' :class="company.status">
@@ -129,9 +119,7 @@ export default {
     },
   },
   async mounted() {
-    this.companies = (await this.$switchit.getCompanies()).model
-    // this.companies = await this.$api_node.getCompanies()
-
+    this.companies = await this.$api_node.getCompanies()
     // console.log(this.companies)
 
     // // console.log('CompanyTable')
@@ -222,7 +210,7 @@ h3
           padding: 0
       .field
         padding: 10px
-        max-width: 3000px
+        width: 180px
         &.b
           font-weight:600
         &.light

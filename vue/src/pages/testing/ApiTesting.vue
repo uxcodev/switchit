@@ -11,40 +11,43 @@
       <button @click="getFullCompanies()">getFullCompanies</button>
       <button @click="getCompany('f781193d-dfcd-4fcd-b5cc-4cb9a32a056f')">getCompany</button>
       <button @click="getFullCompany('f781193d-dfcd-4fcd-b5cc-4cb9a32a056f')">getFullCompany</button>
+      <hr>
+      <button @click="getServiceTypes()">getServiceTypes</button>
+      <button @click="addServicesToCompany()">addServicesToCompany</button>
     </div>
-
-  <div class="table">
+    <pre>{{ result }}</pre>
+    <div class="table">
       <div v-for="(company, index) in companies" :key="index">
         <div class="item">
           <!-- <div class="row"  @click="$router.push({ path: '/createcompany', query: { id: company._id } })"> -->
           <div class="row">
-            <div class="field-group" >
+            <div class="field-group">
               <div class="field b">
-                {{ company.name }} 
+                {{ company.name }}
               </div>
               <div class="field light">
-                websites: 
+                websites:
                 {{ company.website }}
               </div>
               <div class="field light">
                 {{ company.contact_email }}
               </div>
               <div class="field light" v>
-                admin: 
+                admin:
                 <!-- <span class="role" v-for="role in company.roles" :key="role">
                   {{ role.user?.email }}
                 </span> -->
               </div>
               <div class="field light company">
-                markets: 
+                markets:
                 <span class="country" v-for="country in company.countries" :key="country">
-                  {{ country?.name || country}}
+                  {{ country?.name || country }}
                 </span>
               </div>
 
             </div>
             <!-- <IconsCategoryAccess :access="company.access"/> -->
-            
+
           </div>
           <div class='status_wrapper' :class="company.status">
             <!-- <div :class="['dot', company.status]"></div> -->
@@ -59,7 +62,7 @@
             <span class="material-symbols-outlined">Delete</span>
           </div>
         </div>
-      </div> 
+      </div>
     </div>
   </div>
 </template>
@@ -85,8 +88,10 @@ export default {
   },
   data() {
     return {
+      result: null,
       modalComponent: null,
       companies: [],
+      serviceTypes: [],
     };
   },
   methods: {
@@ -110,11 +115,11 @@ export default {
       console.log('response: ', response)
     },
     async getCompanies() {
-      this.companies  = (await this.$switchit.getCompanies()).model
+      this.companies = (await this.$switchit.getCompanies()).model
       console.log('this.companies: ', this.companies)
     },
     async getFullCompanies() {
-      this.companies  = (await this.$switchit.getFullCompanies()).model
+      this.companies = (await this.$switchit.getFullCompanies()).model
       console.log('this.companies: ', this.companies)
     },
     async getCompany(id) {
@@ -126,10 +131,26 @@ export default {
       let response = (await this.$switchit.getFullCompany(id)).model
       this.companies.push(response)
       console.log('response: ', response)
-    }
+    },
+    async getServiceTypes() {
+      this.serviceTypes = await this.$switchit.getServiceTypes()
+      console.log('this.serviceTypes: ', this.serviceTypes)
+      this.result = this.serviceTypes
+    },
+    async addServicesToCompany() {
+      let companyId = "7e9a03e7-d428-4921-98fc-17e6d1f98886"
+      let body = 
+        {
+          "serviceType": 8,
+          "companyId": companyId
+        }
+        
+      let response = await this.$switchit.addServicesToCompany(body)
+      console.log('response: ', response)
+  },
 },
   async mounted() {
-  }
+}
 }
 </script>
 

@@ -215,18 +215,15 @@ export default {
  */
         // **** Switchit Official API ****
 
-        if (this.isAdmin) {
-          let body = {
-            name: this.form.company.name,
-            homepage: this.form.company.website,
-            description: "Lorem ipsum dolor sit amet",
-          }
-          response = await this.$switchit.createCompany(body)
-          console.log(response)
-          if (response.ok) {
-            this.$router.push({ path: '/operations', query: { q: 'Companies' } })
-          }
+        let body = {
+          name: this.form.company.name,
+          homepage: this.form.company.website,
+          description: "Lorem ipsum dolor sit amet",
         }
+        response = await this.$switchit.createCompany(body)
+         
+
+        console.log(response)
       } catch (error) {
         this.$toast_error.show(error)
       }

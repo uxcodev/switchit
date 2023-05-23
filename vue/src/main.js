@@ -70,23 +70,7 @@ app.use(router)
 
 /* use Auth0 */
 
-import { createAuth0 } from '@auth0/auth0-vue';
-
-
-const auth0 = createAuth0({
-  domain: process.env.VUE_APP_AUTH0_DOMAIN,
-  clientId: process.env.VUE_APP_AUTH0_CLIENTID,
-  authorizationParams: {
-    audience: process.env.VUE_APP_AUTH0_AUDIENCE,
-    redirect_uri: window.location.origin
-  },
-  // cacheLocation: 'localstorage',
-  // useRefreshTokens: true,
-  // audience: process.env.VUE_APP_AUTH0_AUDIENCE,
-  // responseType: 'token id_token',
-  // scope: 'openid profile'
-})
-
+import auth0 from '@/helpers/auth0.js';
 app.use(auth0);
 
 

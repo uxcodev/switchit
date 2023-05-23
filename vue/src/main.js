@@ -80,6 +80,7 @@ const isAuth = async () => {
     });
     return false
   }
+
   console.log('isAuthenticated')
 }
 
@@ -172,7 +173,7 @@ const auth0 = createAuth0({
     audience: process.env.VUE_APP_AUTH0_AUDIENCE,
     redirect_uri: window.location.origin
   },
-  cacheLocation: 'localstorage',
+  // cacheLocation: 'localstorage',
   // useRefreshTokens: true,
   // audience: process.env.VUE_APP_AUTH0_AUDIENCE,
   // responseType: 'token id_token',

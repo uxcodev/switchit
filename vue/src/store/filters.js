@@ -1,3 +1,5 @@
+// import { filter } from "core-js/core/array";
+
 // this will be replaced with data from the backend
 const service_data = {
   general: {
@@ -300,16 +302,26 @@ export default {
     },
     setAccess(context, access) {
 
-      const filteredCategories = {};
       let categories = context.getters.categories;
-      for (const category in categories) {
-        if (access[category].status === true) {
-          filteredCategories[category] = {
-            ...access[category],
-            ...categories[category]
-          };
-        }
-      }
+      const filteredCategories = Object.assign({}, categories);
+      console.log('filteredCategories', filteredCategories)
+      // for each item in 'access', if there is a matching key in 'categories', set that key's status to true
+      access.forEach(category => {
+        filteredCategories[category] = {
+          ...categories[category],
+          selected: true
+        };
+      })
+
+      // for (const category in categories) {
+      //   if (access[category].status === true) {
+      //     filteredCategories[category] = {
+      //       ...access[category],
+      //       ...categories[category]
+      //     };
+      //   }
+      // }
+      console.log('filteredCategories', filteredCategories)
       context.commit('setFilters', { val: filteredCategories });
       context.commit('setCategories', { val: filteredCategories });
     },

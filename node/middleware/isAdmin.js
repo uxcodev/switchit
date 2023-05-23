@@ -12,7 +12,8 @@ module.exports = (req, res, next) => {
 
     let decodedToken;
     try {
-      decodedToken = jwt.verify(token, 'åß∂ƒœ∑®†¥øπåß∂ƒœ∑®†¥øπ')
+      decodedToken = jwt.verify(token)
+      console.log('decodedToken: ', decodedToken)
       if (decodedToken.user.admin) {
         req.email = decodedToken.user.email
         next()

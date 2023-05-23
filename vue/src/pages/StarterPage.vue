@@ -38,7 +38,7 @@ export default {
     },
   },
   mounted() {
-    this.$router.push({ path: '/dashboard' })
+    // this.$router.push({ path: '/dashboard' })
     // // console.log('starter page')
   }
 }

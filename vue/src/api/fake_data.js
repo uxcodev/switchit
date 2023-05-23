@@ -8,7 +8,7 @@ const _axios = axios.create({
   },
 });
 
-const token = localStorage.getItem('switchit_token');
+const token = localStorage.getItem('access_token');
 if (token) {
   _axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 }

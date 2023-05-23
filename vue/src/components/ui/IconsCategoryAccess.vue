@@ -31,7 +31,6 @@ export default {
   methods: {
   },
   mounted() {
-    console.log('IconsCategoryAccess.vue mounted', this.access, this.categories)
   },
 };
 </script>

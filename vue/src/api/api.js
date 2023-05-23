@@ -1,5 +1,6 @@
 // import store from '@/store/index.js'
 import axios from 'axios';
+
 const _axios = axios.create({
   baseURL: process.env.VUE_APP_API_URL,
   headers: {
@@ -9,17 +10,14 @@ const _axios = axios.create({
 });
 
 _axios.interceptors.request.use(async (config) => {
-  let token = null
-  if (config.url.includes("switchitapi")) {
-    token = localStorage.getItem('access_token')
-    console.log("access_token retrieved by interceptor:", token)
-  } else {
-    token = localStorage.getItem('switchit_token');
-    console.log("id token retrieved by interceptor:", token)
-  }
+  let token = localStorage.getItem('access_token')
+  // if (!token) {
+  //   console.log('no token found')
+  //   token = await this.$auth0.getAccessTokenSilently();
+  //   console.log('token', token)
+  // }
 
   config.headers.Authorization = `Bearer ${token}`;
-
   return config;
 }, (error) => {
   return Promise.reject(error);
@@ -160,7 +158,6 @@ export default {
       console.error(err);
     }
   },
-
   async createToken(email) {
     try {
       // create JWT token in backend
@@ -245,8 +242,9 @@ export default {
       return response.data;
     } catch (err) {
       console.error(err);
+      throw err
     }
-    return true;
+    // return true;
   },
 
   async getLead(id) {

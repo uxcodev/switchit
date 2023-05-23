@@ -12,8 +12,8 @@
 <script>
 import MainNav from "@/components/layout/MainNav.vue";
 // import api from "@/api/switchit";
-import jwt_decode from "jwt-decode";
 import FilterPanel from "./components/leads/FilterPanel.vue";
+import jwtDecode from "jwt-decode";
 
 export default {
   components: {
@@ -28,75 +28,33 @@ export default {
       user: () => { this.$store.getters.user }
     };
   },
-  watch: {
-    async auth0User(auth0User) {
-      if (auth0User) {
-        let access_token = await localStorage.getItem('access_token')
 
-        if (!access_token) {
-          access_token = await this.$auth0.getAccessTokenSilently()
-          console.log('generated new token:', access_token)
-          localStorage.setItem('access_token', access_token)
-        }
-
-        setTimeout(() => {
-          let acc_token = localStorage.getItem('access_token')
-          console.log('access_token', acc_token)
-        }, 1000);
-        // *** ID TOKEN ***
-
-        // create token on backend from logged in email
-        // this also checks switchit db for a user, and
-        // returns the user info in the token
-
-        let switchit_token = await this.$api.createToken(auth0User.email)
-
-        // get the user info from the returned token and
-        // save it in VueX
-
-        let decodedToken = await jwt_decode(switchit_token)
-        await this.$store.dispatch('setUser', decodedToken.user)
-
-        // if there is no user in the switchit db, push 
-        // to onboarding
-
-        // // console.log('decodedToken.user')
-        // // console.log(decodedToken.user)
-
-        if (decodedToken.user === null) {
-          this.$router.push({ path: '/onboarding' })
-          return
-        }
-
-        let status = decodedToken.user.status
-        if (status) {
-          if (status === 'new' || status === 'pending') {
-            this.$router.push({ path: '/onboarding' })
-          }
-        }
-
-        // if the user is admin, save to VueX
-
-        if (decodedToken.user && decodedToken.user.admin) {
-          this.$store.dispatch('isAdmin', decodedToken.user.admin)
-          this.$store.dispatch('setAccess', decodedToken.user.access)
-          // this.$store.dispatch('createServices', decodedToken.user.access)
-        }
-      }
-      this.loaded = true
-    }
-  },
   async mounted() {
-    // *** ACCESS TOKEN ***
 
-    let access_token = await localStorage.getItem('access_token')
+      let access_token = await localStorage.getItem('access_token')
+      
+      if (!access_token) {
+        access_token = await this.$auth0.getAccessTokenSilently()
+        localStorage.setItem('access_token', access_token)
+      }
+      console.log('decoded token', jwtDecode(access_token))
+      let permissions = (jwtDecode(access_token)).permissions;
+      console.log('permissions', permissions)
 
-    if (!access_token) {
-      console.log('getting new token')
-      access_token = await this.$auth0.getAccessTokenSilently()
-      localStorage.setItem('access_token', access_token)
-    }
-    // console.log('access_token ', access_token)
+      // if permissions array includes 'superadmin', set setAdmin to true
+      if (permissions.includes('superadmin')) {
+        this.$store.dispatch('isAdmin', true)
+        console.log('is superadmin')
+      }
+
+      let access = []
+      permissions.forEach(item => {
+        if (item.includes('lm_')) access.push(item.replace('lm_', ''))
+      })
+      console.log('permissions', access)
+      this.$store.dispatch('setAccess', access)
+      this.loaded = true
+
   }
 };
 </script>

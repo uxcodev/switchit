@@ -244,7 +244,7 @@ export default {
     openOffer(id) {
       // console.log('openOffer')
       this.$store.dispatch('setSelectedOffers', [id])
-      this.$router.push({ path: `/offer`, query: { offer: id } })
+      // this.$router.push({ path: `/offer`, query: { offer: id } })
     },
 /*     async loadOffers() {
       // console.log('loadOffers:', this.filters, this.categories)

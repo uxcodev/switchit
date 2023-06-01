@@ -7,10 +7,11 @@
     <div class="buttons">
       <button @click="call('GET', 'countrydialcodes')">Country Dial Codes</button>
       <button @click="createCompany()">createCompany</button>
+      <button @click="editCompany('f95521bc-edf8-4036-9078-a6c7058bbd4a')">editCompany</button>
       <button @click="getCompanies()">getCompanies</button>
       <button @click="getFullCompanies()">getFullCompanies</button>
-      <button @click="getCompany('f781193d-dfcd-4fcd-b5cc-4cb9a32a056f')">getCompany</button>
-      <button @click="getFullCompany('f781193d-dfcd-4fcd-b5cc-4cb9a32a056f')">getFullCompany</button>
+      <button @click="getCompany('f95521bc-edf8-4036-9078-a6c7058bbd4a')">getCompany</button>
+      <button @click="getFullCompany('f95521bc-edf8-4036-9078-a6c7058bbd4a')">getFullCompany</button>
       <hr>
       <button @click="getServiceTypes()">getServiceTypes</button>
       <button @click="addServicesToCompany()">addServicesToCompany</button>
@@ -92,6 +93,7 @@ export default {
       modalComponent: null,
       companies: [],
       serviceTypes: [],
+      user: this.$auth0.user,
     };
   },
   methods: {
@@ -106,12 +108,37 @@ export default {
       this.modalComponent = component
     },
     async createCompany() {
+      let info = `Created by ${this.user.email}`
+      console.log('info: ', info)
       let body = {
-        name: "Test company",
-        homepage: "example.com",
+        name: "ACME Bacon Inc.",
         description: "Lorem ipsum dolor sit amet",
+        information: info,
+        homepage: "example.com",
+        domains: ["example.com", "example.ai"],
+        countryCodes: ["DA", "DE", "NO", "SE"],
+        serviceTypes: [1, 2, 4, 8, 16]
+
       }
+      console.log('body: ', body)
       let response = await this.$switchit.createCompany(body)
+      console.log('response: ', response)
+    },
+    async editCompany(id) {
+      let info = `Created by ${this.user.email} EDIT`
+      console.log('info: ', info)
+      let body = {
+        name: "ACME Bacon Inc. EDIT",
+        description: "Lorem ipsum dolor sit amet EDIT",
+        information: info,
+        homepage: "example.com EDIT" ,
+        domains: ["example.co EDIT"],
+        countryCodes: ["DA", "DE", "NO", "SE", "US"],
+        serviceTypes: [1, 2, 4, 8, 16]
+
+      }
+      console.log('body: ', body)
+      let response = await this.$switchit.editCompany(id, body)
       console.log('response: ', response)
     },
     async getCompanies() {
@@ -123,34 +150,48 @@ export default {
       console.log('this.companies: ', this.companies)
     },
     async getCompany(id) {
-      let response = (await this.$switchit.getCompany(id)).model
-      this.companies.push(response)
-      console.log('response: ', response)
+      let company = (await this.$switchit.getCompany(id)).model
+      console.log('company: ', company)
+    },
+    async getServiceTypesFromValue(combinedValue) {
+      combinedValue--
+      const serviceTypes = [];
+      let serviceTypesResponse = await this.getServiceTypes()
+      serviceTypesResponse.forEach((type) => {
+        if ((combinedValue & type.serviceType) !== 0) {
+          serviceTypes.push(type);
+        }
+      });
+      
+      console.log(serviceTypes);
+      return serviceTypes;
     },
     async getFullCompany(id) {
-      let response = (await this.$switchit.getFullCompany(id)).model
-      this.companies.push(response)
-      console.log('response: ', response)
+      let company = (await this.$switchit.getFullCompany(id)).model
+      company.serviceTypes = await this.getServiceTypesFromValue(company.serviceType)
+      this.companies.push(company)
+      console.log('response: ', company)
     },
     async getServiceTypes() {
       this.serviceTypes = await this.$switchit.getServiceTypes()
       console.log('this.serviceTypes: ', this.serviceTypes)
       this.result = this.serviceTypes
+      return this.result
     },
     async addServicesToCompany() {
       let companyId = "7e9a03e7-d428-4921-98fc-17e6d1f98886"
-      let body = 
-        {
-          "serviceType": 8,
-          "companyId": companyId
-        }
-        
+      let body =
+      {
+        "serviceType": 8,
+        "companyId": companyId
+      }
+
       let response = await this.$switchit.addServicesToCompany(body)
       console.log('response: ', response)
+    },
   },
-},
   async mounted() {
-}
+  }
 }
 </script>
 

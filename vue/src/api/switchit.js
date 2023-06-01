@@ -38,8 +38,9 @@ export default {
 
   async createCompany(body) {
     try {
-      let url = "https://switchitapi.azurewebsites.net/api/v1/companys";
+      let url = "https://switchitapi.azurewebsites.net/api/v1/companies";
       const response = await _axios.post(url, body);
+      console.log('response', response)
       response.data.ok = response?.statusText === "OK"
 
       // if (response.status === 401) {
@@ -47,6 +48,23 @@ export default {
       //   window.location.href = "/login";
       // }
       return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
+  async editCompany(id, body) {
+    // if (id) {
+    //   console.log('id: ', id)
+    //   return
+    // }
+    try {
+      let url = `https://switchitapi.azurewebsites.net/api/v1/companys/${id}`;
+      const response = await _axios.put(url, body);
+      // console.log('response', response)
+      // response.data.ok = response?.statusText === "OK"
+
+      return response.status;
     } catch (err) {
       console.error(err);
     }

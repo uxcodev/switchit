@@ -1,9 +1,9 @@
 <template>
   <div class="content" v-if="!edit && !add">
-    <h2>Users</h2>
+    <h2>Companies</h2>
     <div class="table_header">
       <div class="row">
-        <div class="field">User</div>
+        <div class="field">Company</div>
         <!-- <div class="field">Email</div> -->
         <div class="field">Access requested</div>
         <div class="field status">Status</div>
@@ -11,57 +11,68 @@
       <div class="option"></div>
     </div>
     <div class="table">
-      <div v-for="(user, index) in users" :key="index">
+      <div v-for="(company, index) in companies" :key="index">
         <div class="item">
-          <div class="row">
-            <div class="field-group">
+          <div class="row"  @click="$router.push({ path: '/createcompanynode', query: { id: company._id } })">
+            <div class="field-group" >
               <div class="field b">
-                {{ user.first_name }} {{ user.last_name }}
+                {{ company.name }} 
               </div>
               <div class="field light">
-                {{ user.email }}
+                websites: 
+                {{ company.website }}
               </div>
-
-              <div class="field light company" v-for="role in user.roles" :key="role">
-                <span class="company-name" @click="openCompany(role.company?._id)">{{ role.company?.name }}</span>
-                <span class="country" v-for="country in role.company?.countries" :key="country">
-                  {{ country }}
+              <div class="field light">
+                {{ company.contact_email }}
+              </div>
+              <div class="field light" v>
+                admin: 
+                <span class="role" v-for="role in company.roles" :key="role">
+                  {{ role.user?.email }}
+                  <!-- {{ role.user.email }} -->
+                </span>
+              </div>
+              <div class="field light company">
+                markets: 
+                <span class="country" v-for="country in company.countries" :key="country">
+                  {{ country?.name || country}}
                 </span>
               </div>
 
             </div>
-            <IconsCategoryAccess :access="user.access"/>
-
-            <div class='status_wrapper' :class="user.status">
-              <!-- <div :class="['dot', user.status]"></div> -->
-              <select name="status" class="select status" v-model="user.status" @change="changeStatus(user)">
-                <option value="new">New</option>
-                <option value="pending">Pending</option>
-                <option value="active">Approved</option>
-                <option value="rejected">Rejected</option>
-              </select>
-            </div>
+            <IconsCategoryAccess :access="company.access"/>
+            
           </div>
-          <div class="option" @click="deleteUser(user._id)">
+          <div class='status_wrapper' :class="company.status">
+            <!-- <div :class="['dot', company.status]"></div> -->
+            <select name="status" class="select status" v-model="company.status" @change="changeStatus(company)">
+              <option value="new">New</option>
+              <option value="pending">Pending</option>
+              <option value="active">Approved</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+          <div class="option" @click="deleteCompany(company._id)">
             <span class="material-symbols-outlined">Delete</span>
           </div>
         </div>
-      </div>
+      </div> 
     </div>
     <div>
-      <button disabled="true" class="mt10" @click="add = false">+ Add</button>
+      <button class="mt10"  @click="$router.push({ path: '/createcompany' })" >+ Add</button>
     </div>
   </div>
   <div v-if="edit">
-    <!-- <SettingsUserEdit :selectedUser="selectedUser" @updateUser="updateUser" @closeEdit="close" /> -->
+    <!-- <SettingsCompanyEdit :selectedCompany="selectedCompany" @updateCompany="updateCompany" @closeEdit="close" /> -->
   </div>
   <div v-if="add">
-    <!-- <SettingsUserCreate @createUser="createUser" @closeEdit="close" /> -->
-    <!-- <SettingsUserCreate -->
+    <!-- <SettingsCompanyCreate @createCompany="createCompany" @closeEdit="close" /> -->
+    <!-- <SettingsCompanyCreate -->
   </div>
 </template>
 <script>
-import IconsCategoryAccess from '@/components/ui/IconsCategoryAccess.vue'
+
+import IconsCategoryAccess from '@/components/ui/IconsCategoryAccess.vue';
 
 export default {
   components: {
@@ -74,7 +85,7 @@ export default {
   },
   data() {
     return {
-      users: [],
+      companies: [],
       edit: false,
       add: false,
       modalComponent: null,
@@ -82,19 +93,19 @@ export default {
     };
   },
   methods: {
-    changeStatus(user) {
-      // // console.log(user)
-      // // console.log(user.status)
-      // // console.log(user._id)
-      this.updateUser(user._id, { status: user.status })
+    changeStatus(company) {
+      // // console.log(company)
+      // // console.log(company.status)
+      // // console.log(company._id)
+      this.updateCompany(company._id, { status: company.status })
     },
-    async updateUser(id, fields) {
-      let response = await this.$api_node.updateUser(id, fields)
+    async updateCompany(id, fields) {
+      let response = await this.$api_node.updateCompany(id, fields)
       console.log(response)
     },
-    async deleteUser(id) {
-      let response = await this.$api_node.deleteUser(id)
-      this.users = await this.$api_node.getUsers()
+    async deleteCompany(id) {
+      let response = await this.$api_node.deleteCompany(id)
+      this.companies = await this.$api_node.getCompanies()
       console.log(response)
     },
     openCompany(id) {
@@ -108,14 +119,15 @@ export default {
     },
   },
   async mounted() {
-    this.users = await this.$api_node.getUsers()
-    // console.log(this.users)
+    this.companies = await this.$api_node.getCompanies()
+    // console.log(this.companies)
 
-    // // console.log('UserTable')
-    console.log('this.users: ', this.users)
+    // // console.log('CompanyTable')
+    console.log('this.companies: ', this.companies)
   },
 }
 </script>
+
 
 <style lang="sass" scoped>
 @import "/src/styles/variables.sass"
@@ -163,7 +175,7 @@ h3
     font-size: 1.5em
     color: blue
 .table
-  background: #fff
+  // background: #fff
   border-radius: 6px
   display: flex
   flex-direction: column
@@ -171,12 +183,12 @@ h3
   width: 100%
   max-width: 900px
   .item
+    background: #fff
     gap:10px
     justify-content: space-between
     align-items: center
     display: flex
     // background: #fafafa 
-    padding: 0 0 0 10px
     border-radius: 4px
     cursor: pointer
     .row
@@ -185,6 +197,7 @@ h3
       align-items: center
       justify-content: space-between
       gap: 20px
+      padding: 10px
       flex-grow:1
       &:hover
         background: #fcfcfc

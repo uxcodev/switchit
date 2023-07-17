@@ -18,12 +18,22 @@
               <div class="field b">
                 {{ company.name }} 
               </div>
+              <div class="help">
+                {{ company.id }} 
+              </div>
               <div class="field light">
-                websites: 
-                {{ company.website }}
+                website: 
+                {{ company.homePage }}
               </div>
               <div class="field light">
                 {{ company.contact_email }}
+              </div>
+              <div class="field light" v>
+                domain: 
+                <span class="role" v-for="domain in company.domains" :key="domain">
+                  {{ domain.domainName }}
+                  <!-- {{ role.user.email }} -->
+                </span>
               </div>
               <div class="field light" v>
                 admin: 
@@ -33,14 +43,14 @@
                 </span>
               </div>
               <div class="field light company">
-                markets: 
+                countries: 
                 <span class="country" v-for="country in company.countries" :key="country">
                   {{ country?.name || country}}
                 </span>
               </div>
 
             </div>
-            <IconsCategoryAccess :access="company.access"/>
+            <IconsCategoryAccess v-if="company.access" :access="company.access"/>
             
           </div>
           <div class='status_wrapper' :class="company.status">
@@ -52,7 +62,7 @@
               <option value="rejected">Rejected</option>
             </select>
           </div>
-          <div class="option" @click="deleteCompany(company._id)">
+          <div class="option" @click="deleteCompany(company.id)">
             <span class="material-symbols-outlined">Delete</span>
           </div>
         </div>
@@ -100,12 +110,12 @@ export default {
       this.updateCompany(company._id, { status: company.status })
     },
     async updateCompany(id, fields) {
-      let response = await this.$api.updateCompany(id, fields)
+      let response = await this.$switchit.updateCompany(id, fields)
       console.log(response)
     },
     async deleteCompany(id) {
-      let response = await this.$api.deleteCompany(id)
-      this.companies = await this.$api.getCompanies()
+      let response = await this.$switchit.deleteCompany(id)
+      this.companies = await this.$switchit.getCompanies()
       console.log(response)
     },
     openCompany(id) {
@@ -119,7 +129,9 @@ export default {
     },
   },
   async mounted() {
-    this.companies = await this.$api.getCompanies()
+    this.companies = (await this.$switchit.getCompanies()).model
+    // this.companies = await this.$api_node.getCompanies()
+
     // console.log(this.companies)
 
     // // console.log('CompanyTable')
@@ -210,7 +222,7 @@ h3
           padding: 0
       .field
         padding: 10px
-        width: 180px
+        max-width: 3000px
         &.b
           font-weight:600
         &.light

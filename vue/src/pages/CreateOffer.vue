@@ -254,7 +254,7 @@ export default {
   },
   computed: {
     user() {
-      return this.$store.getters.user
+      return this.$store.getters.activeUser
     },
     // pageCount() {
     //   let number = Math.ceil(this.leads.length / this.pg.limit);
@@ -265,7 +265,7 @@ export default {
     async createOffer() {
       // console.log('createOffer:', this.offer_obj)
       let leads = this.leads || [this.lead._id]
-      let response = await this.$api.createOffer(this.offer_obj, leads)
+      let response = await this.$api_node.createOffer(this.offer_obj, leads)
       console.log("response:",response)
       if (response?.ok) {
         this.$router.push({ path: '/offers' })
@@ -277,7 +277,7 @@ export default {
     this.leads = await this.$store.getters.selectedLeads || [this.$route.query.lead]
     if (this.leads.length === 1) {
       let id = this.leads[0]
-      this.lead = await this.$api.getLead(id)
+      this.lead = await this.$api_node.getLead(id)
     }
     console.log('this.lead:', this.lead)
     console.log('this.leads:', this.leads)

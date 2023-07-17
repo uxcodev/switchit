@@ -131,7 +131,7 @@ export default {
         let limit = this.pg.limit
         let skip = (page - 1) * limit
         let filters = this.$store.getters.filters
-        let response = await this.$api.getOffers({ limit: limit, skip: skip, filter: filters })
+        let response = await this.$api_node.getOffers({ limit: limit, skip: skip, filter: filters })
         this.offers = response?.offers
         // this.pg.pageCount = Math.ceil(response.count / limit)
       }
@@ -182,7 +182,7 @@ export default {
   },
   computed: {
     user() {
-      return this.$store.getters.user
+      return this.$store.getters.activeUser
     },
     filters() {
       return this.$store.getters.filters
@@ -244,7 +244,7 @@ export default {
     openOffer(id) {
       // console.log('openOffer')
       this.$store.dispatch('setSelectedOffers', [id])
-      this.$router.push({ path: `/offer`, query: { offer: id } })
+      // this.$router.push({ path: `/offer`, query: { offer: id } })
     },
 /*     async loadOffers() {
       // console.log('loadOffers:', this.filters, this.categories)
@@ -261,12 +261,12 @@ export default {
       }
       // console.log(filterObj)
 
-      let response = await this.$api.getOffers({ limit: this.pg.limit, skip: 0, filters: filterObj })
+      let response = await this.$api_node.getOffers({ limit: this.pg.limit, skip: 0, filters: filterObj })
       this.offers = response.offers
       this.pg.pageCount = Math.ceil(response.count / this.pg.limit)
     }, */
     async loadOffers() {
-      let response = await this.$api.getOffers()
+      let response = await this.$api_node.getOffers()
       this.offers = response
       console.log(this.offers)
     }
@@ -279,7 +279,7 @@ export default {
 
     // let offers = fake_data.getOffers()
     // // console.log(offers)
-    // let response = await this.$api.createOffers(offers)
+    // let response = await this.$api_node.createOffers(offers)
     // console.log(response)
 
     // let response = await fake_data.updateOffers()

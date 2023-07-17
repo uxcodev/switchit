@@ -2,101 +2,116 @@
   <MainNav />
   <FilterPanel v-if="loaded" />
   <div id="app">
-    <router-view v-if="loaded"></router-view>
-    <!-- <div class="main">
-                              Waiting for authorization...
-                            </div> -->
+    <LoaderAniOverlay v-if="!loaded" />
+    <router-view v-else></router-view>
   </div>
 </template>
 
 <script>
 import MainNav from "@/components/layout/MainNav.vue";
 // import api from "@/api/switchit";
-import jwt_decode from "jwt-decode";
 import FilterPanel from "./components/leads/FilterPanel.vue";
+import jwtDecode from "jwt-decode";
+import LoaderAniOverlay from "./components/ui/LoaderAniOverlay.vue";
+// import switchit from "./api/switchit";
 
 export default {
   components: {
     MainNav,
     FilterPanel,
-  },
+    LoaderAniOverlay
+},
   name: "App",
   data() {
     return {
       loaded: false,
+      // isLoading: this.$auth0.isLoading,
       auth0User: this.$auth0.user,
-      user: () => { this.$store.getters.user }
+      // user: () => { this.$store.getters.user }
     };
   },
-  watch: {
-    async auth0User(auth0User) {
-      if (auth0User) {
-        let access_token = await localStorage.getItem('access_token')
+  computed: {
+    user() {
+      return this.$store.getters.user
+    },
+    // auth0User() {
+    //   return this.$auth0.user
+    // }
+  },
+  methods: {
+    async initUser() {
+      
+      // check if there is an access token in local storage. If not, get one from Auth0
 
-        if (!access_token) {
-          access_token = await this.$auth0.getAccessTokenSilently()
-          console.log('generated new token:', access_token)
-          localStorage.setItem('access_token', access_token)
-        }
+      let access_token = localStorage.getItem('access_token')
 
-        setTimeout(() => {
-          let acc_token = localStorage.getItem('access_token')
-          console.log('access_token', acc_token)
-        }, 1000);
-        // *** ID TOKEN ***
-
-        // create token on backend from logged in email
-        // this also checks switchit db for a user, and
-        // returns the user info in the token
-
-        let switchit_token = await this.$api.createToken(auth0User.email)
-
-        // get the user info from the returned token and
-        // save it in VueX
-
-        let decodedToken = await jwt_decode(switchit_token)
-        await this.$store.dispatch('setUser', decodedToken.user)
-
-        // if there is no user in the switchit db, push 
-        // to onboarding
-
-        // // console.log('decodedToken.user')
-        // // console.log(decodedToken.user)
-
-        if (decodedToken.user === null) {
-          this.$router.push({ path: '/onboarding' })
-          return
-        }
-
-        let status = decodedToken.user.status
-        if (status) {
-          if (status === 'new' || status === 'pending') {
-            this.$router.push({ path: '/onboarding' })
-          }
-        }
-
-        // if the user is admin, save to VueX
-
-        if (decodedToken.user && decodedToken.user.admin) {
-          this.$store.dispatch('isAdmin', decodedToken.user.admin)
-          this.$store.dispatch('setAccess', decodedToken.user.access)
-          // this.$store.dispatch('createServices', decodedToken.user.access)
-        }
+      if (!access_token) {
+        access_token = await this.$auth0.getAccessTokenSilently()
+        localStorage.setItem('access_token', access_token)
       }
+
+      // get permissions from access token, and set access to services
+
+      let permissions = (jwtDecode(access_token)).permissions;
+      if (permissions.includes('superadmin')) {
+        this.$store.dispatch('isAdmin', true)
+      }
+
+      let access = []
+      await permissions.forEach(item => {
+        if (item.includes('lm_')) access.push(item.replace('lm_', ''))
+      })
+
+      this.$store.dispatch('setAccess', access)
+
+      // find user in our database with the email address from Auth0
+
+      console.log('auth0User', this.auth0User)
+      let email =  this.auth0User.email || 'nto@switchit.ai'  // TEMP 
+      let user = await this.$api_node.getActiveUser(email)
+      console.log('node db user', user)
+
+      // if there is no user, create one
+      
+      if (!user) {
+        let fields = {
+          email: this.auth0User.email,
+          first_name: this.auth0User.given_name,
+          last_name: this.auth0User.family_name,
+          status: 'new',
+          auth0_id: this.auth0User.sub
+        }
+        console.log('fields', fields)
+        user = await this.$api_node.createUser(fields)
+      }
+
+      // save active user to vuex
+
+      this.$store.dispatch('setActiveUser', user)
+      console.log('getActiveUser', this.$store.getters.activeUser)
+
+      // redirect to onboarding or dashboard depending on user status
+
+      let status = user?.status || null
+      if (!status || status === 'new' || status === 'pending') {
+        this.$router.push({ path: '/onboarding' })
+      } 
+      console.log('user', user, status)
       this.loaded = true
     }
   },
-  async mounted() {
-    // *** ACCESS TOKEN ***
-
-    let access_token = await localStorage.getItem('access_token')
-
-    if (!access_token) {
-      console.log('getting new token')
-      access_token = await this.$auth0.getAccessTokenSilently()
-      localStorage.setItem('access_token', access_token)
+  watch: {
+    async auth0User() {
+      console.log('user changed')
+      this.initUser()
     }
-    // console.log('access_token ', access_token)
+  },
+  async mounted() {
+
+    // setTimeout(()=> {
+    //   this.initUser()
+    // }, 1000)
+
   }
 };
 </script>

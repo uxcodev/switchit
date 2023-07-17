@@ -1,5 +1,6 @@
-// import store from '@/store/index.js'
+import store from '@/store/index.js'
 import axios from 'axios';
+
 const _axios = axios.create({
   baseURL: process.env.VUE_APP_API_URL,
   headers: {
@@ -9,17 +10,14 @@ const _axios = axios.create({
 });
 
 _axios.interceptors.request.use(async (config) => {
-  let token = null
-  if (config.url.includes("switchitapi")) {
-    token = localStorage.getItem('access_token')
-    console.log("access_token retrieved by interceptor:", token)
-  } else {
-    token = localStorage.getItem('switchit_token');
-    console.log("id token retrieved by interceptor:", token)
+  let token = localStorage.getItem('access_token')
+  if (!token) {
+    console.log('no token found')
+    token = await this.$auth0.getAccessTokenSilently();
+    console.log('token', token)
   }
 
   config.headers.Authorization = `Bearer ${token}`;
-
   return config;
 }, (error) => {
   return Promise.reject(error);
@@ -30,136 +28,55 @@ _axios.interceptors.response.use((response) => {
 }, (error) => {
   if (error.response.status === 401) {
     console.log('401 error')
-    // localStorage.removeItem('access_token');
-    // window.location.href = "/login";
-    // reload window
-    // console.log('token has been removed')
-    // window.location.reload();
   }
   return Promise.reject(error);
 });
 
-
-
 export default {
 
-
-
   // Switchit API calls
-
-  async switchit_createCompany(body) {
-    try {
-      let url = "https://switchitapi.azurewebsites.net/api/v1/companys";
-      const response = await _axios.post(url, body);
-      response.data.ok = response?.statusText === "OK"
-
-      if (response.status === 401) {
-        localStorage.removeItem('access_token');
-        window.location.href = "/login";
-      }
-      return response.data;
-    } catch (err) {
-      console.error(err);
-    }
-  },
-
-  async switchit_getCompanies() {
-    try {
-      let url = "https://switchitapi.azurewebsites.net/api/v1/companies";
-      const response = await _axios.get(url);
-      return response.data;
-    } catch (err) {
-      console.error(err);
-    }
-  },
-
-  async switchit_getFullCompanies() {
-    try {
-      let includeCompanyDomains = true;
-      let includeCompanyCountrys = true;
-      let includeCompanyIbans = true;
-      let includeCompanyServiceTypes = true;
-      let includeCompanyPsd2Handles = true;
-
-      let url = `https://switchitapi.azurewebsites.net/api/v1/companies?includeCompanyDomains=${includeCompanyDomains}&includeCompanyCountrys=${includeCompanyCountrys}&includeCompanyIbans=${includeCompanyIbans}&includeCompanyServiceTypes=${includeCompanyServiceTypes}&includeCompanyPsd2Handles=${includeCompanyPsd2Handles}`;
-      const response = await _axios.get(url);
-      return response.data;
-    } catch (err) {
-      console.error(err);
-    }
-  },
-
-  async switchit_getCompany(id) {
-    try {
-      let url = `https://switchitapi.azurewebsites.net/api/v1/companys/${id}`;
-      let response = await _axios.get(url)
-      console.log(response)
-      return response.data;
-    } catch (err) {
-      console.error(err);
-    }
-  },
-
-  async switchit_getFullCompany(id) {
-    try {
-
-      let includeCompanyDomains = true;
-      let includeCompanyCountrys = true;
-      let includeCompanyIbans = true;
-      let includeCompanyServiceTypes = true;
-      let includeCompanyPsd2Handles = true;
-
-      let url = `https://switchitapi.azurewebsites.net/api/v1/companys/${id}?includeCompanyDomains=${includeCompanyDomains}&includeCompanyCountrys=${includeCompanyCountrys}&includeCompanyIbans=${includeCompanyIbans}&includeCompanyServiceTypes=${includeCompanyServiceTypes}&includeCompanyPsd2Handles=${includeCompanyPsd2Handles}`;
-
-      // let url = `https://switchitapi.azurewebsites.net/api/v1/companys/${id}`;
-      let response = await _axios.get(url)
-      console.log(response)
-      return response.data;
-    } catch (err) {
-      console.error(err);
-    }
-  },
 
 
   // TESTING 
 
-  async whateverApiCall(method, path) {
-    try {
-      let url = "https://switchitapi.azurewebsites.net/api/" + path;
+  // async whateverApiCall(method, path) {
+  //   try {
+  //     let url = "https://switchitapi.azurewebsites.net/api/" + path;
 
-      const response = await _axios({
-        method: method,
-        url: url,
-      });
-      response.data.ok = response?.statusText === "OK"
-      return response.data;
-    } catch (err) {
-      console.error(err);
-    }
-  },
+  //     const response = await _axios({
+  //       method: method,
+  //       url: url,
+  //     });
+  //     response.data.ok = response?.statusText === "OK"
+  //     return response.data;
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // },
 
   // Temporary Node API calls
 
-  async getCountries() {
-    try {
-      let url = "https://switchitapi.azurewebsites.net/api/countrydialcodes";
-      const response = await _axios.get(url);
-      response.data.ok = response?.statusText === "OK"
-      return response.data;
-    } catch (err) {
-      console.error(err);
-    }
-  },
-  async getPsd2Institutions() {
-    try {
-      let url = "https://switchitapi.azurewebsites.net/api/v1/psd2Institutions";
-      const response = await _axios.get(url);
-      response.data.ok = response?.statusText === "OK"
-      return response.data;
-    } catch (err) {
-      console.error(err);
-    }
-  },
+  // async getCountries() {
+  //   try {
+  //     let url = "https://switchitapi.azurewebsites.net/api/countrydialcodes";
+  //     const response = await _axios.get(url);
+  //     response.data.ok = response?.statusText === "OK"
+  //     return response.data;
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // },
+
+  // async getPsd2Institutions() {
+  //   try {
+  //     let url = "https://switchitapi.azurewebsites.net/api/v1/psd2Institutions";
+  //     const response = await _axios.get(url);
+  //     response.data.ok = response?.statusText === "OK"
+  //     return response.data;
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // },
 
   async createToken(email) {
     try {
@@ -180,6 +97,16 @@ export default {
     }
   },
 
+
+  async getActiveUser(email) {  //getUser
+    try {
+      const user = (await _axios.get(`/users/get-active-user?email=${email}`)).data;
+      store.dispatch('setActiveUser', user)
+      return user;
+    } catch (err) {
+      console.error(err);
+    }
+  },
 
   async getUsers() {
     try {
@@ -245,8 +172,9 @@ export default {
       return response.data;
     } catch (err) {
       console.error(err);
+      throw err
     }
-    return true;
+    // return true;
   },
 
   async getLead(id) {
@@ -273,6 +201,20 @@ export default {
       console.error(err);
     }
     return true;
+  },
+
+  async createUser(fields) {
+    try {
+      const body = {
+        fields: fields,
+      };
+
+      const response = await _axios.post('/users/create-user', body);
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
   },
 
   async updateUser(id, fields) {

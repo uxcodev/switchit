@@ -12,9 +12,11 @@ const app = createApp(App);
 /* make api available throughout app */
 
 import api from "@/api/api";
+import switchit from "@/api/switchit";
 const plugin = {
   install() {
-    app.config.globalProperties.$api = api
+    app.config.globalProperties.$api_node = api
+    app.config.globalProperties.$switchit = switchit
   }
 }
 app.use(plugin)
@@ -22,12 +24,7 @@ app.use(plugin)
 /* use Vuex store */
 
 import store from '@/store/index.js'
-
 app.use(store)
-
-/* set up router */
-
-import { createRouter, createWebHistory } from 'vue-router'
 
 /* import plugins and custom components */
 
@@ -68,117 +65,12 @@ console.log('isMobile', store.getters.isMobile)
 
 /* use Router */
 
-import { authGuard } from "@auth0/auth0-vue";
-
-const isAuth = async () => {
-  if (!auth0.isAuthenticated) {
-    console.log('!isAuthenticated')
-    auth0.loginWithRedirect({
-      appState: {
-        target: window.location.href,
-      },
-    });
-    return false
-  }
-  console.log('isAuthenticated')
-}
-
-const routes = [
-  {
-    path: '/dashboard',
-    name: "dashboard",
-    beforeEnter: authGuard,
-    component: () => import('@/pages/OpportunitiesDashboard.vue')
-  },
-  {
-    path: '/dashboard_data',
-    name: "dashboard_data",
-    beforeEnter: authGuard,
-    component: () => import('@/pages/OpportunitiesDashboardData.vue')
-  },
-  {
-    path: '/operations',
-    name: "operations",
-    beforeEnter: isAuth,
-    component: () => import('@/pages/OperationsDashboard.vue')
-  },
-  {
-    path: '/settings',
-    name: "settings",
-    beforeEnter: isAuth,
-    component: () => import('@/pages/SettingsPage.vue')
-  },
-  {
-    path: '/',
-    name: "start",
-    beforeEnter: isAuth,
-    component: () => import('@/pages/StarterPage.vue')
-  },
-  {
-    path: '/onboarding',
-    name: "onboarding",
-    beforeEnter: isAuth,
-    component: () => import('@/pages/onboarding/CompanyOnboarding.vue')
-  },
-  {
-    path: '/createcompany',
-    name: "createcompany",
-    // beforeEnter: isAuth,
-    component: () => import('@/pages/onboarding/CreateCompany.vue')
-  },
-  {
-    path: '/create_offer',
-    name: "create_offer",
-    props: true,
-    beforeEnter: isAuth,
-    component: () => import('@/pages/CreateOffer.vue')
-  },
-  {
-    path: '/offers',
-    name: "offers",
-    beforeEnter: isAuth,
-    component: () => import('@/pages/OffersDashboard.vue')
-  },
-  {
-    path: '/signup_success',
-    name: "signup_success",
-    beforeEnter: isAuth,
-    component: () => import('@/pages/onboarding/CompanyOnboardingSuccess.vue')
-  },
-  {
-    path: '/api',
-    name: "api_testing",
-    beforeEnter: isAuth,
-    component: () => import('@/pages/testing/ApiTesting.vue')
-  },
-]
-
-const router = createRouter({
-  history: createWebHistory(),
-  routes: routes,
-})
-
+import router from "./router";
 app.use(router)
 
 /* use Auth0 */
 
-import { createAuth0 } from '@auth0/auth0-vue';
-
-
-const auth0 = createAuth0({
-  domain: process.env.VUE_APP_AUTH0_DOMAIN,
-  clientId: process.env.VUE_APP_AUTH0_CLIENTID,
-  authorizationParams: {
-    audience: process.env.VUE_APP_AUTH0_AUDIENCE,
-    redirect_uri: window.location.origin
-  },
-  cacheLocation: 'localstorage',
-  // useRefreshTokens: true,
-  // audience: process.env.VUE_APP_AUTH0_AUDIENCE,
-  // responseType: 'token id_token',
-  // scope: 'openid profile'
-})
-
+import auth0 from '@/helpers/auth0.js';
 app.use(auth0);
 
 

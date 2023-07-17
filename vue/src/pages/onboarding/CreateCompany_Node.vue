@@ -7,7 +7,7 @@
         <LoaderAni />
       </div>
       <form v-else @submit.prevent="submitForm" class="switchit-form sm">
-        <!-- <div class="group" v-if="isAdmin">
+        <div class="group" v-if="isAdmin">
           <label for="email">Created by (email address)</label>
           <input v-model="form.company.createdby" type="text" id="first_name" class="input lg" />
         </div>
@@ -18,13 +18,13 @@
             <option value="">None</option>
             <option v-for="user in users" :key="user._id" :value="user._id">{{ user.first_name }} {{ user.last_name }}</option>
           </select>
-        </div> -->
-        <!-- <div class="group" v-if="!isAdmin">
+        </div>
+        <div class="group" v-if="!isAdmin">
           <label for="firstName">Requested by</label>
           <div class="inline">
             <input disabled v-model="user.email" placeholder="" type="text" id="email" class="input lg mr3" />
           </div>
-        </div> -->
+        </div>
         <div class="group" v-if="!isAdmin">
           <label for="firstName">Your name</label>
           <div class="inline">
@@ -36,24 +36,25 @@
           <label for="company">Company name</label>
           <input v-model="form.company.name" placeholder="" type="text" id="company" class="input lg" />
         </div>
-        <!-- <div class="group" v-if="isAdmin">
+        <div class="group" v-if="isAdmin">
           <label for="website">Company email</label>
           <input v-model="form.company.contact_email" placeholder="" type="text" id="company_email" class="input lg" />
-        </div> -->
+        </div>
         <div class="group">
           <label for="website">Company website</label>
-          <input v-model="form.company.homepage" placeholder="" type="text" id="website" class="input lg" />
+          <input v-model="form.company.website" placeholder="" type="text" id="website" class="input lg" />
         </div>
         <div class="group">
           <label for="website">{{ isAdmin ? "Countries the company is active in" : "Countries you are active in" }}</label>
-          <Multiselect v-model="form.company.countryCodes" mode="tags" @select="countrySelected" :searchable="true" :close-on-select="false" :options="country_options" />
+          <Multiselect v-model="form.company.countries" mode="tags" @select="countrySelected" :searchable="true" :close-on-select="false" :options="country_options" />
         </div>
         <div class="group">
 
           <label for="">{{ isAdmin ? "Markets the company serves" : "Markets you are interested in serving" }}</label>
+
           <div class="checkbox-group">
-            <label v-for="(category, key) in categories" :key="key" class="checkbox-label">
-              <input class="checkbox" type="checkbox" :checked="isCategorySelected(category.code)" :id="category.name" @change="toggleCategorySelection(category.code)" />{{ $t(key) }}
+            <label v-for="(category, key) in form.company.access" :key="key" class="checkbox-label">
+              <input class="checkbox" type="checkbox" v-model="category.status" :id="category.name" />{{ $t(key) }}
               <span class="checkmark"></span>
             </label>
           </div>
@@ -93,10 +94,12 @@ export default {
     Multiselect,
     LoaderAni,
   },
+  // props: ['isAdmin'],
   data() {
 
     return {
       isAdmin: this.$store.getters.isAdmin,
+      // isAdmin: false,
       loaded: false,
       loading: false,
       status: null,
@@ -116,14 +119,15 @@ export default {
       },
       form: {
         company: {
-          name: `Bacon R Us`,
-          description: "Lorem ipsum dolor sit amet",
-          information:  `Created by ${this.$auth0.user._value.email}`,
-          homepage: "example.com",
-          domains: ["example.com, example.co"],
-          countryCodes: ['DA', 'SE', 'NO'],
-          serviceTypes: [2, 4, 8, 16],
-          roles: []
+          name: ``,
+          // name: `test company ${Math.floor(Math.random() * (11111 - 99999))}`,
+          website: "",
+          countries: [],
+          status: "pending",
+          createdby: this.$auth0.user._value.email,
+          contact_email: '',
+          access: {},
+          roles: [],
         },
       },
       selectedAdmin: null,
@@ -135,9 +139,7 @@ export default {
         { label: "Norway", value: "NO" },
         { label: "Germany", value: "DE" },
         { label: "United States", value: "US" },
-      ],
-      serviceTypes: [],
-      selectedCategories: [],
+      ]
     }
   },
   watch: {
@@ -158,22 +160,6 @@ export default {
     }
   },
   methods: {
-    async countrySelected() {
-      // TEMP for testing
-      console.log('countrySelected', this.form.company.countryCodes)
-    },
-    isCategorySelected(code) {
-      return this.form.company.serviceTypes.includes(code);
-    },
-
-    toggleCategorySelection(code) {
-      if (this.isCategorySelected(code)) {
-        const index = this.form.company.serviceTypes.indexOf(code);
-        this.form.company.serviceTypes.splice(index, 1);
-      } else {
-        this.form.company.serviceTypes.push(code);
-      }
-    },
     validateForm() {
       this.errors = [];
       if (!this.form.company.name) this.errors.push(this.$t('errors.companyNameRequired'));
@@ -198,17 +184,54 @@ export default {
     async submitForm() {
 
       try {
-        let body = this.form.company
-        let response = await this.$switchit.createCompany(body)
+
+        console.log('submitForm')
+        let response
+
+        // Node API
+/* 
+        if (this.isAdmin) {
+          if (this.isEditing) {
+            response = await this.$api_node.updateCompany(this.id, this.form)
+          } else {
+            response = await this.$api_node.createCompany(this.form)
+          }
+          if (response.ok) {
+            this.$router.push({ path: '/operations', query: { q: 'Companies' } })
+          }
+        }
+        else {
+          let fields = {
+            ...this.form,
+            user: this.user
+          }
+          response = await this.$api_node.signupCompany(fields)
+          fields = {
+            ...this.user
+          }
+          console.log('updateUser fields: ', fields)
+          // response = await this.$api_node.updateUser(fields)
+        }
+ */
+        // **** Switchit Official API ****
+
+        let body = {
+          name: this.form.company.name,
+          homepage: this.form.company.website,
+          description: "Lorem ipsum dolor sit amet",
+        }
+        response = await this.$switchit.createCompany(body)
+         
+
         console.log(response)
-          // if (response.ok) {
-          //   this.$router.push({ path: '/operations', query: { q: 'Companies' } })
-          // }
       } catch (error) {
         this.$toast_error.show(error)
       }
     },
-    
+    async countrySelected() {
+      // TEMP for testing
+      console.log('countrySelected', this.form.company.countries)
+    }
   },
   async created() {
     try {
@@ -219,34 +242,44 @@ export default {
       this.isEditing = this.id ? true : false;
 
       // populate the countries dropdown
-      let countryCodes = await this.$switchit.getCountries()
-      let country_options = countryCodes.map(country => ({
+      let countries = await this.$api_node.getCountries()
+      let country_options = countries.map(country => ({
         label: country.name,
         value: country.code
       }));
 
       this.country_options.push(...country_options)
-
+      
       // populate the users and company differently depending on whether admin, and whether editing
-
+      
       if (this.isAdmin) {
         this.users = this.isAdmin ? await this.$api_node.getUsers() : null
         let company = this.isEditing ? await this.$api_node.getCompanyById(this.id) : null
         this.form.company = company || this.form.company;
         this.selectedAdmin = company?.roles[0]?.user || null;
       } else {
+        this.form.company.createdby = this.$auth0.user._value.email;
         this.user.first_name = this.$auth0.user._value.given_name;
         this.user.last_name = this.$auth0.user._value.family_name;
+        this.form.company.contact_email = this.$auth0.user._value.email;
+        this.form.company.status = 'pending';
+        this.form.company.roles.push({ role: 'owner', user: this.activeUser._id }); 
         this.user._id = this.activeUser?._id;
       }
+
+      for (const prop in this.categories) {
+        if (Object.hasOwnProperty.call(this.categories, prop)) {
+          this.form.company.access[prop] = { status: false };
+        }
+      }
+
+
     } catch (error) {
-      console.log('error: ', error)
       this.$toast_error.show(error)
     }
   },
 
   async mounted() {
-    console.log('categories: ', this.categories)
     try {
       this.loaded = true
     } catch (error) {

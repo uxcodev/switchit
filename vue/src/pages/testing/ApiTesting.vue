@@ -4,20 +4,32 @@
   </ModalWindow>
   <div class="main">
     <h2>API Testing</h2>
+    <h3>Business Partners</h3>
     <div class="buttons">
-      <button @click="call('GET', 'countrydialcodes')">Country Dial Codes</button>
+
+      <button @click="getBusinessPartners()">getBusinessPartners</button>
+      <button @click="createBusinessPartner()">createBusinessPartner</button>
+      <button @click="editBusinessPartner('f95521bc...')">editBusinessPartner</button>
+      <button @click="deleteBusinessPartner('f95521bc...')">deleteBusinessPartner</button>
+ 
+    </div>
+    <h3>Companies</h3>
+    <div class="buttons">
       <button @click="createCompany()">createCompany</button>
       <button @click="editCompany('f95521bc-edf8-4036-9078-a6c7058bbd4a')">editCompany</button>
       <button @click="getCompanies()">getCompanies</button>
       <button @click="getFullCompanies()">getFullCompanies</button>
       <button @click="getCompany('f95521bc-edf8-4036-9078-a6c7058bbd4a')">getCompany</button>
       <button @click="getFullCompany('f95521bc-edf8-4036-9078-a6c7058bbd4a')">getFullCompany</button>
-      <hr>
+    </div>
+    <h3>Misc</h3>
+    <div class="buttons">
+      <button @click="call('GET', 'countrydialcodes')">Country Dial Codes</button>
       <button @click="getServiceTypes()">getServiceTypes</button>
       <button @click="addServicesToCompany()">addServicesToCompany</button>
     </div>
     <pre>{{ result }}</pre>
-    <div class="table">
+    <div class="table" >
       <div v-for="(company, index) in companies" :key="index">
         <div class="item">
           <!-- <div class="row"  @click="$router.push({ path: '/createcompany', query: { id: company._id } })"> -->
@@ -64,6 +76,52 @@
           </div>
         </div>
       </div>
+      <div v-for="(businessPartner, index) in businessPartners" :key="index">
+        <div class="item">
+          <!-- <div class="row"  @click="$router.push({ path: '/createbusinessPartner', query: { id: businessPartner._id } })"> -->
+          <div class="row">
+            <div class="field-group">
+              <div class="field b">
+                {{ businessPartner.name }}
+              </div>
+              <div class="field light">
+                websites:
+                {{ businessPartner.website }}
+              </div>
+              <div class="field light">
+                {{ businessPartner.contact_email }}
+              </div>
+              <div class="field light" v>
+                admin:
+                <!-- <span class="role" v-for="role in businessPartner.roles" :key="role">
+                  {{ role.user?.email }}
+                </span> -->
+              </div>
+              <div class="field light company">
+                markets:
+                <span class="country" v-for="country in businessPartner.countries" :key="country">
+                  {{ country?.name || country }}
+                </span>
+              </div>
+
+            </div>
+            <!-- <IconsCategoryAccess :access="businessPartner.access"/> -->
+
+          </div>
+          <div class='status_wrapper' :class="businessPartner.status">
+            <!-- <div :class="['dot', businessPartner.status]"></div> -->
+            <select name="status" class="select status" v-model="businessPartner.status" @change="changeStatus(businessPartner)">
+              <option value="new">New</option>
+              <option value="pending">Pending</option>
+              <option value="active">Approved</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+          <div class="option" @click="deleteBusinessPartner(businessPartner.id)">
+            <span class="material-symbols-outlined">Delete</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -72,7 +130,7 @@
 
 // plugins & scripts
 
-import api from '@/api/api';
+// import api from '@/api/api';
 
 // components 
 import ModalWindow from '@/components/ui/ModalWindow.vue';
@@ -92,13 +150,14 @@ export default {
       result: null,
       modalComponent: null,
       companies: [],
+      businessPartners: [],
       serviceTypes: [],
       user: this.$auth0.user,
     };
   },
   methods: {
     async call(method, path) {
-      let response = await api.whateverApiCall(method, path)
+      let response = await this.$switchit.whateverApiCall(method, path)
       console.log(response)
     },
     closeModal() {
@@ -107,40 +166,87 @@ export default {
     openModal(component) {
       this.modalComponent = component
     },
-    async createCompany() {
+
+    //*** BUSINESS PARTNERS ***/
+
+    async getBusinessPartners() {
+      this.businessPartners = (await this.$switchit.getBusinessPartners()).model
+      console.log('this.businessPartners: ', this.businessPartners)
+    },
+    async createBusinessPartner() {
+
+      let body = {
+        name: 'test3',
+        domain: 'test2.com',
+        vatNumber: '2345431',
+        address: '23452341 Main St',
+        email: 'test@test2.com',
+        countriesOfOperation: ['NO'],
+        countryCode: 'NO',
+        serviceTypes: [1]
+      }
+      console.log('body: ', body)
+      let response = await this.$switchit.createBusinessPartner(body)
+      console.log('response: ', response)
+    },
+    async editBusinessPartner(id) {
       let info = `Created by ${this.user.email}`
       console.log('info: ', info)
       let body = {
         name: "ACME Bacon Inc.",
         description: "Lorem ipsum dolor sit amet",
         information: info,
-        homepage: "example.com",
-        domains: ["example.com", "example.ai"],
-        countryCodes: ["DA", "DE", "NO", "SE"],
+        homepage: "example.com" ,
+        domains: ["example.co"],
+        countryCodes: ["DA", "DE", "NO", "SE", "US"],
         serviceTypes: [1, 2, 4, 8, 16]
+      }
+      console.log('body: ', body)
+      let response = await this.$switchit.editBusinessPartner(id, body)
+      console.log('response: ', response)
+    },
+    async deleteBusinessPartner(id) {
+      console.log('deleting: ', id)
+      let response = await this.$switchit.deleteBusinessPartner(id)
+      console.log('response: ', response)
+    },
 
+    //*** COMPANIES ***/
+
+    async createCompany() {
+      let info = `Created by ${this.user.email}`
+      console.log('info: ', info)
+      let body = {
+        name: "ACME Bacon Inc 2.",
+        description: "Lorem ipsum dolor sit amet",
+        information: info,
+        homepage: "example2.com",
+        domains: ["example2.co"],
+        countryCodes: ["NO", "SE"],
+        serviceTypes: [1, 2, 4, 8, 16]
       }
       console.log('body: ', body)
       let response = await this.$switchit.createCompany(body)
       console.log('response: ', response)
     },
     async editCompany(id) {
-      let info = `Created by ${this.user.email} EDIT`
+      let info = `Created by ${this.user.email}`
       console.log('info: ', info)
       let body = {
-        name: "ACME Bacon Inc. EDIT",
-        description: "Lorem ipsum dolor sit amet EDIT",
+        name: "ACME Bacon Inc.",
+        description: "Lorem ipsum dolor sit amet",
         information: info,
-        homepage: "example.com EDIT" ,
-        domains: ["example.co EDIT"],
-        countryCodes: ["DA", "DE", "NO", "SE", "US"],
+        homepage: "example.com" ,
+        domains: ["example.co"],
+        countryCodes: ["NO", "SE"],
         serviceTypes: [1, 2, 4, 8, 16]
-
       }
       console.log('body: ', body)
       let response = await this.$switchit.editCompany(id, body)
       console.log('response: ', response)
     },
+
+
     async getCompanies() {
       this.companies = (await this.$switchit.getCompanies()).model
       console.log('this.companies: ', this.companies)
@@ -200,19 +306,25 @@ export default {
 <style lang="sass" scoped>
 @import "/src/styles/variables.sass"
 .buttons
+  width: 100%
   display: flex
-  flex-direction: column
+  flex-wrap: wrap
+  // flex-direction: column
   gap: 1rem
 
 h3
   margin-block-end: 0
 
+.main
+  justify-content: flex-start
+  align-items: flex-start
 .content
   width: 100%  
   display: flex
   flex-direction: column
-  align-content: center
-  justify-content: center
+  align-items: flex-start
+  // align-content: center
+  // justify-content: center
   max-width: 900px
 .table_header
   display: flex

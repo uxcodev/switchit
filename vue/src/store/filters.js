@@ -201,26 +201,32 @@ const categories = {
   mobile: {
     selected: false,
     icon: "smartphone",
+    code: 2
   },
   mortgage: {
     selected: false,
     icon: "house",
+    code: 16
   },
   energy: {
     selected: false,
     icon: "lightbulb",
+    code: 8
   },
   car_insurance: {
     selected: false,
     icon: "directions_car",
+    code: 32
   },
   home_insurance: {
     selected: false,
     icon: "verified_user",
+    code: 64
   },
   broadband: {
     selected: false,
     icon: "language",
+    code: 4
   },
   // banking: {
   //   selected: false,
@@ -228,8 +234,58 @@ const categories = {
   // },
 }
 
+/*  
+
+// Here's how these look in the database (as of June 1):
+
+const serviceTypes = [
+  {
+    "serviceType": 1,
+    "serviceTypeString": "Unknown"
+  },
+  {
+    "serviceType": 2,
+    "serviceTypeString": "Mobile"
+  },
+  {
+    "serviceType": 4,
+    "serviceTypeString": "Broadband"
+  },
+  {
+    "serviceType": 8,
+    "serviceTypeString": "Electricity"
+  },
+  {
+    "serviceType": 16,
+    "serviceTypeString": "Mortgage"
+  },
+  {
+    "serviceType": 32,
+    "serviceTypeString": "HomeInsurance"
+  },
+  {
+    "serviceType": 64,
+    "serviceTypeString": "CarInsurance"
+  },
+  {
+    "serviceType": 128,
+    "serviceTypeString": "MedicalInsurance"
+  },
+  {
+    "serviceType": 256,
+    "serviceTypeString": "TravelInsurance"
+  },
+  {
+    "serviceType": 512,
+    "serviceTypeString": "PetInsurance"
+  }
+] 
+*/
 
 /*
+
+
+
 HOW THIS WORKS (needs updating)
  
 1. Services get loaded from api in App.vue, and saved in store as 'services' (temporarily 'service_data' variable)

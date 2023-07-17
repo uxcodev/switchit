@@ -39,43 +39,44 @@ export default {
 
   // TESTING 
 
-  async whateverApiCall(method, path) {
-    try {
-      let url = "https://switchitapi.azurewebsites.net/api/" + path;
+  // async whateverApiCall(method, path) {
+  //   try {
+  //     let url = "https://switchitapi.azurewebsites.net/api/" + path;
 
-      const response = await _axios({
-        method: method,
-        url: url,
-      });
-      response.data.ok = response?.statusText === "OK"
-      return response.data;
-    } catch (err) {
-      console.error(err);
-    }
-  },
+  //     const response = await _axios({
+  //       method: method,
+  //       url: url,
+  //     });
+  //     response.data.ok = response?.statusText === "OK"
+  //     return response.data;
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // },
 
   // Temporary Node API calls
 
-  async getCountries() {
-    try {
-      let url = "https://switchitapi.azurewebsites.net/api/countrydialcodes";
-      const response = await _axios.get(url);
-      response.data.ok = response?.statusText === "OK"
-      return response.data;
-    } catch (err) {
-      console.error(err);
-    }
-  },
-  async getPsd2Institutions() {
-    try {
-      let url = "https://switchitapi.azurewebsites.net/api/v1/psd2Institutions";
-      const response = await _axios.get(url);
-      response.data.ok = response?.statusText === "OK"
-      return response.data;
-    } catch (err) {
-      console.error(err);
-    }
-  },
+  // async getCountries() {
+  //   try {
+  //     let url = "https://switchitapi.azurewebsites.net/api/countrydialcodes";
+  //     const response = await _axios.get(url);
+  //     response.data.ok = response?.statusText === "OK"
+  //     return response.data;
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // },
+
+  // async getPsd2Institutions() {
+  //   try {
+  //     let url = "https://switchitapi.azurewebsites.net/api/v1/psd2Institutions";
+  //     const response = await _axios.get(url);
+  //     response.data.ok = response?.statusText === "OK"
+  //     return response.data;
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // },
 
   async createToken(email) {
     try {

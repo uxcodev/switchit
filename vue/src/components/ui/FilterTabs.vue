@@ -52,7 +52,6 @@ export default {
     for (let cat in this.categories) {
       this.categories[cat].status = false
     }
-    console.log('categories: ', this.$store.getters.categories)
   },
 };
 </script>

@@ -30,7 +30,7 @@ export default {
     user(user) {
       this.status = user.status
       if (user.status === "active") {
-        this.$router.push({ path: '/dashboard' })
+        // this.$router.push({ path: '/dashboard' })
       }
     }
   },
@@ -49,7 +49,7 @@ export default {
     if (this.status === 'pending') {
       this.$router.push({ path: '/signup_success' });
     } else if (user?.status === "active") {
-      this.$router.push({ path: '/dashboard' });
+    //   this.$router.push({ path: '/dashboard' });
     } else {
       console.log('new user');
     }

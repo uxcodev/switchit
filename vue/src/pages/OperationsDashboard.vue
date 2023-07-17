@@ -6,7 +6,7 @@
   <div class="main settings">
     <div class="header">
       <div class="button-group">
-        <button v-for="(scr, index) in screens" :key="index" @click="changePage(scr)">{{ scr }}</button>
+        <!-- <button v-for="(scr, index) in screens" :key="index" @click="changePage(scr)">{{ scr }}</button> -->
       </div>
       <div class="option-group">
         <button disabled @click="openModal('ImportPeople')">Import</button>
@@ -36,7 +36,8 @@ export default {
     return {
       modalComponent: null,
       isModalVisible: false,
-      screens: ['Users', 'Companies', 'NodeCompanies'],
+      // screens: ['Users', 'Companies', 'NodeCompanies'],
+      screens: ['Companies'],
       screen: null,
     }
   },

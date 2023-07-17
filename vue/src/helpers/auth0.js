@@ -7,6 +7,7 @@ const auth0 = createAuth0({
     audience: process.env.VUE_APP_AUTH0_AUDIENCE,
     redirect_uri: window.location.origin
   },
+  scope: 'openid profile email',
 });
 
 export default auth0;

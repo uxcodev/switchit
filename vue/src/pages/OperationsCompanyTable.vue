@@ -62,7 +62,7 @@
               <option value="rejected">Rejected</option>
             </select>
           </div>
-          <div class="option" @click="deleteCompany(company._id)">
+          <div class="option" @click="deleteCompany(company.id)">
             <span class="material-symbols-outlined">Delete</span>
           </div>
         </div>
@@ -110,12 +110,12 @@ export default {
       this.updateCompany(company._id, { status: company.status })
     },
     async updateCompany(id, fields) {
-      let response = await this.$api_node.updateCompany(id, fields)
+      let response = await this.$switchit.updateCompany(id, fields)
       console.log(response)
     },
     async deleteCompany(id) {
-      let response = await this.$api_node.deleteCompany(id)
-      this.companies = await this.$api_node.getCompanies()
+      let response = await this.$switchit.deleteCompany(id)
+      this.companies = await this.$switchit.getCompanies()
       console.log(response)
     },
     openCompany(id) {

@@ -23,7 +23,7 @@ export default {
   },
   actions: {
     async initializeAuth({ commit, dispatch }) {
-      let access_token = await localStorage.getItem('access_token')
+      let access_token = localStorage.getItem('access_token')
 
       if (!access_token) {
         access_token = await auth0.getAccessTokenSilently()

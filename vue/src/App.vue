@@ -13,6 +13,7 @@ import MainNav from "@/components/layout/MainNav.vue";
 import FilterPanel from "./components/leads/FilterPanel.vue";
 import jwtDecode from "jwt-decode";
 import LoaderAniOverlay from "./components/ui/LoaderAniOverlay.vue";
+// import switchit from "./api/switchit";
 
 export default {
   components: {
@@ -42,7 +43,7 @@ export default {
       
       // check if there is an access token in local storage. If not, get one from Auth0
 
-      let access_token = await localStorage.getItem('access_token')
+      let access_token = localStorage.getItem('access_token')
 
       if (!access_token) {
         access_token = await this.$auth0.getAccessTokenSilently()
@@ -66,9 +67,9 @@ export default {
       // find user in our database with the email address from Auth0
 
       console.log('auth0User', this.auth0User)
-      let email =  this.auth0User.email
+      let email =  this.auth0User.email || 'nto@switchit.ai'  // TEMP 
       let user = await this.$api_node.getActiveUser(email)
-
+      console.log('node db user', user)
 
       // if there is no user, create one
       

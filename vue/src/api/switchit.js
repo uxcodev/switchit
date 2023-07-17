@@ -36,6 +36,69 @@ export default {
 
   // Switchit API calls
 
+  // TESTING 
+
+  async whateverApiCall(method, path) {
+    try {
+      let url = "https://switchitapi.azurewebsites.net/api/" + path;
+
+      const response = await _axios({
+        method: method,
+        url: url,
+      });
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
+
+  //*** BUSINESS PARTNERS ***/
+
+
+  async getBusinessPartners() {
+    try {
+      let url = "https://switchitapi.azurewebsites.net/api/v1/businesspartners";
+      const response = await _axios.get(url);
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
+  async createBusinessPartner(body) {
+    try {
+      let url = "https://switchitapi.azurewebsites.net/api/v1/businesspartners";
+      const response = await _axios.post(url, body);
+      console.log('response', response)
+      response.data.ok = response?.statusText === "Created"
+
+      // if (response.status === 401) {
+      //   localStorage.removeItem('access_token');
+      //   window.location.href = "/login";
+      // }
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
+  async deleteBusinessPartner(id) {
+    try {
+      let url = `https://switchitapi.azurewebsites.net/api/v1/businesspartners/${id}`;
+      const response = await _axios.delete(url);
+      console.log('response', response)
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
+
+  //*** COMPANIES ***/
+
   async createCompany(body) {
     try {
       let url = "https://switchitapi.azurewebsites.net/api/v1/companies";
@@ -69,6 +132,19 @@ export default {
       console.error(err);
     }
   },
+
+  async deleteCompany(id) {
+    try {
+      let url = `https://switchitapi.azurewebsites.net/api/v1/companys/${id}`;
+      const response = await _axios.delete(url);
+      console.log('response', response)
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
 
   async getCompanies() {
     try {
@@ -142,5 +218,30 @@ export default {
     } catch (err) {
       console.error(err);
     }
-  }
+  },
+
+  // *** MISCELLANEOUS ***/
+
+  async getCountries() {
+    try {
+      let url = "https://switchitapi.azurewebsites.net/api/countrydialcodes";
+      const response = await _axios.get(url);
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
+  async getPsd2Institutions() {
+    try {
+      let url = "https://switchitapi.azurewebsites.net/api/v1/psd2Institutions";
+      const response = await _axios.get(url);
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
 }

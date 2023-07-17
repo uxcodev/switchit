@@ -233,7 +233,7 @@ export default {
       let info = `Created by ${this.user.email}`
       console.log('info: ', info)
       let body = {
-        name: "ACME Bacon Inc.",
+        name: "ACME Bacon Inc 2.",
         description: "Lorem ipsum dolor sit amet",
         information: info,
         homepage: "example.com" ,

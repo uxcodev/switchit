@@ -137,8 +137,6 @@ export default {
           background: #fafafa
         &:active
           background: #eee  
-        
-      img
 
       input
         margin: 0

@@ -41,10 +41,24 @@ export default {
   methods: {
     async initUser() {
       
-      // check if there is an access token in local storage. If not, get one from Auth0
+      // check if there is an access token in local storage
 
       let access_token = localStorage.getItem('access_token')
 
+      // check if token is expired
+
+      if (access_token) {
+        let decoded = jwtDecode(access_token)
+        let now = new Date()
+        let exp = new Date(decoded.exp * 1000)
+        if (now > exp) {
+          access_token = null
+          localStorage.removeItem('access_token')
+        }
+      }
+
+      // if there's no token, get one from Auth0
+      
       if (!access_token) {
         access_token = await this.$auth0.getAccessTokenSilently()
         localStorage.setItem('access_token', access_token)
@@ -67,7 +81,7 @@ export default {
       // find user in our database with the email address from Auth0
 
       console.log('auth0User', this.auth0User)
-      let email =  this.auth0User.email || 'nto@switchit.ai'  // TEMP 
+      let email =  this.auth0User.email // || 'nto@switchit.ai'  // TEMP 
       let user = await this.$api_node.getActiveUser(email)
       console.log('node db user', user)
 

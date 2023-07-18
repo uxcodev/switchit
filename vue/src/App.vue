@@ -48,6 +48,7 @@ export default {
       // check if token is expired
 
       if (access_token) {
+        console.log('there is a token')
         let decoded = jwtDecode(access_token)
         let now = new Date()
         let exp = new Date(decoded.exp * 1000)
@@ -60,6 +61,7 @@ export default {
       // if there's no token, get one from Auth0
       
       if (!access_token) {
+        console.log('there is no token')
         access_token = await this.$auth0.getAccessTokenSilently()
         localStorage.setItem('access_token', access_token)
       }
@@ -70,6 +72,7 @@ export default {
       if (permissions.includes('superadmin')) {
         this.$store.dispatch('isAdmin', true)
       }
+      console.log('permissions', permissions)
 
       let access = []
       await permissions.forEach(item => {

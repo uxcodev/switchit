@@ -12,9 +12,7 @@ const _axios = axios.create({
 _axios.interceptors.request.use(async (config) => {
   let token = localStorage.getItem('access_token')
   if (!token) {
-    console.log('no token found')
     token = await this.$auth0.getAccessTokenSilently();
-    console.log('token', token)
   }
 
   config.headers.Authorization = `Bearer ${token}`;
@@ -142,7 +140,6 @@ export default {
 
   async createOffer(offer, leads) {
     try {
-      console.log('createOffer', leads)
       const body = { offer: offer, leads: leads }
       const response = await _axios.post('/offers/create-offer', body);
       response.data.ok = response?.statusText === "OK"

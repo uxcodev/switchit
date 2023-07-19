@@ -3,7 +3,7 @@
     <SwitchitIcon @click="$router.push({ path: '/' })" class="logo" :width="40" :height="40" color="#03D0BF" />
     <div class="nav">
       <router-link title="dashboard" to="/dashboard" v-if="isActive" :class="{ icon: true, active: $route.name === 'dashboard' }"><span class="material-symbols-outlined">dashboard</span></router-link>
-      <router-link title="operations" to="/operations" v-if="isAdmin" :class="{ icon: true, active: $route.name === 'operations' }"><span class="material-symbols-outlined">group</span></router-link>
+      <router-link title="operations" to="/operations" :class="{ icon: true, active: $route.name === 'operations' }"><span class="material-symbols-outlined">location_city</span></router-link>
       <!-- <div v-if="isAdmin" class="icon button" @click="createFakeData" ><span class="material-symbols-outlined">input_circle</span></div> -->
       <!-- <router-link title="settings" to="/settings" v-if="isActive" :class="{ icon: true, active: $route.name === '' }"><span class="material-symbols-outlined">settings</span></router-link> -->
       <LanguagePicker title="change language" class="icon" />

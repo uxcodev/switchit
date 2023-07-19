@@ -14,7 +14,6 @@ export default {
       const userAgent = navigator.userAgent || navigator.vendor || window.opera;
       const isMobileRegex = /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i;
       const isMobile = isMobileRegex.test(userAgent);
-      console.log('isMobile:', isMobile)
       commit('isMobile', isMobile)
     },
   },

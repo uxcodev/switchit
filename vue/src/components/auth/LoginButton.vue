@@ -14,7 +14,6 @@ export default {
           target: "/",
         },
       });
-      // console.log('login response..')
       console.log(response)
     }
   }

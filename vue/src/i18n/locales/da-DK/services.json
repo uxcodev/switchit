@@ -50,6 +50,7 @@
 	"additional_services": "Ekstra ydelser",
 	"prepaid_amount": "Forudbetalt beløb",
 	"car_insurance": "Bilforsikring",
+  "medical_insurance": "Sygeforsikring",
 	"valid_from": "Gyldig fra",
 	"number_plate": "Nummerplade",
 	"vehicle": "Køretøj",

@@ -7,7 +7,7 @@
         <LoaderAni />
       </div>
       <form v-else @submit.prevent="submitForm" class="switchit-form sm">
-        <!-- <div class="group" v-if="isAdmin">
+        <div class="group" v-if="isAdmin">
           <label for="email">Created by (email address)</label>
           <input v-model="form.company.createdby" type="text" id="first_name" class="input lg" />
         </div>
@@ -18,13 +18,13 @@
             <option value="">None</option>
             <option v-for="user in users" :key="user._id" :value="user._id">{{ user.first_name }} {{ user.last_name }}</option>
           </select>
-        </div> -->
-        <!-- <div class="group" v-if="!isAdmin">
+        </div>
+        <div class="group" v-if="!isAdmin">
           <label for="firstName">Requested by</label>
           <div class="inline">
             <input disabled v-model="user.email" placeholder="" type="text" id="email" class="input lg mr3" />
           </div>
-        </div> -->
+        </div>
         <div class="group" v-if="!isAdmin">
           <label for="firstName">Your name</label>
           <div class="inline">
@@ -36,10 +36,10 @@
           <label for="company">Company name</label>
           <input v-model="form.company.name" placeholder="" type="text" id="company" class="input lg" />
         </div>
-        <!-- <div class="group" v-if="isAdmin">
+        <div class="group" v-if="isAdmin">
           <label for="website">Company email</label>
           <input v-model="form.company.contact_email" placeholder="" type="text" id="company_email" class="input lg" />
-        </div> -->
+        </div>
         <div class="group">
           <label for="website">Company website</label>
           <input v-model="form.company.homepage" placeholder="" type="text" id="website" class="input lg" />
@@ -121,7 +121,7 @@ export default {
           information:  `Created by ${this.$auth0.user._value.email}`,
           homepage: "example.com",
           domains: ["example.com, example.co"],
-          countryCodes: ['DA', 'SE', 'NO'],
+          countryCodes: ['DK', 'SE', 'NO'],
           serviceTypes: [2, 4, 8, 16],
           roles: []
         },

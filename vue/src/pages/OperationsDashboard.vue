@@ -1,19 +1,21 @@
 <template>
   <ModalWindow v-if="modalComponent" :component="modalComponent"  @cancel="onCancel" @save="onSave" @closeModal="closeModal">
-    <component :is="modalComponent"></component>
-    <!-- <ImportPeople @cancel="onCancel" @save="onSave" />   -->
+    <component :is="modalComponent" :props="componentProps" @closeModal="closeModal" @save="onSave"></component>
   </ModalWindow>
   <div class="main settings">
     <div class="header">
-      <div class="button-group">
-        <!-- <button v-for="(scr, index) in screens" :key="index" @click="changePage(scr)">{{ scr }}</button> -->
-      </div>
+      <!-- Add buttons to change between pages -->
+      <!-- <div v-if="screens.length > 1" class="button-group">
+        <button v-for="(scr, index) in screens" :key="index" @click="changePage(scr)">{{ scr }}</button>
+      </div> -->
+      <div></div>
       <div class="option-group">
-        <button disabled @click="openModal('ImportPeople')">Import</button>
+        <button @click="openModal('CreateCompany')">+ Add company</button>
+        <button disabled @click="openModal('ImportCompanies')">Import</button>
       </div>
     </div>
     <keep-alive>
-      <component :key="screen" v-if="$auth0.isAuthenticated.value" :is="screen"></component>
+      <component :key="componentKey" v-if="$auth0.isAuthenticated.value" @openModal="openModal" :is="screen"></component>
     </keep-alive>
   </div>
 </template>
@@ -23,39 +25,47 @@ import ModalWindow from '@/components/ui/ModalWindow.vue';
 import Users from './OperationsUserTable.vue';
 import NodeCompanies from './OperationsCompanyTable_Node.vue';
 import Companies from './OperationsCompanyTable.vue';
-import ImportPeople from '@/components/import/ImportPeople.vue';
+import ImportCompanies from '@/components/import/ImportCompanies.vue';
+import CreateCompany from '@/components/admin/CreateCompany.vue';
 export default {
   components: {
     ModalWindow,
     Users,
     Companies,
     NodeCompanies,
-    ImportPeople
+    ImportCompanies,
+    CreateCompany
   },
   data() {
     return {
       modalComponent: null,
       isModalVisible: false,
       // screens: ['Users', 'Companies', 'NodeCompanies'],
-      screens: ['Companies'],
+      screens: ['Companies', 'Users'],
       screen: null,
+      componentKey: 0,
+      
     }
   },
   methods: {
     closeModal() {
       this.modalComponent = null
     },
-    openModal(component) {
+    openModal(component, props) {
+      this.componentProps = props
       this.modalComponent = component
     },
     onSave() {
       this.isModalVisible = false;
+      this.componentKey++
+      this.modalComponent = null
     },
     onCancel() {
       this.isModalVisible = false;
+      this.modalComponent = null
+
     },
     changePage(page) {
-      console.log(page)
       this.screen = page;
       this.$router.replace({ path: this.$route.path, query: { q : page } })
     }
@@ -78,8 +88,6 @@ export default {
   }, */
   async mounted() {
     let query = this.$route.query.q
-    console.log('query: ', query)
-
     this.screen = query || this.screens[0]
   }
 }
@@ -96,5 +104,7 @@ export default {
   .button-group
     display: flex
     gap: 10px
-    
+  .option-group
+    display: flex
+    gap: 10px
 </style>

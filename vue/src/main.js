@@ -61,7 +61,6 @@ app.use(dayjsPlugin);
 
 // check if mobile
 store.dispatch('isMobile')
-console.log('isMobile', store.getters.isMobile)
 
 /* use Router */
 

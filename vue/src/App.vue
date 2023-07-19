@@ -48,7 +48,6 @@ export default {
       // check if token is expired
 
       if (access_token) {
-        console.log('there is a token')
         let decoded = jwtDecode(access_token)
         let now = new Date()
         let exp = new Date(decoded.exp * 1000)
@@ -61,7 +60,6 @@ export default {
       // if there's no token, get one from Auth0
       
       if (!access_token) {
-        console.log('there is no token')
         access_token = await this.$auth0.getAccessTokenSilently()
         localStorage.setItem('access_token', access_token)
       }
@@ -72,7 +70,6 @@ export default {
       if (permissions.includes('superadmin')) {
         this.$store.dispatch('isAdmin', true)
       }
-      console.log('permissions', permissions)
 
       let access = []
       await permissions.forEach(item => {
@@ -83,10 +80,8 @@ export default {
 
       // find user in our database with the email address from Auth0
 
-      console.log('auth0User', this.auth0User)
       let email =  this.auth0User.email // || 'nto@switchit.ai'  // TEMP 
       let user = await this.$api_node.getActiveUser(email)
-      console.log('node db user', user)
 
       // if there is no user, create one
       
@@ -98,14 +93,12 @@ export default {
           status: 'new',
           auth0_id: this.auth0User.sub
         }
-        console.log('fields', fields)
         user = await this.$api_node.createUser(fields)
       }
 
       // save active user to vuex
 
       this.$store.dispatch('setActiveUser', user)
-      console.log('getActiveUser', this.$store.getters.activeUser)
 
       // redirect to onboarding or dashboard depending on user status
 
@@ -113,13 +106,11 @@ export default {
       if (!status || status === 'new' || status === 'pending') {
         this.$router.push({ path: '/onboarding' })
       } 
-      console.log('user', user, status)
       this.loaded = true
     }
   },
   watch: {
     async auth0User() {
-      console.log('user changed')
       this.initUser()
     }
   },

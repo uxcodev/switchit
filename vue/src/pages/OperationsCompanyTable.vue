@@ -1,88 +1,75 @@
 <template>
-  <div class="content" v-if="!edit && !add">
-    <h2>Companies</h2>
-    <div class="table_header">
-      <div class="row">
-        <div class="field">Company</div>
-        <!-- <div class="field">Email</div> -->
-        <div class="field">Access requested</div>
-        <div class="field status">Status</div>
-      </div>
-      <div class="option"></div>
-    </div>
-    <div class="table">
-      <div v-for="(company, index) in companies" :key="index">
-        <div class="item">
-          <div class="row"  @click="$router.push({ path: '/createcompany', query: { id: company._id } })">
-            <div class="field-group" >
-              <div class="field b">
-                {{ company.name }} 
-              </div>
-              <div class="help">
-                {{ company.id }} 
-              </div>
-              <div class="field light">
-                website: 
-                {{ company.homePage }}
-              </div>
-              <div class="field light">
-                {{ company.contact_email }}
-              </div>
-              <div class="field light" v>
-                domain: 
-                <span class="role" v-for="domain in company.domains" :key="domain">
-                  {{ domain.domainName }}
-                  <!-- {{ role.user.email }} -->
-                </span>
-              </div>
-              <div class="field light" v>
-                admin: 
-                <span class="role" v-for="role in company.roles" :key="role">
-                  {{ role.user?.email }}
-                  <!-- {{ role.user.email }} -->
-                </span>
-              </div>
-              <div class="field light company">
-                countries: 
-                <span class="country" v-for="country in company.countries" :key="country">
-                  {{ country?.name || country}}
-                </span>
-              </div>
-
-            </div>
-            <IconsCategoryAccess v-if="company.access" :access="company.access"/>
-            
-          </div>
-          <div class='status_wrapper' :class="company.status">
-            <!-- <div :class="['dot', company.status]"></div> -->
-            <select name="status" class="select status" v-model="company.status" @change="changeStatus(company)">
-              <option value="new">New</option>
-              <option value="pending">Pending</option>
-              <option value="active">Approved</option>
-              <option value="rejected">Rejected</option>
-            </select>
-          </div>
-          <div class="option" @click="deleteCompany(company.id)">
-            <span class="material-symbols-outlined">Delete</span>
-          </div>
+  
+  <!-- <button @click="triggerAddCompany">+ Add company</button> -->
+  <div class="content" >
+      <h2>Companies</h2>
+      <div class="table_header">
+        <div class="row">
+          <div class="field">Company</div>
+          <!-- <div class="field">Email</div> -->
+          <!-- <div class="field">Access requested</div> -->
+          <!-- <div class="field status">Status</div> -->
         </div>
-      </div> 
-    </div>
-    <div>
-      <button class="mt10"  @click="$router.push({ path: '/createcompany' })" >+ Add</button>
-    </div>
-  </div>
-  <div v-if="edit">
-    <!-- <SettingsCompanyEdit :selectedCompany="selectedCompany" @updateCompany="updateCompany" @closeEdit="close" /> -->
-  </div>
-  <div v-if="add">
-    <!-- <SettingsCompanyCreate @createCompany="createCompany" @closeEdit="close" /> -->
-    <!-- <SettingsCompanyCreate -->
+        <div class="option"></div>
+      </div>
+      <div class="table">
+        <div v-for="(company, index) in companies" :key="index">
+          <div class="item">
+            <!-- <div class="row"  @click="$router.push({ path: '/createcompany', query: { id: company._id } })"> -->
+            <div class="row"  @click="triggerEditCompany(company.id)">
+              <div class="field-group" >
+                <div class="field b">
+                  {{ company.name }} 
+                </div>
+                <div class="help">
+                  {{ company.id }} 
+                </div>
+                <!-- <div class="field light">
+                  website: 
+                  {{ company.homePage }}
+                </div> -->
+                <div class="field light">
+                  {{ company.contact_email }}
+                </div>
+                <div class="field light" v>
+                  domains: 
+                  <span class="role" v-for="domain in company.domains" :key="domain">
+                    {{ domain.domainName }}
+                    <!-- {{ role.user.email }} -->
+                  </span>
+                </div>
+
+              </div>
+              <!-- <IconsCategoryAccess v-if="company.access" :access="company.access"/> -->
+              <IconsCategoryAccess v-if="company.serviceType" :access="getCategories(company.serviceType)"/>
+
+              
+            </div>
+            <!-- <div class='status_wrapper' :class="company.status">
+              <select name="status" class="select status" v-model="company.status" @change="changeStatus(company)">
+                <option value="new">New</option>
+                <option value="pending">Pending</option>
+                <option value="active">Approved</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div> -->
+            <div class="option" @click="deleteCompany(company.id)">
+              <span class="material-symbols-outlined">Delete</span>
+            </div>
+          </div>
+        </div> 
+      </div>
+      <div>
+        <!-- dynamic component -->
+       
+        <!-- <button class="mt10"  @click="$router.push({ path: '/addcompany,', props: {add:true} })" >+ Add</button> -->
+      </div>
   </div>
 </template>
 <script>
 
 import IconsCategoryAccess from '@/components/ui/IconsCategoryAccess.vue';
+import bitwiseDecode from '@/helpers/bitwise'
 
 export default {
   components: {
@@ -104,19 +91,19 @@ export default {
   },
   methods: {
     changeStatus(company) {
-      // // console.log(company)
-      // // console.log(company.status)
-      // // console.log(company._id)
       this.updateCompany(company._id, { status: company.status })
     },
     async updateCompany(id, fields) {
-      let response = await this.$switchit.updateCompany(id, fields)
-      console.log(response)
+      await this.$switchit.updateCompany(id, fields)
     },
     async deleteCompany(id) {
-      let response = await this.$switchit.deleteCompany(id)
-      this.companies = await this.$switchit.getCompanies()
-      console.log(response)
+      // let response = await this.$switchit.deleteCompany(id)
+      await this.$switchit.editCompany(id, {name: 'DELETE'})      
+      this.companies = this.companies.filter(company => company.id !== id)
+    },
+    getCategories(bitwiseNumber) {
+      let number = bitwiseDecode(bitwiseNumber)
+      return number
     },
     openCompany(id) {
       console.log('id: ', id)
@@ -127,15 +114,25 @@ export default {
     openModal(component) {
       this.modalComponent = component
     },
+    triggerAddCompany() {
+      this.$emit('open-modal', 'CreateCompany');
+    },
+    triggerEditCompany(id) {
+      this.$emit('open-modal', 'CreateCompany', {companyId: id, editing: true});
+    },
   },
   async mounted() {
-    this.companies = (await this.$switchit.getCompanies()).model
-    // this.companies = await this.$api_node.getCompanies()
+    // if route query q is equal to 1, set showAll to true 
+    let showAll = this.$route.query.all
+    this.companies = (await this.$switchit.getFullCompanies()).model
+    if (!showAll) {
+      this.companies = this.companies.filter(company => company.name !== 'DELETE') 
+    }
 
-    // console.log(this.companies)
+    this.companies.sort((a, b) => {
+      return new Date(b.created) - new Date(a.created)
+    })
 
-    // // console.log('CompanyTable')
-    console.log('this.companies: ', this.companies)
   },
 }
 </script>

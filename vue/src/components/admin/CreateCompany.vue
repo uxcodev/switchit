@@ -203,7 +203,7 @@ export default {
         this.companyId = this.props?.companyId
         let company = (await this.$switchit.getFullCompany(this.companyId)).model
         company.serviceTypes = bitwiseDecode(company.serviceType -1)
-        company.countryCodes = company.companyCompanyCountrysModels.map(item => item.countryCode);
+        // company.countryCodes = company.companyCompanyCountrysModels.map(item => item.countryCode);
         console.log('country codes: ', company.countryCodes)
         delete company.serviceType 
         this.form.company = company 

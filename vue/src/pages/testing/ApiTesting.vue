@@ -24,11 +24,16 @@
     </div>
     <h3>Misc</h3>
     <div class="buttons">
-      <button @click="call('GET', 'countrydialcodes')">Country Dial Codes</button>
+      <button @click="getCountries()">Country Dial Codes</button>
+      <!-- <button @click="call('GET', 'countrydialcodes')">Country Dial Codes</button> -->
       <button @click="getServiceTypes()">getServiceTypes</button>
       <button @click="addServicesToCompany()">addServicesToCompany</button>
     </div>
     <pre>{{ result }}</pre>
+    <div v-for="(item, index) in countries" :key="index">
+      {{item.name +', '+ item.code }}
+    </div>
+    <!-- <pre>{{ countries }}</pre> -->
     <div class="table" >
       <div v-for="(company, index) in companies" :key="index">
         <div class="item">
@@ -153,6 +158,7 @@ export default {
       businessPartners: [],
       serviceTypes: [],
       user: this.$auth0.user,
+      countries: [],
     };
   },
   methods: {
@@ -294,6 +300,14 @@ export default {
 
       let response = await this.$switchit.addServicesToCompany(body)
       console.log('response: ', response)
+    },
+
+    // misc
+
+    async getCountries() {
+      this.countries = await this.$switchit.getCountries()
+      console.log('countries ', this.countries)
+
     },
   },
   async mounted() {

@@ -37,7 +37,7 @@
                 </label>
               </div>
             </div>
-            <button class="" @click="submitForm">Submit</button>
+            <button class="">Submit</button>
             <div class="button__cancel" @click="closeModal">Cancel</div>
             <div v-if="errors.length" class="msg_error">{{ errors[0] }}</div>
           </form>
@@ -180,6 +180,7 @@ export default {
       try {
         let body = this.form.company
         body.domains = [body.homepage]
+        console.log('body: ', body)
         if (this.isEditing) {
           await this.$switchit.editCompany(this.companyId, body)
         } else {
@@ -200,8 +201,10 @@ export default {
       if (this.props?.companyId) {
         this.isEditing = true
         this.companyId = this.props?.companyId
-        let company = (await this.$switchit.getCompany(this.companyId)).model
+        let company = (await this.$switchit.getFullCompany(this.companyId)).model
         company.serviceTypes = bitwiseDecode(company.serviceType -1)
+        company.countryCodes = company.companyCompanyCountrysModels.map(item => item.countryCode);
+        console.log('country codes: ', company.countryCodes)
         delete company.serviceType 
         this.form.company = company 
       }

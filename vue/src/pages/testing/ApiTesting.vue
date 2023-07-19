@@ -16,11 +16,11 @@
     <h3>Companies</h3>
     <div class="buttons">
       <button @click="createCompany()">createCompany</button>
-      <button @click="editCompany('f95521bc-edf8-4036-9078-a6c7058bbd4a')">editCompany</button>
+      <button @click="editCompany('585c5dec-5df8-4894-9976-8bf36baf5967')">editCompany</button>
       <button @click="getCompanies()">getCompanies</button>
       <button @click="getFullCompanies()">getFullCompanies</button>
-      <button @click="getCompany('f95521bc-edf8-4036-9078-a6c7058bbd4a')">getCompany</button>
-      <button @click="getFullCompany('f95521bc-edf8-4036-9078-a6c7058bbd4a')">getFullCompany</button>
+      <button @click="getCompany('585c5dec-5df8-4894-9976-8bf36baf5967')">getCompany</button>
+      <button @click="getFullCompany('585c5dec-5df8-4894-9976-8bf36baf5967')">getFullCompany</button>
     </div>
     <h3>Misc</h3>
     <div class="buttons">

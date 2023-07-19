@@ -11,7 +11,7 @@
       <div></div>
       <div class="option-group">
         <button @click="openModal('CreateCompany')">+ Add company</button>
-        <button disabled @click="openModal('ImportCompanies')">Import</button>
+        <button @click="openModal('ImportCompanies')">Import</button>
       </div>
     </div>
     <keep-alive>

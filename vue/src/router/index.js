@@ -26,6 +26,12 @@ const routes = [
     component: () => import('@/pages/OperationsDashboard.vue')
   },
   {
+    path: '/importedsheet',
+    name: "importedsheet",
+    beforeEnter: authGuard,
+    component: () => import('@/pages/ImportedSheet.vue')
+  },
+  {
     path: '/settings',
     name: "settings",
     beforeEnter: authGuard,

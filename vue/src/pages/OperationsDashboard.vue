@@ -11,7 +11,7 @@
       <div></div>
       <div class="option-group">
         <button @click="openModal('CreateCompany')">+ Add company</button>
-        <button disabled @click="openModal('ImportCompanies')">Import</button>
+        <button @click="openModal('ImportCompanies')">Import</button>
       </div>
     </div>
     <keep-alive>
@@ -26,7 +26,7 @@ import Users from './OperationsUserTable.vue';
 import NodeCompanies from './OperationsCompanyTable_Node.vue';
 import Companies from './OperationsCompanyTable.vue';
 // import ImportCompanies from '@/components/import/ImportCompanies.vue';
-import ImportCompanies from '@/pages/ImportedSheet.vue';
+import ImportCompanies from '@/components/import/ImportCompaniesFromSheet.vue';
 import CreateCompany from '@/components/admin/CreateCompany.vue';
 export default {
   components: {

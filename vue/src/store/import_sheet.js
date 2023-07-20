@@ -34,11 +34,14 @@ export default {
         const obj = {};
         keys.forEach((key, index) => {
           const value = row[index];
-          if (key.startsWith("_")) {
-            const newKey = key.substring(1); // Remove the "_" character
-            obj[newKey] = value !== null && value !== undefined ? [value] : [];
+          if (key.startsWith("$")) {
+            const newKey = key.substring(1); // Remove the "$" character
+            obj[newKey] = value?.split(",").map((item) => item.trim()) || [];
+          } else if (key.startsWith("#")) {
+            const newKey = key.substring(1); // Remove the "#" character
+            obj[newKey] = value?.split(",").map((item) => parseFloat(item.trim())) || [];
           } else {
-            obj[key] = value;
+            obj[key] = value
           }
         });
         return obj;
@@ -47,7 +50,7 @@ export default {
       const filteredCompanies = arr_companies.map((company) => {
         const filteredCompany = {};
         for (const key in company) {
-          if (!key.startsWith("#")) {
+          if (!key.startsWith("_")) {
             filteredCompany[key] = company[key];
           }
         }
@@ -57,7 +60,6 @@ export default {
       commit("setCompanies", { val: filteredCompanies });
       return filteredCompanies;
     }
-
     ,
 
 

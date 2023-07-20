@@ -11,11 +11,12 @@
       <button @click="createBusinessPartner()">createBusinessPartner</button>
       <button @click="editBusinessPartner('f95521bc...')">editBusinessPartner</button>
       <button @click="deleteBusinessPartner('f95521bc...')">deleteBusinessPartner</button>
- 
+
     </div>
     <h3>Companies</h3>
     <div class="buttons">
       <button @click="createCompany()">createCompany</button>
+      <button @click="importCompanies()">importCompanies</button>
       <button @click="editCompany('585c5dec-5df8-4894-9976-8bf36baf5967')">editCompany</button>
       <button @click="getCompanies()">getCompanies</button>
       <button @click="getFullCompanies()">getFullCompanies</button>
@@ -31,10 +32,10 @@
     </div>
     <pre>{{ result }}</pre>
     <div v-for="(item, index) in countries" :key="index">
-      {{item.name +', '+ item.code }}
+      {{ item.name + ', ' + item.code }}
     </div>
     <!-- <pre>{{ countries }}</pre> -->
-    <div class="table" >
+    <div class="table">
       <div v-for="(company, index) in companies" :key="index">
         <div class="item">
           <!-- <div class="row"  @click="$router.push({ path: '/createcompany', query: { id: company._id } })"> -->
@@ -195,6 +196,44 @@ export default {
       let response = await this.$switchit.createBusinessPartner(body)
       console.log('response: ', response)
     },
+    async importCompanies() {
+
+      let body = [
+        {
+          "name": "Imported Company 1",
+          "homepage": "test.com",
+          "domains": [
+            "test.com"
+          ],
+          "countryCodes": [
+            "SE", "NO"
+          ],
+          "description": "Lorem ipsum (optional)",
+          "information": "Created by xyz (optional)",
+          "serviceTypes": [
+            2, 4, 16
+          ]
+        },
+        {
+          "name": "Imported Company 2",
+          "homepage": "example.com",
+          "domains": [
+            "example.com"
+          ],
+          "countryCodes": [
+            "DK", "DE"
+          ],
+          "description": "Lorem ipsum (optional)",
+          "information": "Created by xyz (optional)",
+          "serviceTypes": [
+            2, 8
+          ]
+        }
+      ]
+      console.log('body: ', body)
+      let response = await this.$switchit.importCompanies(body)
+      console.log('response: ', response)
+    },
     async editBusinessPartner(id) {
       let info = `Created by ${this.user.email}`
       console.log('info: ', info)
@@ -202,7 +241,7 @@ export default {
         name: "ACME Bacon Inc.",
         description: "Lorem ipsum dolor sit amet",
         information: info,
-        homepage: "example.com" ,
+        homepage: "example.com",
         domains: ["example.co"],
         countryCodes: ["DA", "DE", "NO", "SE", "US"],
         serviceTypes: [1, 2, 4, 8, 16]
@@ -216,8 +255,14 @@ export default {
       let response = await this.$switchit.deleteBusinessPartner(id)
       console.log('response: ', response)
     },
-
+    
     //*** COMPANIES ***/
+    async deleteCompany(id) {
+      console.log('deleting: ', id)
+      // 62274fac-36b6-4e03-a652-0ef0e69e88f7
+      let response = await this.$switchit.deleteCompany(id)
+      console.log('response: ', response)
+    },
 
     async createCompany() {
       let info = `Created by ${this.user.email}`
@@ -242,7 +287,7 @@ export default {
         name: "ACME Bacon Inc 2.",
         description: "Lorem ipsum dolor sit amet",
         information: info,
-        homepage: "example.com" ,
+        homepage: "example.com",
         domains: ["example.co"],
         countryCodes: ["NO", "SE"],
         serviceTypes: [1, 2, 4, 8, 16]
@@ -274,7 +319,7 @@ export default {
           serviceTypes.push(type);
         }
       });
-      
+
       console.log(serviceTypes);
       return serviceTypes;
     },

@@ -97,8 +97,8 @@ export default {
       await this.$switchit.updateCompany(id, fields)
     },
     async deleteCompany(id) {
-      // let response = await this.$switchit.deleteCompany(id)
-      await this.$switchit.editCompany(id, {name: 'DELETE'})      
+      await this.$switchit.deleteCompany(id)
+      // await this.$switchit.editCompany(id, {name: 'DELETE'})      
       this.companies = this.companies.filter(company => company.id !== id)
     },
     getCategories(bitwiseNumber) {
@@ -122,12 +122,7 @@ export default {
     },
   },
   async mounted() {
-    // if route query q is equal to 1, set showAll to true 
-    let showAll = this.$route.query.all
     this.companies = (await this.$switchit.getFullCompanies()).model
-    if (!showAll) {
-      this.companies = this.companies.filter(company => company.name !== 'DELETE') 
-    }
 
     this.companies.sort((a, b) => {
       return new Date(b.created) - new Date(a.created)

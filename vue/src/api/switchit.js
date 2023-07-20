@@ -113,6 +113,17 @@ export default {
       console.error(err);
     }
   },
+  async importCompanies(body) {
+    try {
+      let url = "https://switchitapi.azurewebsites.net/api/v1/companies/import";
+      const response = await _axios.post(url, body);
+      console.log('response', response)
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
 
   async editCompany(id, body) {
     // if (id) {
@@ -133,9 +144,9 @@ export default {
 
   async deleteCompany(id) {
     try {
-      let url = `https://switchitapi.azurewebsites.net/api/v1/companys/${id}`;
+      let url = `https://switchitapi.azurewebsites.net/api/v1/companies/${id}`;
       const response = await _axios.delete(url);
-      console.log('response', response)
+      console.log('deleteCompany response', response)
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {

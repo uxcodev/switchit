@@ -79,9 +79,9 @@ export default {
   display: flex
   flex-wrap: wrap
   align-items: center
-  background-color: #e9e9e9
-  color: #333
-  border-radius: 20px
+  background-color: #2c3e50
+  color: #fff
+  border-radius: 4px
   padding: 2px 5px 2px 8px
   font-size: 0.8rem
   gap: 2px

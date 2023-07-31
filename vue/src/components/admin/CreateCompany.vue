@@ -1,77 +1,85 @@
 <template>
   <!-- <div class="main"> -->
-    <!-- <div class="container white"> -->
-      <div> 
-        <div class="white">
-          <h2 >{{ isEditing ? 'Edit company' : 'Create company'}}</h2>
+  <!-- <div class="container white"> -->
+  <div>
+    <div class="white">
+      <h2>{{ isEditing ? 'Edit company' : 'Create company' }}</h2>
 
-          <div v-if="loading">
-            <LoaderAni />
+      <div v-if="loading">
+        <LoaderAni />
+      </div>
+      <form v-else @submit.prevent="submitForm" class="switchit-form sm">
+        <div class="group" v-if="!isAdmin">
+          <label for="email">Created by</label>
+          <div class="inline">
+            <input v-model="user.email" placeholder="email" type="text" id="email" class="input lg mr3" />
           </div>
-          <form v-else @submit.prevent="submitForm" class="switchit-form sm">
-            <div class="group" v-if="!isAdmin">
-              <label for="email">Created by</label>
-              <div class="inline">
-                <input v-model="user.email" placeholder="email" type="text" id="email" class="input lg mr3" />
-              </div>
-            </div>
-            <div class="group">
-              <label for="company">Company name</label>
-              <input v-model="form.company.name" placeholder="" type="text" id="company" class="input lg" />
-            </div>
-            <div class="group">
-              <label for="website">Company website</label>
-              <input v-model="form.company.homepage" placeholder="" type="text" id="website" class="input lg" />
-            </div>
-            <div class="group">
-              <label for="website">{{ "Countries the company is active in" }}</label>
-              <Multiselect v-model="form.company.countryCodes" mode="tags" @select="countrySelected" :searchable="true" :close-on-select="false" :options="country_options" />
-            </div>
-            <div class="group">
-
-              <label for="">{{ isAdmin ? "Markets the company serves" : "Markets you are interested in serving" }}</label>
-              <div class="checkbox-group">
-                <label v-for="(category, key) in categories" :key="key" class="checkbox-label">
-                  <input class="checkbox" type="checkbox" :checked="isCategorySelected(category.code)" :id="category.name" @change="toggleCategorySelection(category.code)" />{{ $t(key) }}
-                  <span class="checkmark"></span>
-                </label>
-              </div>
-            </div>
-            <button class="">Submit</button>
-            <div class="button__cancel" @click="closeModal">Cancel</div>
-            <div v-if="errors.length" class="msg_error">{{ errors[0] }}</div>
-          </form>
         </div>
-        <div v-if="status === 'pending'" class="main clip" v-show="!isAdmin">
-          <div class="container clip">
-            <div class="ph_content">
-              <div class="cards lg">
-                <div class="banner_lg">
-                  <h1>
-                    Your account is pending approval.
-                  </h1>
-                  <p>Once your account is approved, your opportunities will appear in the dashboard below. In the meantime, you can start learning how to get the most out of your SwitchIt account.</p>
-                  <button>Get more out of SwitchIt</button>
-                </div>
-              </div>
-            </div>
-            <div>
-              <img class="img_placeholder mt6" src="@/images/switchit_onboarding_placeholder.svg" />
+        <div class="group">
+          <label for="company">Company name</label>
+          <input v-model="form.company.name" placeholder="" type="text" id="company" class="input lg" />
+        </div>
+        <div class="group">
+          <label for="company">Company homepage</label>
+          <input v-model="form.company.homepage" @blur="copyDomain" placeholder="" type="text" id="company" class="input lg" />
+        </div>
+        <div class="group">
+          <label for="website">Company domains and emails</label>
+          <div class="help">Separate by commas (example.com, email@example.com)</div>
+          <!-- <input v-model="form.company.domains" placeholder="" type="text" id="website" class="input fullwidth" /> -->
+          <TagInput class="input fullwidth" v-model="form.company.domains" :key="componentKey" />
+        </div>
+        <div class="group">
+          <label for="website">{{ "Countries the company is active in" }}</label>
+          <Multiselect v-model="form.company.countryCodes" mode="tags" @select="countrySelected" :searchable="true" :close-on-select="false" :options="country_options" />
+        </div>
+        <div class="group">
+
+          <label for="">{{ isAdmin ? "Markets the company serves" : "Markets you are interested in serving" }}</label>
+          <div class="checkbox-group">
+            <label v-for="(category, key) in categories" :key="key" class="checkbox-label">
+              <input class="checkbox" type="checkbox" :checked="isCategorySelected(category.code)" :id="category.name" @change="toggleCategorySelection(category.code)" />{{ $t(key) }}
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+        <button class="">Submit</button>
+        <div class="button__cancel" @click="closeModal">Cancel</div>
+        <div v-if="errors.length" class="msg_error">{{ errors[0] }}</div>
+      </form>
+    </div>
+    <div v-if="status === 'pending'" class="main clip" v-show="!isAdmin">
+      <div class="container clip">
+        <div class="ph_content">
+          <div class="cards lg">
+            <div class="banner_lg">
+              <h1>
+                Your account is pending approval.
+              </h1>
+              <p>Once your account is approved, your opportunities will appear in the dashboard below. In the meantime, you can start learning how to get the most out of your SwitchIt account.</p>
+              <button>Get more out of SwitchIt</button>
             </div>
           </div>
+        </div>
+        <div>
+          <img class="img_placeholder mt6" src="@/images/switchit_onboarding_placeholder.svg" />
         </div>
       </div>
+    </div>
+  </div>
 </template>
 <script>
 
 import Multiselect from '@vueform/multiselect'
 import LoaderAni from '@/components/ui/LoaderAni.vue'
 import bitwiseDecode from '@/helpers/bitwise'
+import TagInput from '@/components/ui/TagInput.vue'
 
 export default {
   components: {
     Multiselect,
     LoaderAni,
+    TagInput
   },
   props: ["props"],
   data() {
@@ -83,6 +91,7 @@ export default {
       isEditing: false,
       companyId: null,
       modalComponent: null,
+      componentKey: 0,
       screen: 'UserTable',
       categories: this.$store.getters.categories,
       activeUser: this.$store.getters.activeUser,
@@ -99,9 +108,10 @@ export default {
         company: {
           name: ``,
           description: ``,
-          information:  `Created by ${this.$auth0.user._value.email}`,
-          homepage: ``,
+          information: `Created by ${this.$auth0.user._value.email}`,
           domains: [],
+          domains_arr: [],
+          homepage: ``,
           countryCodes: [],
           serviceTypes: [],
           roles: []
@@ -140,6 +150,24 @@ export default {
   methods: {
     async countrySelected() {
     },
+    copyDomain() {
+
+
+  // // Check if there's already an exact match of the homepage in the domains array
+  const isHomepageInDomains = this.form.company.domains.includes(this.form.company.homepage);
+
+  if (isHomepageInDomains) {
+    // move it to first place in the domains array
+    const index = this.form.company.domains.indexOf(this.form.company.homepage);
+    this.form.company.domains.splice(index, 1);
+    this.form.company.domains.unshift(this.form.company.homepage);
+
+  } else {
+    // if not, add it as the first item in the domains array
+    this.form.company.domains.unshift(this.form.company.homepage);
+  }
+},
+
     isCategorySelected(code) {
       return this.form.company.serviceTypes?.includes(code);
       // return [0, 1, 2, 4, 8].includes(code)
@@ -174,13 +202,25 @@ export default {
     changePage(page) {
       this.screen = page
     },
-    
-    async submitForm() {
 
+    async submitForm() {
+      console.log(this.form.company)
       try {
-        let body = this.form.company
-        body.domains = [body.homepage]
-        console.log('body: ', body)
+        if (this.form.company.homepage) {
+          this.copyDomain()
+        }
+        // let array = this.form.company.domains.split(',').map(item => item.trim())
+        // this.form.company.domains = array
+        // let body = this.form.company
+        let body = {
+          name: this.form.company.name,
+          homepage: this.form.company.homepage,
+          description: this.form.company.description,
+          information: this.form.company.information,
+          domains: this.form.company.domains,
+          countryCodes: this.form.company.countryCodes,
+          serviceTypes: this.form.company.serviceTypes
+        }
         if (this.isEditing) {
           await this.$switchit.editCompany(this.companyId, body)
         } else {
@@ -192,24 +232,29 @@ export default {
         this.$toast_error.show(error)
       }
     },
-    
+
   },
   async created() {
     try {
 
-      
       if (this.props?.companyId) {
         this.isEditing = true
         this.companyId = this.props?.companyId
         let company = (await this.$switchit.getFullCompany(this.companyId)).model
-        company.serviceTypes = bitwiseDecode(company.serviceType -1)
-        // company.countryCodes = company.companyCompanyCountrysModels.map(item => item.countryCode);
-        console.log('country codes: ', company.countryCodes)
-        delete company.serviceType 
-        this.form.company = company 
+        company.serviceTypes = bitwiseDecode(company.serviceType - 1)
+        // company.domains = company.companyCompanyDomainsModels.map(item => item.domain).join(', ');
+        company.domains = company.companyCompanyDomainsModels.map(item => item.domain)
+        // company.countryCodes = company.companyCompanyCountrysModels.map(item => item.code)
+        company.countryCodes = company.companyCompanyCountrysModels.map(item => item.countryCode);
+        console.log('company.domains', company.domains)
+        delete company.serviceType
+        delete company.companyCompanyCountrysModels
+        delete company.companyCompanyDomainsModels
+        this.form.company = company
+        this.componentKey++
       }
 
-      
+
       // populate the countries dropdown
       let countryCodes = await this.$switchit.getCountries()
       let country_options = countryCodes.map(country => ({
@@ -222,8 +267,8 @@ export default {
       // populate the users and company differently depending on whether admin, and whether editing
 
       // if (this.isAdmin) {
-      
-     
+
+
 
     } catch (error) {
       console.log('error: ', error)
@@ -273,6 +318,9 @@ export default {
   user-select: none
   -webkit-user-select: none
   
+.fullwidth
+  width: 100%
+  max-width: 100% !important
   
 .container.white
   background-color: white

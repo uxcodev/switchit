@@ -8,7 +8,7 @@
       <section>
         <button @click="createOffer" class="right">Submit offer</button>
         <h1>Create offer</h1>
-        <div v-if='lead.value' class="ph_boxes stats">
+        <div v-if='lead.value' class="pageheader__boxes stats">
           <!-- <div v-for="i in 3" :key='i'><span :class='i'></span></div> -->
           <div class="card stats-rating">
             <div class="card-top">
@@ -131,7 +131,7 @@
               <div class="offer-group-input_group">
                 <div class="symbol">{{ value.prefix }}</div>
                 <select v-if="value.type === 'dropdown'" v-model="value.value" class="select">
-                  <option v-for="(option, key) in value.options" :key="key">{{ option }}</option>
+                  <option v-for="(option, key) in value.options" :key="key">{{ option.label }}</option>
                 </select>
                 <input v-else v-model="value.value" class="input" />
                 <div class="symbol">{{ value.suffix }}</div>
@@ -176,7 +176,7 @@ export default {
           term: "1 year",
           details: "Lorem ipsum dolor sit amet",
         },
-        criteria: this.$store.getters.filters,
+        filters: this.$store.getters.filters,
         offer: {
           mobile: {
             plan_talk_minutes: {value: 1000, type: 'Number', suffix: 'mins'},
@@ -187,13 +187,17 @@ export default {
           },
           mortgage: {
             rate: {value: 3.45, type: 'Number', suffix: '%'},
-            rate_type: {value: "Fixed", type: 'dropdown', options: ['Fixed', 'Variable']},
+            rate_type: {value: null, type: 'dropdown', options: [
+              {label:'Select', value: null}, 
+              {label:'Fixed', value: "Fixed"}, 
+              {label:'Variable', value: "Variable"}
+            ]},
             one_time_cost: {value: 1500, type: 'Number', suffix: '€'},
             monthly_cost: {value: 795, type: 'Number', suffix: '€'},
             downpayment: {value: 25000, type: 'Number', suffix: '€'},
           },
           energy: {
-            kwh_rate: {value: 0.15, type: 'Number', suffix: '€'},
+            kwh_rate: {value: null, type: 'Number', suffix: '€'},
           },
           car_insurance: {
             premium: {value: 150, type: 'Number', suffix: '€'},
@@ -252,6 +256,14 @@ export default {
       }
     }
   },
+  watch: {
+    offer_obj: {
+      handler(val) {
+        console.log('offer_obj watched: ', val)
+      },
+      deep: true,
+    },
+  },
   computed: {
     user() {
       return this.$store.getters.activeUser
@@ -264,6 +276,14 @@ export default {
   methods: {
     async createOffer() {
       // console.log('createOffer:', this.offer_obj)
+      // if any property in offer_obj has no properties with values, delete it
+      for (let category in this.offer_obj.offer) {
+        for (let key in this.offer_obj.offer[category]) {
+          if (!this.offer_obj.offer[category][key].value) {
+            delete this.offer_obj.offer[category][key]
+          }
+        }
+      }
       let leads = this.leads || [this.lead._id]
       let response = await this.$api_node.createOffer(this.offer_obj, leads)
       console.log("response:",response)
@@ -282,7 +302,7 @@ export default {
     console.log('this.lead:', this.lead)
     console.log('this.leads:', this.leads)
     setTimeout(async () => {
-      let filters = this.offer_obj.criteria
+      let filters = this.offer_obj.filters
       console.log('format_data', format_data)
       console.log('filters:', filters)
     }, 500)

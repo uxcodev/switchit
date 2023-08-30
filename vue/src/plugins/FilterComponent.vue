@@ -1,7 +1,8 @@
 <template>
   <label>{{ $t(filterKey) }}</label>
+  <!-- <label v-if="filterData.values.length">filterValue: {{ filterData.values }}</label> -->
   <!-- <label>filterKey: {{ $t(filterKey) }}</label>
-  <label>filterData: {{ filterData }}</label>
+    <label>filterData: {{ filterData }}</label>
   <label>category: {{ category }}</label>
   <label>dataType: {{ dataType }}</label> -->
 
@@ -10,7 +11,7 @@
 
   <div v-if="type === 'string'">
     <div class="input_group">
-      <input type="text" :class="filterValue ? '' : 'inactive'"  placeholder="" v-model="filterValue" @input="onFilterChanged" />
+      <input type="text" :class="filterValue ? '' : 'inactive'" placeholder="" v-model="filterValue" @input="onFilterChanged" />
       <div class="legend">includes</div>
     </div>
   </div>
@@ -139,7 +140,7 @@ export default {
   components: {
     Slider
   },
-  props: ['filterData', 'dataType', 'filterKey', 'category'],
+  props: ['filterData', 'dataType', 'filterKey', 'category', 'currentValue'],
   emits: ['filter-changed'],
   data() {
     return {
@@ -148,15 +149,43 @@ export default {
       filterValue: this.filterData.value || null,
       filterRange: this.value?.length ? [this.value[0], this.value[1]] : [null, null],
       filterRangeEnd: [null, null],
-      types_ranges: ['date', 'range_slider', 'range_number','identifier_number', 'range_amount'],
+      types_ranges: ['date', 'range_slider', 'range_number', 'identifier_number', 'range_amount'],
       timer: null
     };
+  },
+  // watch filter data for changes
+  watch: {
+    filterData: {
+      handler(val) {
+        this.type = val.filter_type;
+        this.value = val.value || val.values || null;
+        this.filterValue = val.value || null;
+        this.filterRange = this.value?.length ? [this.value[0], this.value[1]] : [null, null];
+        this.filterRangeEnd = [null, null];
+      },
+      deep: true,
+    },
+    currentValue: {
+      immediate: true,
+      handler(val) {
+        if (val) {
+          if (this.type === 'range_date') {
+            this.filterRange = val.from;
+            this.filterRangeEnd = val.to;
+          } else if (this.types_ranges.includes(this.type)) {
+            this.filterRange = val || [null, null];
+          } else {
+            this.filterValue = val;
+          }
+        }
+      },
+      deep: true
+    }
   },
   methods: {
     onFilterChanged() {
       clearTimeout(this.timer)
       this.timer = setTimeout(() => {
-        // console.log('this.value', this.filterRange)
         let value;
         if (this.type === 'range_date') {
           value = { from: this.filterRange, to: this.filterRangeEnd };
@@ -180,10 +209,15 @@ export default {
   },
   mounted() {
     if (this.type === 'range_slider') {
-      console.log('this.value', this.filterData.range)
       this.filterRange = [0, 10]
     }
+  },
+  beforeUnmount() {
+    if (this.timer) {
+      clearTimeout(this.timer);
+    }
   }
+
 };
 </script>
 

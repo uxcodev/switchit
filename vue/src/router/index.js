@@ -69,6 +69,18 @@ const routes = [
     component: () => import('@/pages/OffersDashboard.vue')
   },
   {
+    path: '/offer/:offerId',
+    name: "offer",
+    beforeEnter: authGuard,
+    component: () => import('@/pages/OfferPage.vue')
+  },
+  {
+    path: '/offer',
+    name: "create_offer_",
+    beforeEnter: authGuard,
+    component: () => import('@/pages/OfferPage.vue')
+  },
+  {
     path: '/signup_success',
     name: "signup_success",
     beforeEnter: authGuard,

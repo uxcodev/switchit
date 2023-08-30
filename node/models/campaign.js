@@ -3,25 +3,17 @@ const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema;
 
-const offerSchema = new Schema({
-  offer_details: { type: Object, required: false },
+const campaignSchema = new Schema({
+  campaignName: { type: String, required: false },
   filters: { type: Object, required: false },
   offer: { type: Object, required: false },
-  users: [{
-    userId: { type: ObjectId, ref: "User", required: false },
-    leadId: { type: ObjectId, ref: "Lead", required: false },
-    status: { type: String, required: false },
-    reason: { type: String, required: false },
-    viewed: { type: Boolean, required: false },
-  }
-  ],
+  // offer: { type: ObjectId, ref: 'Offer', required: false },
+  offer_details: { type: Object, required: false },
   companyId: { type: ObjectId, ref: 'Company', required: false },
   createdBy: { type: ObjectId, ref: 'User', required: false },
   created: { type: Date, required: false, default: Date.now },
   updated: { type: Date, required: false, default: Date.now },
-
-
 }
 );
 
-module.exports = mongoose.model('Offer', offerSchema)
+module.exports = mongoose.model('Campaign', campaignSchema)

@@ -6,16 +6,28 @@ const leadSchema = new mongoose.Schema({
   value: { type: Number, required: false },
   data: {
     general: {
-      first_name: { type: String, required: false },
-      last_name: { type: String, required: false },
-      address: { type: String, required: false },
-      postal_code: { type: String, required: false },
-      country: { type: String, required: false },
-      customer_number: { type: String, required: false },
-      dob: { type: Date, required: false },
-      household_members: { type: Number, required: false },
+      // first_name: { type: String, required: false },
+      // last_name: { type: String, required: false },
+      // address: { type: String, required: false },
+      // postal_code: { type: String, required: false },
+      // country: { type: String, required: false },
+      // customer_number: { type: String, required: false },
+      // dob: { type: Date, required: false },
+      // household_members: { type: Number, required: false },
       phone: { type: String, required: false },
+      identifying_data: {
+        first_name: { type: String, required: false },
+        last_name: { type: String, required: false },
+        address: { type: String, required: false },
+        postal_code: { type: String, required: false },
+        country: { type: String, required: false },
+        customer_number: { type: String, required: false },
+        dob: { type: Date, required: false },
+        household_members: { type: Number, required: false },
+        phone: { type: String, required: false },
+      }
     },
+
     mobile: {
       status: { type: Boolean, required: false },
       preference_data: {

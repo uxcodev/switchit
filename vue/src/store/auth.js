@@ -7,7 +7,8 @@ export default {
     return {
       isAdmin: false,
       activeUser: null,
-      selectedLeads: null
+      selectedLeads: null,
+      activeCompany: null,
     };
   },
   mutations: {
@@ -19,7 +20,11 @@ export default {
     },
     setSelectedLeads(state, payload) {
       state.selectedLeads = payload.val
+    },
+    setActiveCompany(state, payload) {
+      state.activeCompany = payload.val
     }
+
   },
   actions: {
     async initializeAuth({ commit, dispatch }) {
@@ -53,8 +58,12 @@ export default {
     isAdmin(context, val) {
       context.commit('isAdmin', { val: val });
     },
-    setActiveUser(context, activeUser) {
+    async setActiveUser(context, activeUser) {
       context.commit('setActiveUser', { val: activeUser });
+      console.log('activeUser', activeUser)
+      let company = await api.getCompanyById(activeUser.roles[0].company)
+      console.log('company', company)
+      context.commit('setActiveCompany', { val: company });
     },
     setSelectedLeads(context, selectedLeads) {
       context.commit('setSelectedLeads', { val: selectedLeads });
@@ -70,5 +79,8 @@ export default {
     selectedLeads(state) {
       return state.selectedLeads;
     },
+    activeCompany(state) {
+      return state.activeCompany;
+    }
   }
 }

@@ -1,7 +1,7 @@
 module.exports = (req, res, next) => {
 
   try {
-    // console.log('req.auth', req.auth)
+    console.log('req.auth', req.auth)
     if (req.auth.payload.permissions.includes('superadmin')) {
       console.log('is super admin')
       next()

@@ -1,6 +1,6 @@
 export default {
-  formatOfferCriteria: (data) => {
-    console.log('formatOfferCriteria', data)
+  formatOfferfilters: (data) => {
+    console.log('formatOfferfilters', data)
     let result = '';
     Object.entries(data).forEach(([category, categoryData]) => {
       result += `${category}:\n`;

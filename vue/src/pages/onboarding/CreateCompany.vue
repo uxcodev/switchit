@@ -65,7 +65,7 @@
   </div>
   <div v-if="status === 'pending'" class="main clip" v-show="!isAdmin">
     <div class="container clip">
-      <div class="ph_content">
+      <div class="pageheader__content">
         <div class="cards lg">
           <div class="banner_lg">
             <h1>

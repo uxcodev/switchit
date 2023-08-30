@@ -7,7 +7,7 @@ const { validateAccessToken } = require('../middleware/auth0.middleware')
 const router = express.Router();
 
 //TESTING
-router.get("/get-company-by-id", validateAccessToken, isSuperAdmin, feedController.getCompanyById);
+router.get("/company", validateAccessToken, feedController.getCompanyById);
 router.get("/get-companies", validateAccessToken, isSuperAdmin, feedController.getCompanies);
 router.post("/create-company", validateAccessToken, isSuperAdmin, feedController.createCompany);
 router.post("/signup-company", validateAccessToken, feedController.signupCompany);

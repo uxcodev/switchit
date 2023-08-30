@@ -160,42 +160,90 @@ exports.createLeads = (req, res, next) => {
   res.status(200).json(leads)
 }
 
-function getRandom(min, max, decimals = 0) {
-  const factor = Math.pow(10, decimals);
-  min *= factor;
-  max *= factor;
-  const randomValue = Math.floor(Math.random() * (max - min + 1) + min);
-  return randomValue / factor;
-}
+// function getRandom(min, max, decimals = 0) {
+//   const factor = Math.pow(10, decimals);
+//   min *= factor;
+//   max *= factor;
+//   const randomValue = Math.floor(Math.random() * (max - min + 1) + min);
+//   return randomValue / factor;
+// }
 
-function getRandomMultiple(min, max, multiple) {
-  const randomValue = Math.floor(Math.random() * (max - min + 1) + min);
-  return Math.floor(randomValue / multiple) * multiple;
+// function getRandomMultiple(min, max, multiple) {
+//   const randomValue = Math.floor(Math.random() * (max - min + 1) + min);
+//   return Math.floor(randomValue / multiple) * multiple;
+// }
+
+function generateRandomPhoneNumber() {
+  const formats = [
+    "+45########",
+    "+46#########",
+    "+1##########",
+    "+47########",
+    "+49#########"
+  ];
+
+  const randomFormat = formats[Math.floor(Math.random() * formats.length)];
+  let phoneNumber = "";
+
+  for (let i = 0; i < randomFormat.length; i++) {
+    if (randomFormat[i] === "#") {
+      phoneNumber += Math.floor(Math.random() * 10);
+    } else {
+      phoneNumber += randomFormat[i];
+    }
+  }
+
+  return phoneNumber;
 }
 exports.updateLeads = async (req, res, next) => {
+
+  // UPDATE SINGLE LEAD
+
+  // let id = "645523adf94c6954738ddae9"
+  // let lead = await Lead.findById(id)
+  // console.log('lead phone', lead.data.general.phone)
+  // lead.data.general.phone = undefined
+  // lead.data.general.identifying_data.phone = generateRandomPhoneNumber();
+  // console.log('lead', lead)
+  // lead.save()
+  // res.status(200).json(lead)
+
+
+  // UPDATE MULTIPLE LEADS
 
   try {
     const leads = await Lead.find({});
 
+
+
     for (const lead of leads) {
-      const mortgageData = {
-        "rate": getRandom(1.6, 3.9, 2),
-        "rate_type": Math.random() < 0.5 ? "Fixed" : "Variable",
-        "one_time_cost": getRandomMultiple(0, 1500, 1),
-        "monthly_cost": getRandomMultiple(600, 5000, 1),
-        "downpayment": getRandomMultiple(5, 25, 5)
-      };
+      // const mortgageData = {
+      //   "rate": getRandom(1.6, 3.9, 2),
+      //   "rate_type": Math.random() < 0.5 ? "Fixed" : "Variable",
+      //   "one_time_cost": getRandomMultiple(0, 1500, 1),
+      //   "monthly_cost": getRandomMultiple(600, 5000, 1),
+      //   "downpayment": getRandomMultiple(5, 25, 5)
+      // };
 
-      const insuranceData = {
-        "premium": getRandomMultiple(50, 1000, 1),
-        "injury_liability": getRandomMultiple(100000, 500000, 100000),
-        "property_liability": getRandomMultiple(100000, 1000000, 100000),
-        "collision_deductible": [0, 250, 500, 1000][Math.floor(Math.random() * 4)],
-        "comprehensive_deductible": [0, 250, 500, 1000][Math.floor(Math.random() * 4)]
-      };
+      // lead.access.mortgage.data = mortgageData;
 
-      lead.access.mortgage.data = mortgageData;
-      lead.access.insurance.data = insuranceData;
+      // const insuranceData = {
+      //   "premium": getRandomMultiple(50, 1000, 1),
+      //   "injury_liability": getRandomMultiple(100000, 500000, 100000),
+      //   "property_liability": getRandomMultiple(100000, 1000000, 100000),
+      //   "collision_deductible": [0, 250, 500, 1000][Math.floor(Math.random() * 4)],
+      //   "comprehensive_deductible": [0, 250, 500, 1000][Math.floor(Math.random() * 4)]
+      // };
+
+      // lead.access.insurance.data = insuranceData;
+
+      lead.data.mobile.interaction_data.phone_number = generateRandomPhoneNumber();
+
+      // lead.data.general.phone = undefined
+
+      // let random_number = Math.floor(Math.random() * (99999999 - 1000) + 1000);
+      // lead.data.mobile.interaction_data.plan_teleservice = "Mobile plan " + random_number.toString();
+
       await lead.save();
     }
 
@@ -205,4 +253,20 @@ exports.updateLeads = async (req, res, next) => {
     console.error('Error updating leads:', err);
     res.status(500).json({ error: 'Error updating leads' });
   }
+}
+
+exports.updateLead = async (req, res, next) => {
+  // let id = req.query.id
+  let id = "645523adf94c6954738ddae9"
+  let leadFields = req.body.fields;
+  let lead = await Lead.findById(id)
+  delete lead.data.general.phone
+  lead.save()
+  // let profileObj = {}
+  // for (const [key, value] of Object.entries(leadFields)) {
+  //   // // console.log(`${key}: ${value}`)
+  //   profileObj[key] = value
+  // }
+  // let lead = await Lead.findByIdAndUpdate(id, profileObj)
+  res.status(200).json(lead)
 }

@@ -71,6 +71,7 @@ export default {
         this.$store.dispatch('isAdmin', true)
       }
 
+      console.log('permissions: ', permissions)
       let access = []
       await permissions.forEach(item => {
         if (item.includes('lm_')) access.push(item.replace('lm_', ''))

@@ -149,10 +149,44 @@ export default {
     }
     return true;
   },
+  async updateOffer(offer, leads) {
+    try {
+      let id = offer._id
+      const body = { offer: offer, leads: leads }
+      const response = await _axios.put(`/offers/offer/${id}`, body);
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+    return true;
+  },
 
   async getOffers() {
     try {
-      const response = await _axios.get(`/offers/get-offers`);
+      const response = await _axios.get(`/offers/offers`);
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+    return true;
+  },
+
+  async getOffer(id) {
+    try {
+      const response = await _axios.get(`/offers/offer/${id}`);
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+    return true;
+  },
+
+  async deleteOffer(id) {
+    try {
+      const response = await _axios.delete(`/offers/offer?id=${id}`);
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
@@ -268,7 +302,7 @@ export default {
 
   async getCompanyById(id) {
     try {
-      const response = await _axios.get(`/companies/get-company-by-id?id=${id}`);
+      const response = await _axios.get(`/companies/company?id=${id}`);
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
@@ -305,5 +339,41 @@ export default {
       console.error(err);
     }
   },
+
+  async saveFiltersAsCampaign(fields) {
+    try {
+      const body = {
+        fields: fields,
+      };
+      const response = await _axios.post('/campaigns/campaign', body);
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+
+    }
+  },
+
+  async getCampaigns() {
+    try {
+      const response = await _axios.get('/campaigns/campaigns');
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+
+    }
+  },
+
+  async deleteCampaign(id) {
+    try {
+      const response = await _axios.delete(`/campaigns/campaign?id=${id}`);
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+
+    }
+  }
 
 }

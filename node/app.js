@@ -16,6 +16,7 @@ const leadRoutes = require("./routes/leads");
 const offerRoutes = require("./routes/offers");
 const importRoutes = require("./routes/imports");
 const campaignRoutes = require("./routes/campaigns");
+const filtersetRoutes = require("./routes/filtersets");
 
 app.use(bodyParser.json());
 
@@ -38,6 +39,7 @@ app.use("/leads", leadRoutes);
 app.use("/offers", offerRoutes);
 app.use("/imports", importRoutes);
 app.use("/campaigns", campaignRoutes);
+app.use("/filtersets", filtersetRoutes);
 
 app.use(errorController.get404);
 

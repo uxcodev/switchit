@@ -37,7 +37,7 @@
             <div class="stats-title">
               Deals won
             </div>
-            <ChartDealsWon />
+            <ChartDealsWon_temp />
           </div>
           <div class="card stats-deal-size">
             <div class="stats-title">
@@ -171,7 +171,7 @@
 import ModalWindow from "@/components/ui/ModalWindow.vue";
 import FilterTabs from "../components/ui/FilterTabs.vue";
 import IconsCategoryAccess from "@/components/ui/IconsCategoryAccess.vue";
-import ChartDealsWon from "../components/ui/ChartDealsWon.vue";
+import ChartDealsWon_temp from "../components/ui/charts/ChartDealsWon_temp.vue";
 import { Chart as ChartJS, ArcElement, Tooltip } from "chart.js";
 import { Doughnut } from "vue-chartjs";
 
@@ -188,7 +188,7 @@ export default {
   components: {
     ModalWindow,
     FilterTabs,
-    ChartDealsWon,
+    ChartDealsWon_temp,
     Doughnut,
     IconsCategoryAccess
   },

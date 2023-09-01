@@ -69,7 +69,7 @@ const routes = [
     component: () => import('@/pages/OffersDashboard.vue')
   },
   {
-    path: '/offer/:offerId',
+    path: '/offer/:id',
     name: "offer",
     beforeEnter: authGuard,
     component: () => import('@/pages/OfferPage.vue')
@@ -77,6 +77,18 @@ const routes = [
   {
     path: '/offer',
     name: "create_offer_",
+    beforeEnter: authGuard,
+    component: () => import('@/pages/OfferPage.vue')
+  },
+  {
+    path: '/campaign/:id',
+    name: "edit_campaign",
+    beforeEnter: authGuard,
+    component: () => import('@/pages/OfferPage.vue')
+  },
+  {
+    path: '/campaign',
+    name: "create_campaign",
     beforeEnter: authGuard,
     component: () => import('@/pages/OfferPage.vue')
   },

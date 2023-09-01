@@ -1,4 +1,9 @@
 {
+  "name": "Name",
+  "start_date": "Start date",
+  "expiry_date": "End date",
+  "term": "Term",
+  "details": "Details",
   "plan_talk_minutes": "Plan talk minutes",
   "plan_data_gb": "Plan data GB",
   "plan_data_speed": "Plan data speed",

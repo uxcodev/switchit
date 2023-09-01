@@ -113,7 +113,7 @@ const service_data = {
     interaction_data: {
       debit_amount: { type: Number, required: false, filter_type: "range_amount" },
       debit_date: { type: String, required: false, filter_type: "date" },
-      valid_from: { type: String, required: false, filter_type: "string" },
+      valid_from: { type: String, required: false, filter_type: "date" },
       number_plate: { type: String, required: false, filter_type: "string" },
       vehicle: {
         make: { type: String, required: false, filter_type: "string" },

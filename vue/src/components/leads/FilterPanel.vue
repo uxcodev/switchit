@@ -4,33 +4,38 @@
       close
     </div>
     <div class="sidebar-content">
-      <form @submit.prevent="saveFiltersAsCampaign" class="switchit-form sm">
-        <div class="group">
-          <label for="campaignName">Campaign name</label>
-          <div class="inline">
-            <input v-model="campaignName" placeholder="" type="text" id="campaignName" class="input lg mr3" />
-          </div>
+      <div v-if="Object.keys(filterObj).length || filtersets.length">
+        <div class="inline_center button mb3" @click="toggleFilterOptions">
+          <span class="material-symbols-outlined">page_info</span> Filter presets
         </div>
-        <button class="btn btn-primary">Save as campaign</button>
-      </form>
-
-      <div v-if="campaigns.length">
-        <div v-for="(campaign, index) in campaigns" :key="index" class="campaign">
-          <div class="campaign-list_item">
-            <div class="campaign-name" @click="loadFilters(campaign.filters)">{{ campaign.campaignName || 'untitled' }}</div>
-            <!-- material symbol trash icon -->
-            <div class="material-symbols-outlined" @click="deleteCampain(campaign._id)">delete</div>
-          </div>
-
-          <!-- <div class="campaign-filters">
-            <div v-for="(filter, key) in campaign.filters" :key="key" class="campaign-filter">
-              <div class="campaign-filter-name">{{ $t(key) }}</div>
-              <div class="campaign-filter-value">{{ filter.value }}</div>
+  
+        <div v-if="showFiltersetOptions" class="pl7">
+          <form @submit.prevent="createFilterset" class="switchit-form sm">
+            <div v-if="Object.keys(filterObj).length"  class="group">
+              <label for="filtersetName">Save this set of filters</label>
+              <div class="inline_center input_button">
+                <input v-model="filtersetName" placeholder="Name" type="text" id="filtersetName" class="input lg mr3" />
+                <button>
+                  <span class="material-symbols-outlined">Done</span>
+                </button>
+              </div>
             </div>
-          </div> -->
+            
+          </form>
+  
+          <div v-if="filtersets.length" class="mt3">
+            <div v-for="(filterset, index) in filtersets" :key="index" class="filterset">
+              <div class="filterset-list_item">
+                <div class="filterset-name" @click="loadFilters(filterset.filters)">{{ filterset.filtersetName || 'untitled' }}</div>
+                <!-- material symbol trash icon -->
+                <div class="material-symbols-outlined" @click="deleteCampain(filterset._id)">delete</div>
+              </div>
+            </div>
+          </div>
         </div>
+        <button class="mt2" v-if="Object.keys(filterObj).length" @click="createCampaign">Create campaign</button>
       </div>
-      <!-- Checkboxes for categories -->
+
 
       <section>
         <div>
@@ -66,7 +71,7 @@
                 <p>{{ $t(`select_options_below_${dataType}`) }}</p>
               </div>
               <div class="filter" v-for="(filter, key) in fields" :key="key + componentKey" :class="dataType === 'preference_data' ? 'slider' : ''">
-                <filter-component v-if="resetCategory !== category" :current-value="getFilterValue(category, dataType, key)" :filter-data="filter" :dataType="dataType" :filter-key="key"  :category="category" @filter-changed="applyFilter" />
+                <filter-component v-if="resetCategory !== category" :currentValue="getFilterValue(category, dataType, key)" :filter-data="filter" :dataType="dataType" :filter-key="key" :category="category" @filter-changed="applyFilter" />
               </div>
             </div>
           </div>
@@ -98,9 +103,10 @@ export default {
       filteredServices: this.$store.getters.services,
       filterObj: {},
       visibleFilters: {},
-      campaignName: '',
-      campaigns: [],
+      filtersetName: '',
+      filtersets: [],
       componentKey: 0,
+      showFiltersetOptions: false,
     }
   },
   computed: {
@@ -127,7 +133,7 @@ export default {
 
       return filteredServices;
     },
-    
+
   },
   watch: {
     selectedCategories: {
@@ -166,6 +172,10 @@ export default {
 
   },
   methods: {
+    toggleFilterOptions() {
+      this.showFiltersetOptions = !this.showFiltersetOptions
+      this.getFiltersets()
+    },
     closeModal() {
       // this.$router.push({ path: '/dashboard' })
       this.$store.dispatch('closeMenu')
@@ -179,7 +189,7 @@ export default {
       setTimeout(() => {
         this.resetCategory = null;
       }, 0)
-      this.saveFilters();
+      this.saveFiltersToStore();
     },
     getFilterValue(category, dataType, key) {
       let value = this.filterObj[category]?.[dataType]?.[key]?.value;
@@ -199,24 +209,32 @@ export default {
       }
     },
 
-    async saveFiltersAsCampaign() {
-      let campaign = {
-        campaignName: this.campaignName,
+    async createFilterset() {
+      let filterset = {
+        filtersetName: this.filtersetName,
         companyId: this.$store.getters.activeCompany._id,
         createdBy: this.$store.getters.activeUser._id,
         filters: this.filterObj,
       }
-      await api.saveFiltersAsCampaign(campaign)
-      this.getCampaigns()
+      await api.createFilterset(filterset)
+      setTimeout(() => {
+        this.filtersetName = ''
+        this.getFiltersets()
+      }, 500)
     },
 
-    async getCampaigns() {
-      this.campaigns = await api.getCampaigns()
+    async getFiltersets() {
+      this.filtersets = await api.getFiltersets()
     },
 
     async deleteCampain(id) {
-      await api.deleteCampaign(id)
-      this.getCampaigns()
+      await api.deleteFilterset(id)
+      this.getFiltersets()
+    },
+
+    createCampaign() {
+      this.$router.push({ path: '/campaign' })
+      this.closeModal()
     },
 
     applyFilter({ category, key, value, dataType, filterType }) {
@@ -249,38 +267,64 @@ export default {
     },
     loadFilters(filters) {
       // if(filters || this.filters) {
-        console.log('loadFilters called with filters: ', filters)
-        this.filterObj = filters ? {...filters} : { ...this.filters };  // using spread operator for immutability
+      console.log('loadFilters called with filters: ', filters)
+      this.filterObj = filters ? { ...filters } : { ...this.filters };  // using spread operator for immutability
 
-        // Update the selected categories based on keys of the filterObj
-        this.selectedCategories = Object.keys(this.filterObj);
+      // Update the selected categories based on keys of the filterObj
+      this.selectedCategories = Object.keys(this.filterObj);
 
-        // This will ensure the visible filters are updated based on selected categories
-        this.visibleFilters = {};
-        for (const category of this.selectedCategories) {
-          this.visibleFilters[category] = { ...this.services[category] };
-        }
-        this.componentKey++
-        // this.saveFiltersToStore();
+      // This will ensure the visible filters are updated based on selected categories
+      this.visibleFilters = {};
+      for (const category of this.selectedCategories) {
+        this.visibleFilters[category] = { ...this.services[category] };
+      }
+      this.componentKey++
+      // this.saveFiltersToStore();
       // }
-    
+
     },
   },
   mounted() {
-    this.getCampaigns()
+    this.getFiltersets()
   },
 };
 </script>
 
 <style lang="sass" scoped>
-.campaign
+@import "/src/styles/_variables.sass"
+.inline_center
+  display: flex
+  align-items: center
+  gap: 10px
+  &.input_button
+    gap: 0px
+    position: relative
+    input
+      min-width: 100%
+      margin: 0
+      border: 0
+      padding-right: 45px
+      height: 40px
+      border-radius: 6px
+    button
+      position: absolute
+      right: 0px
+      height: 40px
+      width: 40px
+      border: 0
+      border-radius: 0 6px 6px 0
+      color: $white
+      background-color: $green
+
+.filterset
+  color: rgba(white, .7)
   &-list_item
     display: flex
     justify-content: space-between
     align-items: center
     margin-bottom: 0.1rem
     padding: 0.1rem
-    .campaign-name
+    .filterset-name
       font-size: .8rem
       cursor: pointer
     .material-symbols-outlined

@@ -340,7 +340,8 @@ export default {
     }
   },
 
-  async saveFiltersAsCampaign(fields) {
+
+  async createCampaign(fields) {
     try {
       const body = {
         fields: fields,
@@ -350,9 +351,36 @@ export default {
       return response.data;
     } catch (err) {
       console.error(err);
-
     }
   },
+
+  async updateCampaign(id, campaign) {
+    try {
+      console.log('updateCampaign:', id, campaign)
+      const body = {
+        campaign: campaign,
+      };
+      const response = await _axios.put(`/campaigns/campaign/${id}`, body);
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+  /* 
+    async updateOffer(offer, leads) {
+      try {
+        let id = offer._id
+        const body = { offer: offer, leads: leads }
+        const response = await _axios.put(`/offers/offer/${id}`, body);
+        response.data.ok = response?.statusText === "OK"
+        return response.data;
+      } catch (err) {
+        console.error(err);
+      }
+      return true;
+    }, 
+    */
 
   async getCampaigns() {
     try {
@@ -365,6 +393,19 @@ export default {
     }
   },
 
+
+  async getCampaign(id) {
+    try {
+      const response = await _axios.get(`/campaigns/campaign/${id}`);
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+    return true;
+  },
+
+
   async deleteCampaign(id) {
     try {
       const response = await _axios.delete(`/campaigns/campaign?id=${id}`);
@@ -374,6 +415,40 @@ export default {
       console.error(err);
 
     }
-  }
+  },
 
+
+  async createFilterset(fields) {
+    try {
+      const body = {
+        fields: fields,
+      };
+      const response = await _axios.post('/filtersets/filterset', body);
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+  async getFiltersets() {
+    try {
+      const response = await _axios.get('/filtersets/filtersets');
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+
+    }
+  },
+
+  async deleteFilterset(id) {
+    try {
+      const response = await _axios.delete(`/filtersets/filterset?id=${id}`);
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+
+    }
+  },
 }

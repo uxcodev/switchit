@@ -6,9 +6,10 @@
     <div class="container">
 
       <!-- <FilterTabs @applyFilterTabs="applyFilterTabs" /> -->
+      <h2 class="mt0">Offers</h2>
       <div class="table">
         <div class="table-header">
-          <div class="table-header-check">
+          <div v-show="false" class="table-header-check">
             <label class="checkbox-label nolabel">
               <input class="checkbox" type="checkbox" v-model="selectAll" id="select_all" />
               <span class="checkmark transparent"></span>
@@ -16,55 +17,34 @@
           </div>
           <div class="table-header-content">
             <div class="table-header-content-med">Offer name</div>
-            <!-- <div class="table-header-content-sm">Start date</div> -->
-            <!-- <div class="table-header-content-sm">Expiry</div> -->
-            <div class="table-header-content-sm">Period</div>
+            <div class="table-header-content-med">Period</div>
             <div class="table-header-content-med">Categories</div>
-            <div class="table-header-content-xs">Won</div>
-            <div class="table-header-content-xs">Lost</div>
-            <div class="table-header-content-xs">Pending</div>
-            <!-- <div class="table-header-content-xs last"></div> -->
+            <div class="table-header-content-sm">Stats</div>
           </div>
           <div class="table-row-actions"></div>
         </div>
         <div class="table-rows">
           <div v-for="(offer, index) in offers" :key="index" class="table-row">
-            <div class="table-row-check">
-              <!-- <div class="checkbox-container"> -->
+            <div v-show="false" class="table-row-check">
               <label class=" checkbox-label nolabel">
                 <input v-show="false" class="checkbox" v-model="offer.selected" type="checkbox" id="select_all" />
                 <span class="checkmark"></span>
               </label>
-              <!-- </div> -->
             </div>
             <div @click="openOffer(offer._id)" class="table-row-content">
-              <!-- <div class="table-row-content-sm">
-                <div class="donut">
-                  <Doughnut class='chart' id="my-chart-id" :options="chartOptions" :data="chartData" />
-                  {{ offer.match }}%
-                </div>
-              </div> -->
-
               <div class="table-row-content-med bold">
                 {{ offer.offer_details.name }}
               </div>
-              <div class="table-row-content-sm">
+              <div class="table-row-content-med">
                 {{ $dayjs(offer.offer_details.start_date).format('YY/MM/DD') }} - {{ $dayjs(offer.offer_details.expiry_date).format('YY/MM/DD') }}
               </div>
-              <!-- <div class="table-row-content-sm">
-                {{ offer.offer_details.expiry_date }}
-              </div> -->
               <div class="access_icons table-row-content-med wrap">
                 <span v-for="(cat, key) in categories" :key="key" :class="offer.offer.hasOwnProperty(key) ? 'active' : ''" class="material-symbols-outlined">{{ categories[key] ? categories[key].icon : '' }}</span>
               </div>
-              <div class="table-row-content-xs">
-                {{ offer.stats.won }}
-              </div>
-              <div class="table-row-content-xs">
-                {{ offer.stats.lost }}
-              </div>
-              <div class="table-row-content-xs">
-                {{ offer.stats.pending }}
+              <div class="table-row-content-sm">
+                <div>
+                  <ChartOfferStats :values="[offer.stats.won, offer.stats.lost, offer.stats.pending]" />
+                </div>
               </div>
             </div>
             <div class="table-row-actions">
@@ -76,10 +56,27 @@
       </div>
 
       <div v-if="campaigns.length" class="table">
-        <h2>Campaigns</h2>
+        <h2 class="mt8">Campaigns</h2>
+        <div class="table-header">
+          <div v-show="false" class="table-header-check">
+            <label class="checkbox-label nolabel">
+              <input class="checkbox" type="checkbox" v-model="selectAll" id="select_all" />
+              <span class="checkmark transparent"></span>
+            </label>
+          </div>
+          <div class="table-header-content">
+            <div class="table-header-content-med">Offer name</div>
+            <div class="table-header-content-xs last"></div>
+          </div>
+          <div class="table-row-actions"></div>
+        </div>
         <div class="table-rows">
-          <div class="table-row-" v-for="(campaign, index) in campaigns" :key="index">
-            <div class="table-row-content">{{ campaign.campaignName }}</div>
+          <div class="table-row" v-for="(campaign, index) in campaigns" :key="index">
+            <div @click="openCampaign(campaign._id)" class="table-row-content">{{ campaign.campaignName }}</div>
+            <div class="table-row-actions">
+              <!-- <div class="material-symbols-outlined" @click="saveAsCampaign(offer)">save</div> -->
+              <div class="material-symbols-outlined" @click="deleteCampaign(campaign._id)">delete</div>
+            </div>
           </div>
         </div>
       </div>
@@ -102,21 +99,16 @@
 
 import ModalWindow from '@/components/ui/ModalWindow.vue';
 import FilterTabs from '../components/ui/FilterTabs.vue';
-import ChartDealsWon from '../components/ui/ChartDealsWon.vue';
-import { Chart as ChartJS, ArcElement, Tooltip } from 'chart.js'
-import { Doughnut } from 'vue-chartjs'
-// import fake_data from "@/api/fake_data.js"; // uncomment to create fake data
+import ChartOfferStats from '@/components/ui/charts/ChartOfferStats.vue';
 import api from '@/api/api'
-
-ChartJS.register(ArcElement, Tooltip)
 
 
 export default {
   components: {
     ModalWindow,
     FilterTabs,
-    ChartDealsWon,
-    Doughnut
+    ChartOfferStats,
+    // Doughnut
   },
   watch: {
     selectAll(val) {
@@ -153,7 +145,6 @@ export default {
     filters: {
       deep: true,
       async handler() {
-        // // console.log('filters changed')
         this.loadOffers()
       }
     }
@@ -166,33 +157,11 @@ export default {
       offers: [],
       count: 0,
       campaigns: [],
-      chartData: {
-        datasets: [
-          {
-            data: [77, 23]
-          },
-        ]
-      },
       pg: {
         currentPage: 1,
         limit: 10,
         pageCount: 0
       },
-      chartOptions: {
-        responsive: true,
-        maintainAspectRatio: false,
-        backgroundColor: ['#00C6C6', '#fafafa'],
-        borderWidth: 0,
-        borderJoinStyle: 'round',
-        borderAlign: 'inner',
-        // offset: 60,
-        cutout: '85%',
-        plugins: {
-          legend: {
-            display: false
-          }
-        }
-      }
     }
   },
   computed: {
@@ -255,13 +224,13 @@ export default {
         createdBy: this.$store.getters.activeUser._id,
       }
       console.log('save these filters as campaign:', campaign)
-      let response = await api.saveFiltersAsCampaign(campaign)
+      let response = await api.createCampaign(campaign)
       console.log('response: ', response)
-      this.getCampaigns()
+      this.loadCampaigns()
 
 
     },
-    async getCampaigns() {
+    async loadCampaigns() {
       this.campaigns = await api.getCampaigns()
       console.log('campaigns: ', this.campaigns)
     },
@@ -280,44 +249,63 @@ export default {
     openOffer(id) {
       console.log('openOffer', id)
       this.$router.push({ path: `/offer/${id}` })
-      // this.$store.dispatch('setSelectedOffer', [id])
-      // this.$router.push({ path: `/offer`, query: { offer: id } })
     },
-    /*     async loadOffers() {
-          // console.log('loadOffers:', this.filters, this.categories)
-          let catObj = { ...this.categories }
-          let filterObj = { ...this.filters }
-    
-          for (const key in filterObj) {
-            if (Object.prototype.hasOwnProperty.call(filterObj, key)) {
-              const category = key.split("_")[0];
-              if (!catObj[category].status) {
-                delete filterObj[key];
-              }
-            }
-          }
-          // console.log(filterObj)
-    
-          let response = await this.$api_node.getOffers({ limit: this.pg.limit, skip: 0, filters: filterObj })
-          this.offers = response.offers
-          this.pg.pageCount = Math.ceil(response.count / this.pg.limit)
-        }, */
+    offerStats(won, lost, pending) {
+
+      let random = () => Math.floor(Math.random() * 100)
+      return {
+
+        labels: ['Won', 'Lost', 'Pending'],
+        datasets: [
+          {
+            data: [won || random(), lost || random(), pending || random()]
+          },
+        ],
+      }
+    },
+    createOfferStats() {
+      let random = () => Math.floor(Math.random() * 100)
+      let stats = {
+        won: random(),
+        lost: random(),
+        pending: random()
+      }
+      return stats
+    },
+    openCampaign(id) {
+      console.log('openCampaign', id)
+      this.$router.push({ path: `/campaign/${id}` })
+    },
+    async deleteCampaign(id) {
+      console.log('deleteCampaign ')
+      console.log(id)
+      let response = await this.$api_node.deleteCampaign(id)
+      console.log(response)
+      this.loadOffers()
+    },
     async deleteOffer(id) {
       console.log('deleteOffer')
       console.log(id)
       let response = await this.$api_node.deleteOffer(id)
       console.log(response)
       this.loadOffers()
+      this.loadCampaigns()
     },
     async loadOffers() {
       let response = await this.$api_node.getOffers()
+
       this.offers = response
+
+      for (let offer of this.offers) {
+        offer.stats = this.createOfferStats()
+      }
       console.log(this.offers)
     }
   },
   async mounted() {
-    this.getCampaigns()
+    this.loadCampaigns()
     this.loadOffers()
+    console.log('OffersDashboard mounted')
   }
 }
 </script>
@@ -342,18 +330,6 @@ export default {
       background: $primary
       color: white
 
-.donut
-  width: 40px
-  height: 40px  
-  display: flex
-  justify-content: center
-  align-items: center
-  font-size: 11px
-  color: #999
-  .chart
-    width: 40px
-    height: 40px  
-    position: absolute 
 h1
   color: #666
 .main
@@ -409,118 +385,7 @@ section
       color: white
       border: 0
 
-  // .pageheader__boxes
-  //     display: flex
-  //     flex-direction: row
-  //     gap: 16px
-  //     div
-  //       flex:1
-  //       background-color: white
-  //       // width: 100px
-  //       height: 100px
-  //       border-radius: 10px
-  .stats
-    display: flex
-    flex-direction: row
-    gap: 20px
-    .card
-      flex:1
-      display: flex
-      flex-direction: column
-      justify-content: space-between
-      background-color: white
-      padding: 16px
-      // width: 100px
-      min-height: 120px
-      border-radius: 10px
-
-      &-top
-        display: flex
-        flex-direction: column
-        gap: 4px
-
-      &-bottom
-        color: #aaa
-      
-
-      .rating
-        display: flex
-        align-items: center
-        font-size: 20px
-        color: #666
-        gap: 6px
-        .stars
-          display: flex
-          align-items: center
-          color: #00C6C6
-          span
-            width:20px
-            heith:20px
-    &-title
-      font-size: 1.2em
-      color:#aaa
-    
-    &-deals-won,
-    &-deal-size
-      padding: 0
-      justify-content: flex-start !important
-      gap: 16px
-      &-number
-        font-size: 1.8em 
-        color: #666       
-        
-  .cards.lg
-    display: flex
-    flex-direction: row
-    flex-wrap: wrap
-    gap: 16px
-  .card.lg
-    display: flex
-    flex-direction: column
-    flex:1
-    gap: 16px
-    min-height: 200px   
-    border-radius: 10px
-    padding: 20px
-    padding: 20px
-    color: white
-    
-    &.green
-      background-color: #00C6C6
-    &.blue
-      background-color: #019CCD
-    &-content
-      flex: 1
-      display: flex
-      flex-direction: row
-      justify-content: space-between
-      align-items: center
-      font-size: 1.2em
-      .large
-        font-size: 1.8em
-  .pageheader__header
-    display: flex
-    background-color: #ccc
-    height: 40px
-    width: 100%
-    border-radius: 10px
-
-  .pageheader__table
-    display: flex
-    background-color: #eee
-    height: 400px
-    width: 100%
-    border-radius: 10px
-
-.pageheader__boxes
-  display: flex
-  flex-direction: row
-  gap: 6px
-  .pageheader__box
-    background-color: #eee
-    width: 100px
-    height: 30px
-    border-radius: 20px    
+  
 
 pre
   color: black
@@ -591,9 +456,7 @@ pre
         font-size: 1.5em
         opacity: .7
         color: #00C6C6
-      .material-symbols-outlined:hover
-        opacity: 1
-        transition: all .2s
+
       .material-symbols-outlined.active
         opacity: 1
         color: #00BB8E

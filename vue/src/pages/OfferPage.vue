@@ -4,19 +4,17 @@
   </ModalWindow>
   <div class="main" v-if="loaded">
     <div class="container">
-      <!-- <FilterGroup /> -->
-      <section>
+      <section v-if="offerType === 'offer'">
+        <!-- <FilterGroup /> -->
         <!-- <FilterTabs @applyFilterTabs="applyFilterTabs" /> -->
-        <h1>{{ editMode ? 'Edit' : 'Create' }} offer for {{ leads.length }} lead{{ leads.length > 1 ? 's' : '' }}</h1>
+        <h1>{{ mode }} offer for {{ leads.length }} lead{{ leads.length > 1 ? 's' : '' }}</h1>
         <div class="right form_actions">
+          <!-- <span class="link" @click="openFilters">{{ filterCount }} filters applied</span> -->
           {{ filterCount }} filters applied
-          <button @click="openFilters">View Filters {{ filterCount }}</button>
           <button @click="cancel">Cancel</button>
-          <button v-if="editMode" @click="updateOffer" :disabled="!changed">Update offer</button>
+          <button v-if="mode==='Edit'" @click="updateOffer" :disabled="!changed">Update offer</button>
           <button v-else @click="createOffer" :disabled="!changed">Submit offer</button>
         </div>
-      </section>
-      <section>
         <div v-if='lead.value' class="pageheader__boxes stats">
           <!-- <div v-for="i in 3" :key='i'><span :class='i'></span></div> -->
           <div class="card stats-rating">
@@ -58,46 +56,42 @@
         </div>
       </section>
 
+      <section v-if="offerType === 'campaign'">
+        <!-- <FilterGroup /> -->
+        <!-- <FilterTabs @applyFilterTabs="applyFilterTabs" /> -->
+        <h1>{{ mode }} campaign</h1>
+        <div class="right form_actions">
+          <span class="link" @click="openFilters">{{ filterCount }} filters applied</span>
+          <button @click="cancel">Cancel</button>
+          <button v-if="mode==='Edit'" @click="updateCampaign" :disabled="!changed">Update campaign</button>
+          <button v-else @click="createCampaign" :disabled="!changed">Create campaign</button>
+        </div>
+      </section>
+
       <section class="offer-group-general">
-        <h1>Offer details</h1>
+        <h1>Details</h1>
         <div class="cards lg  switchit-form">
           <div class="card lg white offer-group">
-            <div class="offer-group-item">
-              <label>Offer name</label>
-              <div class="offer-group-input_group wide">
-                <input v-model="offer_obj.offer_details.name" class="input" />
-              </div>
-            </div>
-            <div class="offer-group-item">
-              <label>Start date</label>
-              <div class="offer-group-input_group wide">
-                <input type="date" v-model="offer_obj.offer_details.start_date" class="input" />
-              </div>
-            </div>
-            <div class="offer-group-item">
-              <label>Expiry date</label>
-              <div class="offer-group-input_group wide">
-                <input type="date" v-model="offer_obj.offer_details.expiry_date" class="input" />
-              </div>
-            </div>
-            <div class="offer-group-item">
-              <label>Term</label>
-              <div class="offer-group-input_group wide">
-                <input v-model="offer_obj.offer_details.term" class="input" />
+            <div v-for="(value, key) in offer_obj.offer_details" :key='key'>
+              <div v-if="!key.includes('details') && !key.includes('status')" class="offer-group-item">
+                <label>{{ $t(key) }}</label>
+                <div class="offer-group-input_group wide">
+                  <input v-if="key.includes('date')" type="date" v-model="offer_obj.offer_details[key]" class="input" />
+                  <input v-else v-model="offer_obj.offer_details[key]" class="input" />
+                </div>
               </div>
             </div>
           </div>
           <div class="card lg white offer-group">
-            <div class="offer-group-item h100">
+            <div class="offer-group-input_group xwide h100">
               <label>Details</label>
-              <div class="offer-group-input_group xwide h100">
                 <textarea v-model="offer_obj.offer_details.details" class="textarea h100"></textarea>
               </div>
-            </div>
           </div>
         </div>
 
       </section>
+
       <section v-for="(value, category) in categoryAccess" :key="category">
         <h1>{{ $t(category) }}</h1>
         <div class="cards lg switchit-form">
@@ -187,7 +181,10 @@ export default {
       changed: false,
       loaded: false,
       editMode: false,
+      mode: null,
+      offerType: null,
       offer_obj: {},
+      id: null,
       offer_template: {
         offer_details: {
           name: { value: '', type: 'String' },
@@ -288,6 +285,10 @@ export default {
       },
       deep: true,
     },
+    filtersChanged() {
+      console.log('filtersChanged', this.$store.getters.filtersChanged)
+      this.offer_obj.filters = this.$store.getters.filters
+    },
   },
   computed: {
     user() {
@@ -300,7 +301,11 @@ export default {
           .flatMap(category => Object.values(category))
           .reduce((count, obj) => count + Object.keys(obj).length, 0)
       ) ?? 0;
-    }
+    },
+    filtersChanged() {
+      console.log('filtersChanged', this.$store.getters.filtersChanged)
+      return this.$store.getters.filtersChanged
+    },
   },
   methods: {
     cancel() {
@@ -335,29 +340,50 @@ export default {
       await this.trimOfferObj()
       let leads = this.leads || [this.lead._id]
       let response = await this.$api_node.createOffer(this.offer_obj, leads)
-      console.log("response:", response)
       if (response?.ok) {
         this.$router.push({ path: '/offers' })
       }
     },
     async updateOffer() {
-      console.log('offer before trim:', this.offer_obj)
       await this.trimOfferObj()
-      console.log('offer after trim:', this.offer_obj)
       let leads = this.leads || [this.lead._id]
       let response = await this.$api_node.updateOffer(this.offer_obj, leads)
-      console.log("response:", response)
+      if (response?.ok) {
+        this.$router.push({ path: '/offers' })
+      }
+    },
+    async createCampaign() {
+      await this.trimOfferObj()
+      let response = await this.$api_node.createCampaign(this.offer_obj)
+      if (response?.ok) {
+        this.$router.push({ path: '/offers' })
+      }
+    },
+    async updateCampaign() {
+      await this.trimOfferObj()
+      let response = await this.$api_node.updateCampaign(this.id, this.offer_obj)
       if (response?.ok) {
         this.$router.push({ path: '/offers' })
       }
     },
   },
   async mounted() {
-    console.log('offer_template:', this.offer_template)
-    let offerId = this.$route.params.offerId;
-    if (offerId) {
-      this.editMode = true
-      this.offer_obj = await this.$api_node.getOffer(offerId)
+    let path = this.$route.path
+    let params = this.$route.params
+    let type = path.includes('campaign') ? 'campaign' : path.includes('offer') ? 'offer' : null
+    this.mode = params.id ? 'Edit' : 'Create'
+    this.offerType = type
+    this.id = params.id
+
+    if (type==='offer') {
+      if(params.id) {
+        this.offer_obj = await this.$api_node.getOffer(params.id)
+      }
+    }
+    if (type==='campaign') {
+      if(params.id) {
+        this.offer_obj = await this.$api_node.getCampaign(params.id)
+      }
     }
     this.offer_obj.offer_details ??= {}
     this.offer_obj.filters ??= this.$store.getters.filters
@@ -381,16 +407,14 @@ export default {
       this.leads = await this.$loadSessionValue('offer_selectedLeads') || [];
     }
 
-    console.log('leads:', this.leads)
     if (this.leads?.length === 1) {
       this.lead = await this.$api_node.getLead(this.leads[0])
     }
     if (!this.leads?.length) {
       if (this.offer_obj.users?.length) {
         this.leads = this.offer_obj.users.map(user => user.leadId)
-        console.log('leads from db:', this.leads)
       } else {
-        this.$router.push({ path: '/offers' })
+        // this.$router.push({ path: '/offers' })
       }
     }
     this.changed = false

@@ -33,10 +33,9 @@
             </div>
           </div>
         </div>
-        <button class="mt2" v-if="Object.keys(filterObj).length" @click="createCampaign">Create campaign</button>
       </div>
-
-
+      
+      
       <section>
         <div>
           <h1>{{ $t('filter_opportunities') }}</h1>
@@ -57,6 +56,7 @@
           </div>
         </div>
       </section>
+      <button class="mt2" v-if="Object.keys(filterObj).length" @click="createCampaign">Create campaign from these filters</button>
       <section v-if="Object.keys(visibleFilters).length > 0 || selectedCategories.length > 0">
         <div v-for="(categoryData, category) in visibleFilters" :key="category">
           <h1 class="">{{ $t(category) }}</h1>

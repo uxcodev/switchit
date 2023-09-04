@@ -382,9 +382,9 @@ export default {
     }, 
     */
 
-  async getCampaigns() {
+  async getCampaigns(companyId) {
     try {
-      const response = await _axios.get('/campaigns/campaigns');
+      const response = await _axios.get('/campaigns/campaigns?companyId=' + companyId);
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
@@ -430,9 +430,9 @@ export default {
       console.error(err);
     }
   },
-  async getFiltersets() {
+  async getFiltersets(companyId) {
     try {
-      const response = await _axios.get('/filtersets/filtersets');
+      const response = await _axios.get('/filtersets/filtersets?companyId=' + companyId);
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {

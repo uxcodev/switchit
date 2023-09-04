@@ -6,7 +6,10 @@
     <div class="container">
 
       <!-- <FilterTabs @applyFilterTabs="applyFilterTabs" /> -->
-      <h2 class="mt0">Offers</h2>
+      <div>
+        <h2 class="mt0 mb2">Offers</h2>
+        <div style="color:#666">Offers that have been sent to specified leads</div>
+      </div>
       <div class="table">
         <div class="table-header">
           <div v-show="false" class="table-header-check">
@@ -56,7 +59,10 @@
       </div>
 
       <div v-if="campaigns.length" class="table">
-        <h2 class="mt8">Campaigns</h2>
+        <div>
+        <h2 class="mt8 mb2">Campaigns</h2>
+        <div style="color:#666">Any customers matching the criteria for your campaign will see the offer</div>
+      </div>
         <div class="table-header">
           <div v-show="false" class="table-header-check">
             <label class="checkbox-label nolabel">

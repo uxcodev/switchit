@@ -340,7 +340,7 @@ export default {
       await this.trimOfferObj()
       let leads = this.leads || [this.lead._id]
       let response = await this.$api_node.createOffer(this.offer_obj, leads)
-      if (response?.ok) {
+      if (response) {
         this.$router.push({ path: '/offers' })
       }
     },
@@ -348,21 +348,21 @@ export default {
       await this.trimOfferObj()
       let leads = this.leads || [this.lead._id]
       let response = await this.$api_node.updateOffer(this.offer_obj, leads)
-      if (response?.ok) {
+      if (response) {
         this.$router.push({ path: '/offers' })
       }
     },
     async createCampaign() {
       await this.trimOfferObj()
       let response = await this.$api_node.createCampaign(this.offer_obj)
-      if (response?.ok) {
+      if (response) {
         this.$router.push({ path: '/offers' })
       }
     },
     async updateCampaign() {
       await this.trimOfferObj()
       let response = await this.$api_node.updateCampaign(this.id, this.offer_obj)
-      if (response?.ok) {
+      if (response) {
         this.$router.push({ path: '/offers' })
       }
     },

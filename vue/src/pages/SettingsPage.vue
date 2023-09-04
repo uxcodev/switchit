@@ -5,7 +5,7 @@
   <div class="main settings">
     <div class="container">
       <h2>Settings</h2>
-      <div class="ph_content mt10">
+      <div class="pageheader__content mt10">
 
       </div>
     </div>
@@ -56,7 +56,7 @@ export default {
 .container
   width: 900px
 
-.ph_content
+.pageheader__content
   width: 100%
   height: 100vh
   background: #eee

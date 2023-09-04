@@ -19,7 +19,7 @@ const serviceSchema = new Schema({
     mobile: {
       invoice_debit_amount: { type: Number, required: false },
       invoice_debit_date: { type: String, required: false },
-      phone_number: { type: Number, required: false },
+      phone_number: { type: String, required: false },
       invoice_period: {
         from: { type: String, required: false },
         to: { type: String, required: false },
@@ -28,8 +28,8 @@ const serviceSchema = new Schema({
       plan_data_speed: { type: Number, required: false },
       plan_data_gb: { type: Number, required: false },
       plan_teleservice: { type: String, required: false },
-      phone_installment: { type: String, required: false },
-      equipment_installment: { type: String, required: false }
+      phone_installment: { type: Number, required: false },
+      equipment_installment: { type: Number, required: false },
     },
     mortgage: {
       loan_number: { type: Number, required: false },

@@ -40,6 +40,11 @@ app.use(locale)
 import forms from '@/plugins/forms'
 app.use(forms)
 
+import sessions from '@/plugins/sessions'
+app.use(sessions);
+
+import dayjsPlugin from '@/plugins/dayjs';
+app.use(dayjsPlugin);
 
 import VueTelInput from 'vue-tel-input';
 import 'vue-tel-input/vue-tel-input.css';
@@ -54,10 +59,6 @@ app.use(VueTelInput, options);
 import i18n from './i18n';
 app.use(i18n)
 
-// use dayjs
-
-import dayjsPlugin from './plugins/dayjs';
-app.use(dayjsPlugin);
 
 // check if mobile
 store.dispatch('isMobile')
@@ -71,6 +72,7 @@ app.use(router)
 
 import auth0 from '@/helpers/auth0.js';
 app.use(auth0);
+
 
 
 app.mount('#app')

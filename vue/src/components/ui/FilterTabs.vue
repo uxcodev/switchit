@@ -51,6 +51,7 @@ export default {
   mounted() {
     for (let cat in this.categories) {
       this.categories[cat].status = false
+      console.log('FilterTabs: ', this.categories)
     }
   },
 };

@@ -105,14 +105,14 @@ section
     border-radius: 10px
     @include shadow()
 
-.ph_pills
+.pageheader__pills
   height: 20px
   display: flex
   flex-direction: row
   // justify-content: center
   align-items: center
   gap: 6px
-  .ph_pill
+  .pageheader__pill
     flex: 0
     justify-content: center
     align-items: center
@@ -138,7 +138,7 @@ section
     color: white
     border: 0
 
-// .ph_boxes
+// .pageheader__boxes
 //     display: flex
 //     flex-direction: row
 //     gap: 16px
@@ -231,25 +231,25 @@ section
   input, select, textarea
     background: #f5f5f5
     border: 1px solid #eee        
-.ph_header
+.pageheader__header
   display: flex
   background-color: #ccc
   height: 40px
   width: 100%
   border-radius: 10px
 
-.ph_table
+.pageheader__table
   display: flex
   background-color: #eee
   height: 400px
   width: 100%
   border-radius: 10px
 
-.ph_boxes
+.pageheader__boxes
   display: flex
   flex-direction: row
   gap: 6px
-  .ph_box
+  .pageheader__box
     background-color: #eee
     width: 100px
     height: 30px
@@ -340,6 +340,13 @@ pre
 
 .bold
   font-weight: bold  
+
+.link
+  color: $link
+  cursor: pointer
+  text-decoration: none
+  &:hover
+    text-decoration: underline  
 @media only screen and (max-width: 767px)
   .main
     margin-left: 0px

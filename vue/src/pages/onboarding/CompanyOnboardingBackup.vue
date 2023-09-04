@@ -75,7 +75,7 @@
   <div v-if="status === 'pending'" class="main clip">
     <div class="container clip">
       <!-- <h2>Settings</h2>  -->
-      <div class="ph_content">
+      <div class="pageheader__content">
         <div class="cards lg">
           <!-- <div v-for="i in 2" :key='i'><span :class='i'></span></div> -->
           <div class="banner_lg">

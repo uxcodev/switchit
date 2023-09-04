@@ -11,7 +11,7 @@
 
       <section>
         <h1>Stats</h1>
-        <div class="ph_boxes stats">
+        <div class="pageheader__boxes stats">
           <!-- <div v-for="i in 3" :key='i'><span :class='i'></span></div> -->
           <div class="card stats-rating">
             <div class="card-top">
@@ -37,7 +37,7 @@
             <div class="stats-title">
               Deals won
             </div>
-            <ChartDealsWon />
+            <ChartDealsWon_temp />
           </div>
           <div class="card stats-deal-size">
             <div class="stats-title">
@@ -54,10 +54,10 @@
       <div class="cards lg">
         <!-- <div v-for="i in 2" :key='i'><span :class='i'></span></div> -->
         <div class="card lg green">
-          <div class="ph_pills">
-            <div class="ph_pill active">Open</div>
-            <div class="ph_pill">Won</div>
-            <div class="ph_pill">Lost</div>
+          <div class="pageheader__pills">
+            <div class="pageheader__pill active">Open</div>
+            <div class="pageheader__pill">Won</div>
+            <div class="pageheader__pill">Lost</div>
           </div>
           <div class="card lg-content">
             <div class="card lg-content-left">
@@ -70,10 +70,10 @@
           </div>
         </div>
         <div class="card lg blue">
-          <div class="ph_pills">
-            <div class="ph_pill active">Open</div>
-            <div class="ph_pill">Won</div>
-            <div class="ph_pill">Lost</div>
+          <div class="pageheader__pills">
+            <div class="pageheader__pill active">Open</div>
+            <div class="pageheader__pill">Won</div>
+            <div class="pageheader__pill">Lost</div>
           </div>
           <div class="card lg-content">
             <div class="card lg-content-left">
@@ -171,7 +171,7 @@
 import ModalWindow from "@/components/ui/ModalWindow.vue";
 import FilterTabs from "../components/ui/FilterTabs.vue";
 import IconsCategoryAccess from "@/components/ui/IconsCategoryAccess.vue";
-import ChartDealsWon from "../components/ui/ChartDealsWon.vue";
+import ChartDealsWon_temp from "../components/ui/charts/ChartDealsWon_temp.vue";
 import { Chart as ChartJS, ArcElement, Tooltip } from "chart.js";
 import { Doughnut } from "vue-chartjs";
 
@@ -188,7 +188,7 @@ export default {
   components: {
     ModalWindow,
     FilterTabs,
-    ChartDealsWon,
+    ChartDealsWon_temp,
     Doughnut,
     IconsCategoryAccess
   },
@@ -197,6 +197,7 @@ export default {
     const instance = getCurrentInstance();
     const api = instance.appContext.config.globalProperties.$api_node;
     const $toast = instance.appContext.config.globalProperties.$toast
+    const $storeSessionValue = instance.appContext.config.globalProperties.$storeSessionValue
     const router = useRouter();
     const store = useStore();
     const modalComponent = ref(null);
@@ -302,12 +303,18 @@ export default {
 
     function openLead(id) {
       store.dispatch("setSelectedLeads", [id]);
-      router.push({ path: `/create_offer`, query: { lead: id } });
+      // router.push({ path: `/create_offer`, query: { lead: id } });
+      // save single lead to session storage
+      $storeSessionValue('offer_selectedLeads', [id], 60);
+
+      router.push({ path: `/offer`, query: { lead: id } });
     }
 
     function openLeads() {
-      store.dispatch("setSelectedLeads", selectedLeads);
-      router.push({ path: `/create_offer` });
+      // store.dispatch("setSelectedLeads", selectedLeads);
+      // save selectedLeads to session storage
+      $storeSessionValue('offer_selectedLeads', selectedLeads.value, 60);
+      router.push({ path: `/offer` });
     }
 
     async function loadLeads() {
@@ -545,14 +552,14 @@ section
   flex-direction: column
   gap: 20px
 
-  .ph_pills
+  .pageheader__pills
     height: 20px
     display: flex
     flex-direction: row
     // justify-content: center
     align-items: center
     gap: 6px
-    .ph_pill
+    .pageheader__pill
       flex: 0
       justify-content: center
       align-items: center
@@ -645,28 +652,28 @@ section
       font-size: 1.2em
       .large
         font-size: 1.8em
-  .ph_header
+  .pageheader__header
     display: flex
     background-color: #ccc
     height: 40px
     width: 100%
     border-radius: 10px
 
-  .ph_table
+  .pageheader__table
     display: flex
     background-color: #eee
     height: 400px
     width: 100%
     border-radius: 10px
 
-.ph_boxes
+.pageheader__boxes
   display: flex
   flex-direction: row
   flex-wrap: wrap
   gap: 6px
   max-width: 100%
   overflow: hidden
-  .ph_box
+  .pageheader__box
     background-color: #eee
     width: 100px
     height: 30px

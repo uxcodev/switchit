@@ -19,7 +19,8 @@ const service_data = {
     interaction_data: {
       invoice_debit_amount: { type: Number, required: false, filter_type: "range_amount" },
       invoice_debit_date: { type: String, required: false, filter_type: "date" },
-      phone_number: { type: Number, required: false, filter_type: "identifier_number" },
+      // phone_number: { type: Number, required: false, filter_type: "identifier_number" },
+      phone_number: { type: String, required: false, filter_type: "string" },
       invoice_period: {
         from: { type: String, required: false, filter_type: "string" },
         to: { type: String, required: false, filter_type: "string" }, filter_type: "range_date"
@@ -28,8 +29,8 @@ const service_data = {
       plan_data_speed: { type: Number, required: false, filter_type: "range_number" },
       plan_data_gb: { type: Number, required: false, filter_type: "range_number" },
       plan_teleservice: { type: String, required: false, filter_type: "string" },
-      phone_installment: { type: String, required: false, filter_type: "string" },
-      equipment_installment: { type: String, required: false, filter_type: "string" }
+      phone_installment: { type: Number, required: false, filter_type: "range_number" },
+      equipment_installment: { type: Number, required: false, filter_type: "range_number" },
     },
     preference_data: {
       price: {
@@ -112,7 +113,7 @@ const service_data = {
     interaction_data: {
       debit_amount: { type: Number, required: false, filter_type: "range_amount" },
       debit_date: { type: String, required: false, filter_type: "date" },
-      valid_from: { type: String, required: false, filter_type: "string" },
+      valid_from: { type: String, required: false, filter_type: "date" },
       number_plate: { type: String, required: false, filter_type: "string" },
       vehicle: {
         make: { type: String, required: false, filter_type: "string" },
@@ -308,58 +309,48 @@ export default {
       services: service_data,
       filters: {},
       filteredServices: service_data, // update with { ...service_data, ...filters },
-      filtersChanged: false
+      filtersChanged: false,
+      filtersChangedExternally: false,
     };
   },
   mutations: {
-    setServices(state, payload) {
-      state.services = payload.val
+    setServices(state, val) {
+      state.services = val
     },
-    setFilters(state, payload) {
-      state.filters = payload.val
+    setFilters(state, val) {
+      state.filters = val
     },
-    setFilteredServices(state, payload) {
-      state.filteredServices = payload.val
+    setFilteredServices(state, val) {
+      state.filteredServices = val
     },
-    filtersChanged(state, payload) {
-      state.filtersChanged = payload.val
+    filtersChanged(state, val) {
+      state.filtersChanged = val
     },
-    setCategories(state, payload) {
-      state.categories = payload.val
+    filtersChangedExternally(state, val) {
+      state.filtersChangedExternally = val
+    },
+    setCategories(state, val) {
+      state.categories = val
     },
   },
   actions: {
-    // createServices(context, access) {
-    //   console.log('access', access)
-    //   const combined_object = {};
-    //   Object.keys(interaction_data).forEach(key => {
-    //     if (access[key]?.status === true || key === 'general') {
-    //       combined_object[key] = {
-    //         // preference_data: { ...preference_data[key] },
-    //         // interaction_data: { ...interaction_data[key] }
-    //         // combined_object[key] = {
-    //         ...interaction_data[key],
-    //         ...preference_data[key]
-    //         // };
-    //       }
-    //     }
-    //   });
-    //   context.commit('setServices', { val: combined_object });
-    //   context.commit('setFilters', { val: combined_object });
-    // },
     setFilters(context, filters) {
-      context.commit('setFilters', { val: filters });
+      console.log('vue store setFilters', filters)
+      context.commit('setFilters', filters);
     },
     setFilteredServices(context, filters) {
       let services = context.state.services;
       let filteredServices = { ...services, ...filters };
-      context.commit('setFilteredServices', { val: filteredServices });
+      context.commit('setFilteredServices', filteredServices);
     },
     filtersChanged(context) {
-      context.commit('filtersChanged', { val: !context.getters.filtersChanged });
+      context.commit('filtersChanged', !context.getters.filtersChanged);
+    },
+    filtersChangedExternally(context) {
+      context.commit('filtersChangedExternally', !context.state.filtersChangedExternally);
     },
     setCategories(context, categories) {
-      context.commit('setCategories', { val: categories });
+      context.commit('setCategories', categories);
     },
     setAccess(context, access) {
 
@@ -372,29 +363,16 @@ export default {
           selected: true
         };
       })
-
-      context.commit('setFilters', { val: filteredCategories });
-      context.commit('setCategories', { val: filteredCategories });
+      context.commit('setCategories', filteredCategories);
     },
   },
   getters: {
-    filters(state) {
-      return state.filters;
-    },
-    filtersChanged(state) {
-      return state.filtersChanged;
-    },
-    filteredServices(state) {
-      return state.filteredServices;
-    },
-    categories(state) {
-      return state.categories;
-    },
-    preferences(state) {
-      return state.preferences;
-    },
-    services(state) {
-      return state.services;
-    }
+    filters: state => state.filters,
+    filtersChanged: state => state.filtersChanged,
+    filtersChangedExternally: state => state.filtersChangedExternally,
+    filteredServices: state => state.filteredServices,
+    categories: state => state.categories,
+    preferences: state => state.preferences,
+    services: state => state.services,
   }
 }

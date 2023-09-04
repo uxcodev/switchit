@@ -1,4 +1,9 @@
 {
+  "name": "Titel",
+  "start_date": "Start dato",
+  "expiry_date": "Udløbsdato",
+  "term": "Kontraktlængde",
+  "details": "Detaljer",
   "plan_talk_minutes": "Plan talk minutter",
   "plan_data_gb": "Plan data GB",
   "plan_data_speed": "Plan datahastighed",

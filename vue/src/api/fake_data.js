@@ -48,7 +48,9 @@ export default {
         customer_number: faker.random.alphaNumeric(10),
         dob: faker.date.past().toISOString(),
         household_members: parseInt(faker.random.numeric({ min: 1, max: 10 })),
-        phone: faker.phone.number(),
+        phone: faker.phone.number('+45########'),
+        // create phone number in e164
+
       };
 
       const mobile = {

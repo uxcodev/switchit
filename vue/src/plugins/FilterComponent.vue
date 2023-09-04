@@ -235,6 +235,10 @@ export default {
 // @import '@/styles/styles.sass'
 // @import '@/styles/forms.sass'
 // @import '@/styles/filters.sass'
+
+section
+  gap: 0
+
 input
   height: 34px !important
   border: none !important

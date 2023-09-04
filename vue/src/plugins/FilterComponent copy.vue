@@ -56,7 +56,7 @@
   </div>
 
   <!-- Range slider -->
-  <div v-if="type === 'range_slider'" class="slider_container">
+  <div v-if="type === 'range_slider'" class="slider_container mt5">
     <!-- <Slider class="slider" v-model="filterRange" :min="filterData.range[0]" :max="filterData.range[1]" showTooltip="drag" @change="onFilterChanged" tooltipPosition="bottom" /> -->
     <Slider class="slider" :key="componentKey" :class="filterValue ? '' : 'inactive'" v-model="filterRange" :min="0" :max="10" showTooltip="drag" @change="onFilterChanged" tooltipPosition="bottom" />
     <div class="legend">

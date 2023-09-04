@@ -5,6 +5,7 @@ exports.createCampaign = (req, res, next) => {
 
   console.log(req.body.fields)
   let campaignObj = req.body.fields
+  campaignObj.campaignName = campaignObj.offer_details.name
   const campaign = new Campaign(campaignObj)
   campaign.save()
   res.status(200).json(campaign)
@@ -32,6 +33,7 @@ exports.updateCampaign = async (req, res, next) => {
   try {
     let campaign = await Campaign.findById(req.params.id)
     let campaignObj = req.body.campaign
+    campaignObj.campaignName = campaignObj.offer_details.name
     for (const [key, value] of Object.entries(campaignObj)) {
       campaign[key] = value
     }

@@ -286,8 +286,9 @@ export default {
       console.log('deleteCampaign ')
       console.log(id)
       let response = await this.$api_node.deleteCampaign(id)
-      console.log(response)
+      console.log('deleteCampaign response', response)
       this.loadOffers()
+      this.loadCampaigns()
     },
     async deleteOffer(id) {
       console.log('deleteOffer')

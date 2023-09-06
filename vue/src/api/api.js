@@ -409,6 +409,7 @@ export default {
   async deleteCampaign(id) {
     try {
       const response = await _axios.delete(`/campaigns/campaign?id=${id}`);
+      console.log('response', response)
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {

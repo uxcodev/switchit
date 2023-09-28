@@ -116,13 +116,13 @@ export default {
       },
       form: {
         company: {
-          name: `Bacon R Us`,
-          description: "Lorem ipsum dolor sit amet",
+          name: ``,
+          description: "",
           information:  `Created by ${this.$auth0.user._value.email}`,
-          homepage: "example.com",
-          domains: ["example.com, example.co"],
-          countryCodes: ['DK', 'SE', 'NO'],
-          serviceTypes: [2, 4, 8, 16],
+          homepage: "",
+          domains: [""],
+          countryCodes: [],
+          serviceTypes: [],
           roles: []
         },
       },

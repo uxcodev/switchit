@@ -5,113 +5,14 @@
   <div class="main">
     <h2>API Testing</h2>
     <h3>Business Partners</h3>
+    <div class="buttons">
 
-      <!-- inputs for all 'createBusinessPartner' fields with these defaults:
-      name: 'test4',
-      domain: 'test4.com',
-      vatNumber: '23454314',
-      address: '234523414 Main St',
-      email: 'nto@switchit-ai'
-      countriesOfOperation: ['NO'],
-      countryCode: 'NO',
-      serviceTypes: [1]
-      -->
+      <button @click="getBusinessPartners()">getBusinessPartners</button>
+      <button @click="createBusinessPartner()">createBusinessPartner</button>
+      <button @click="editBusinessPartner('57eb0b57-31a4-47b2-ad37-27f57fb6fdb3')">editBusinessPartner</button>
+      <button @click="deleteBusinessPartner('f95521bc...')">deleteBusinessPartner</button>
 
-      <!-- create some tabs -->
-      <div class="tabs">
-      <button 
-        v-for="tab in tabs" 
-        :key="tab.id" 
-        :class="{ active: currentTab === tab.id }"
-        @click="changeTab(tab.id)">
-        {{ tab.label }}
-      </button>
     </div>
-    <div class="tab-content mb19">
-      
-      <form class="switchit-form sm" @submit.prevent="submitBusinessPartner()">
-        <!-- <div class="group">
-          <label for="name">id (for delete or edit)</label>
-          <input type="text" id="id" name="id" value="b57eb0b57-31a4-47b2-ad37-27f57fb6fdb3">
-        </div>
-        <div class="group">
-          <label for="name">name</label>
-          <input type="text" id="name" name="name" value="test4">
-        </div>
-        <div class="group">
-          <label for="domain">domain</label>
-          <input type="text" id="domain" name="domain" value="test4.com">
-        </div>
-        <div class="group">
-          <label for="vatNumber">vatNumber</label>
-          <input type="text" id="vatNumber" name="vatNumber" value="23454314">
-        </div>
-        <div class="group">
-          <label for="address">address</label>
-          <input type="text" id="address" name="address" value="234523414 Main St">
-        </div>
-        <div class="group">
-          <label for="email">email</label>
-          <input type="text" id="email" name="email" value="nto@switchit-ai">
-        </div>
-        <div class="group">
-          <label for="countriesOfOperation">countriesOfOperation</label>
-          <input type="text" id="countriesOfOperation" name="countriesOfOperation" value="NO">
-        </div>
-        <div class="group">
-          <label for="countryCode">countryCode</label>
-          <input type="text" id="countryCode" name="countryCode" value="NO">
-        </div>
-        <div class="group">
-          <label for="serviceTypes">serviceTypes</label>
-          <input type="text" id="serviceTypes" name="serviceTypes" value="1">
-        </div> -->
-        <div class="group" v-if="currentTab == 'edit' || currentTab == 'delete'">
-          <label for="name">id</label>
-          <input type="text" id="id" name="id" v-model="businessPartnerId">
-        </div>
-        <div class="group">
-          <label for="name">name</label>
-          <input type="text" id="name" name="name" v-model="businessPartnerBody.name">
-        </div>
-        <div class="group">
-          <label for="domain">domain</label>
-          <input type="text" id="domain" name="domain" v-model="businessPartnerBody.domain">
-        </div>
-        <div class="group">
-          <label for="vatNumber">vatNumber</label>
-          <input type="text" id="vatNumber" name="vatNumber" v-model="businessPartnerBody.vatNumber">
-        </div>
-        <div class="group">
-          <label for="address">address</label>
-          <input type="text" id="address" name="address" v-model="businessPartnerBody.address">
-        </div>
-        <div class="group">
-          <label for="email">email</label>
-          <input type="text" id="email" name="email" v-model="businessPartnerBody.email">
-        </div>
-        <div class="group">
-          <label for="countriesOfOperation">countriesOfOperation</label>
-          <input type="text" id="countriesOfOperation" name="countriesOfOperation" v-model="businessPartnerBody.countriesOfOperation">
-        </div>
-        <div class="group">
-          <label for="countryCode">countryCode</label>
-          <input type="text" id="countryCode" name="countryCode" v-model="businessPartnerBody.countryCode">
-        </div>
-        <div class="group">
-          <label for="serviceTypes">serviceTypes</label>
-          <input type="text" id="serviceTypes" name="serviceTypes" v-model="businessPartnerBody.serviceTypes">
-        </div>
-        
-        <button>Submit</button>
-      </form>
-      </div>
-      <!-- <div class="buttons">
-        <button @click="getBusinessPartners()">getBusinessPartners</button>
-        <button @click="createBusinessPartner()">createBusinessPartner</button>
-        <button @click="editBusinessPartner('57eb0b57-31a4-47b2-ad37-27f57fb6fdb3')">editBusinessPartner</button>
-        <button @click="deleteBusinessPartner('f95521bc...')">deleteBusinessPartner</button>
-      </div> -->
     <h3>Companies</h3>
     <div class="buttons">
       <button @click="createCompany()">createCompany</button>
@@ -259,34 +160,9 @@ export default {
       serviceTypes: [],
       user: this.$auth0.user,
       countries: [],
-      businessPartnerId: "57eb0b57-31a4-47b2-ad37-27f57fb6fdb3",
-      businessPartnerBody: {
-        name: 'test4',
-        domain: 'test4.com',
-        vatNumber: '23454314',
-        address: '234523414 Main St',
-        email: 'nto@switchit.ai',
-        countriesOfOperation: ['NO'],
-        countryCode: 'NO',
-        serviceTypes: [1]
-      },
-      tabs: [
-        { id: 'create', label: 'createBusinessPartner', content: 'This is content for Tab 1' },
-        { id: 'edit', label: 'editBusinessPartner', content: 'This is content for Tab 2' },
-        { id: 'delete', label: 'deleteBusinessPartner', content: 'This is content for Tab 3' },
-      ],
-      currentTab: 'create'
     };
   },
-  computed: {
-    currentContent() {
-      return this.tabs.find(tab => tab.id === this.currentTab).content;
-    }
-  },
   methods: {
-    changeTab(tabId) {
-      this.currentTab = tabId;
-    },
     async call(method, path) {
       let response = await this.$switchit.whateverApiCall(method, path)
       console.log(response)
@@ -305,30 +181,21 @@ export default {
       console.log('this.businessPartners: ', this.businessPartners)
     },
     async createBusinessPartner() {
-      let body = this.businessPartnerBody
+
+      let body = {
+        name: 'test4',
+        domain: 'test4.com',
+        vatNumber: '23454314',
+        address: '234523414 Main St',
+        email: 'test@test4.com',
+        countriesOfOperation: ['NO'],
+        countryCode: 'NO',
+        serviceTypes: [1]
+      }
+      console.log('body: ', body)
       let response = await this.$switchit.createBusinessPartner(body)
       console.log('response: ', response)
     },
-    async editBusinessPartner(id) {
-      let body = this.businessPartnerBody
-      let response = await this.$switchit.editBusinessPartner(id, body)
-      console.log('response: ', response)
-    },
-    async deleteBusinessPartner(id) {
-      let response = await this.$switchit.deleteBusinessPartner(id)
-      console.log('response: ', response)
-    },
-    submitBusinessPartner() {
-     if (this.currentTab === 'create') {
-        this.createBusinessPartner()
-      } else if (this.currentTab === 'edit') {
-        this.editBusinessPartner(this.businessPartnerId)
-      } else if (this.currentTab === 'delete') {
-        this.deleteBusinessPartner(this.businessPartnerId)
-      }
-    },
-    
-
     async importCompanies() {
 
       let body = [
@@ -367,7 +234,29 @@ export default {
       let response = await this.$switchit.importCompanies(body)
       console.log('response: ', response)
     },
-
+    async editBusinessPartner(id) {
+      let info = `Created by ${this.user.email}`
+      console.log('info: ', info)
+      let body = {
+        name: 'test4',
+        domain: 'switchit.ai',
+        vatNumber: '23454314',
+        address: '234523414 Main St',
+        email: 'nto@switchit.ai',
+        countryCode: 'NO',
+        countriesOfOperation: ['NO'],
+        serviceTypes: [1]
+      }
+      console.log('body: ', body)
+      let response = await this.$switchit.editBusinessPartner(id, body)
+      console.log('response: ', response)
+    },
+    async deleteBusinessPartner(id) {
+      console.log('deleting: ', id)
+      let response = await this.$switchit.deleteBusinessPartner(id)
+      console.log('response: ', response)
+    },
+    
     //*** COMPANIES ***/
     async deleteCompany(id) {
       console.log('deleting: ', id)
@@ -476,34 +365,6 @@ export default {
 
 <style lang="sass" scoped>
 @import "/src/styles/variables.sass"
-
-// styles for tabs
-
-.tabs 
-  display: flex
-  margin-bottom: 20px
-
-  button 
-    padding: 10px 20px
-    margin-right: 5px
-    border: none
-    cursor: pointer
-    transition: background-color 0.2s
-    background-color: #2c3e50
-    &:hover 
-      // make background a bit lighter
-      background-color: lighten(#2c3e50, 10%)
-
-    &.active 
-      background-color: lighten(#2c3e50, 20%)
-
-.tab-content 
-  border: 1px solid #ccc
-  padding: 20px
-  box-shadow: 2px 2px 8px rgba(0,0,0,0.1)
-
-
-
 .buttons
   width: 100%
   display: flex

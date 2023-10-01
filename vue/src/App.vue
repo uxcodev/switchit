@@ -99,7 +99,12 @@ export default {
 
       // save active user to vuex
 
-      this.$store.dispatch('setActiveUser', user)
+      // get active user from vuex
+      let activeUser = this.$store.getters.activeUser
+      if (!activeUser) {
+        this.$store.dispatch('setActiveUser', user)
+        console.log('user stored in vuex')
+      }
 
       // redirect to onboarding or dashboard depending on user status
 

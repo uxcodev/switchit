@@ -5,19 +5,6 @@
   <div class="main">
     <h2>API Testing</h2>
     <h3>Business Partners</h3>
-
-      <!-- inputs for all 'createBusinessPartner' fields with these defaults:
-      name: 'test4',
-      domain: 'test4.com',
-      vatNumber: '23454314',
-      address: '234523414 Main St',
-      email: 'nto@switchit-ai'
-      countriesOfOperation: ['NO'],
-      countryCode: 'NO',
-      serviceTypes: [1]
-      -->
-
-      <!-- create some tabs -->
       <div class="tabs">
       <button 
         v-for="tab in tabs" 
@@ -27,46 +14,10 @@
         {{ tab.label }}
       </button>
     </div>
-    <div class="tab-content mb19">
+    <div class="tab-content mb10"> 
       
-      <form class="switchit-form sm" @submit.prevent="submitBusinessPartner()">
-        <!-- <div class="group">
-          <label for="name">id (for delete or edit)</label>
-          <input type="text" id="id" name="id" value="b57eb0b57-31a4-47b2-ad37-27f57fb6fdb3">
-        </div>
-        <div class="group">
-          <label for="name">name</label>
-          <input type="text" id="name" name="name" value="test4">
-        </div>
-        <div class="group">
-          <label for="domain">domain</label>
-          <input type="text" id="domain" name="domain" value="test4.com">
-        </div>
-        <div class="group">
-          <label for="vatNumber">vatNumber</label>
-          <input type="text" id="vatNumber" name="vatNumber" value="23454314">
-        </div>
-        <div class="group">
-          <label for="address">address</label>
-          <input type="text" id="address" name="address" value="234523414 Main St">
-        </div>
-        <div class="group">
-          <label for="email">email</label>
-          <input type="text" id="email" name="email" value="nto@switchit-ai">
-        </div>
-        <div class="group">
-          <label for="countriesOfOperation">countriesOfOperation</label>
-          <input type="text" id="countriesOfOperation" name="countriesOfOperation" value="NO">
-        </div>
-        <div class="group">
-          <label for="countryCode">countryCode</label>
-          <input type="text" id="countryCode" name="countryCode" value="NO">
-        </div>
-        <div class="group">
-          <label for="serviceTypes">serviceTypes</label>
-          <input type="text" id="serviceTypes" name="serviceTypes" value="1">
-        </div> -->
-        <div class="group" v-if="currentTab == 'edit' || currentTab == 'delete'">
+      <form class="switchit-form sm" v-if="currentTab == 'edit' || currentTab == 'create'" @submit.prevent="submitBusinessPartner()">
+        <div class="group" v-if="currentTab == 'edit'">
           <label for="name">id</label>
           <input type="text" id="id" name="id" v-model="businessPartnerId">
         </div>
@@ -105,14 +56,57 @@
         
         <button>Submit</button>
       </form>
+      <div v-if="currentTab == 'get'" class="table">
+        <div v-for="(businessPartner, index) in businessPartners" :key="index">
+          <div class="item">
+            <!-- <div class="row"  @click="$router.push({ path: '/createbusinessPartner', query: { id: businessPartner._id } })"> -->
+            <div class="row">
+              <div class="field-group">
+                <div class="field b">
+                  {{ businessPartner.name }}
+                </div>
+                <div class="field light xl">
+                  {{ businessPartner.id }}
+                </div>
+                <div class="field light xl">
+                  email:
+                  {{ businessPartner.email }}
+                </div>
+                <div class="field light">
+                  domain:
+                  {{ businessPartner.domain }}
+                </div>
+                <div class="field light">
+                  {{ businessPartner.contact_email }}
+                </div>
+                <div class="field light company">
+                  country:
+                  <span class="country">
+                    {{ businessPartner.countryCode }}
+                  </span>
+                </div>
+              </div>
+  
+            </div>
+            <div class='status_wrapper' :class="businessPartner.status">
+              <select name="status" class="select status" v-model="businessPartner.status" @change="changeStatus(businessPartner)">
+                <option value="new">New</option>
+                <option value="pending">Pending</option>
+                <option value="active">Approved</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+            <div class="option" @click="deleteBusinessPartner(businessPartner.id)">
+              <span class="material-symbols-outlined">Delete</span>
+            </div>
+            <div class="option" @click="triggerEditBP(businessPartner.id)">
+              <span class="material-symbols-outlined">Edit</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <!-- <div class="buttons">
-        <button @click="getBusinessPartners()">getBusinessPartners</button>
-        <button @click="createBusinessPartner()">createBusinessPartner</button>
-        <button @click="editBusinessPartner('57eb0b57-31a4-47b2-ad37-27f57fb6fdb3')">editBusinessPartner</button>
-        <button @click="deleteBusinessPartner('f95521bc...')">deleteBusinessPartner</button>
-      </div> -->
-    <h3>Companies</h3>
+    <div v-if="currentTab == 'other'">
+      <h3>Companies</h3>
     <div class="buttons">
       <button @click="createCompany()">createCompany</button>
       <button @click="importCompanies()">importCompanies</button>
@@ -144,6 +138,10 @@
                 {{ company.name }}
               </div>
               <div class="field light">
+                id:
+                {{ company.id }}
+              </div>
+              <div class="field light">
                 websites:
                 {{ company.website }}
               </div>
@@ -162,10 +160,8 @@
                   {{ country?.name || country }}
                 </span>
               </div>
-
             </div>
             <!-- <IconsCategoryAccess :access="company.access"/> -->
-
           </div>
           <div class='status_wrapper' :class="company.status">
             <!-- <div :class="['dot', company.status]"></div> -->
@@ -181,53 +177,9 @@
           </div>
         </div>
       </div>
-      <div v-for="(businessPartner, index) in businessPartners" :key="index">
-        <div class="item">
-          <!-- <div class="row"  @click="$router.push({ path: '/createbusinessPartner', query: { id: businessPartner._id } })"> -->
-          <div class="row">
-            <div class="field-group">
-              <div class="field b">
-                {{ businessPartner.name }}
-              </div>
-              <div class="field light">
-                websites:
-                {{ businessPartner.website }}
-              </div>
-              <div class="field light">
-                {{ businessPartner.contact_email }}
-              </div>
-              <div class="field light" v>
-                admin:
-                <!-- <span class="role" v-for="role in businessPartner.roles" :key="role">
-                  {{ role.user?.email }}
-                </span> -->
-              </div>
-              <div class="field light company">
-                markets:
-                <span class="country" v-for="country in businessPartner.countries" :key="country">
-                  {{ country?.name || country }}
-                </span>
-              </div>
-
-            </div>
-            <!-- <IconsCategoryAccess :access="businessPartner.access"/> -->
-
-          </div>
-          <div class='status_wrapper' :class="businessPartner.status">
-            <!-- <div :class="['dot', businessPartner.status]"></div> -->
-            <select name="status" class="select status" v-model="businessPartner.status" @change="changeStatus(businessPartner)">
-              <option value="new">New</option>
-              <option value="pending">Pending</option>
-              <option value="active">Approved</option>
-              <option value="rejected">Rejected</option>
-            </select>
-          </div>
-          <div class="option" @click="deleteBusinessPartner(businessPartner.id)">
-            <span class="material-symbols-outlined">Delete</span>
-          </div>
-        </div>
-      </div>
     </div>
+    </div>
+  </div>
   </div>
 </template>
 
@@ -271,11 +223,12 @@ export default {
         serviceTypes: [1]
       },
       tabs: [
-        { id: 'create', label: 'createBusinessPartner', content: 'This is content for Tab 1' },
-        { id: 'edit', label: 'editBusinessPartner', content: 'This is content for Tab 2' },
-        { id: 'delete', label: 'deleteBusinessPartner', content: 'This is content for Tab 3' },
+        { id: 'get', label: 'getBusinessPartners'},
+        { id: 'create', label: 'createBusinessPartner' },
+        { id: 'edit', label: 'editBusinessPartner' },
+        { id: 'other', label: 'other' },
       ],
-      currentTab: 'create'
+      currentTab: 'get'
     };
   },
   computed: {
@@ -284,6 +237,13 @@ export default {
     }
   },
   methods: {
+    triggerEditBP(id) {
+      this.businessPartnerId = id
+      this.currentTab = 'edit'
+      // change businessPartner body to match the one we want to edit
+      this.businessPartnerBody = this.businessPartners.find(bp => bp.id === id)
+
+    },  
     changeTab(tabId) {
       this.currentTab = tabId;
     },
@@ -468,6 +428,7 @@ export default {
     },
   },
   async mounted() {
+    this.getBusinessPartners()
   }
 }
 </script>
@@ -546,6 +507,8 @@ h3
       padding: 0 10px
       width: 180px
       opacity: .6
+      &.xl
+        width: 350px
       &.status
         width: 95px
   .option
@@ -590,6 +553,8 @@ h3
         padding: 4px 10px
         .field
           padding: 0
+          &.xl
+            width: 300px
       .field
         padding: 10px
         width: 180px

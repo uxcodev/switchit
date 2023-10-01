@@ -83,16 +83,9 @@ export default {
   },
 
   async editBusinessPartner(id, body) {
-    // if (id) {
-    //   console.log('id: ', id)
-    //   return
-    // }
     try {
       let url = `https://switchitapi.azurewebsites.net/api/v1/businesspartners/${id}`;
       const response = await _axios.put(url, body);
-      // console.log('response', response)
-      // response.data.ok = response?.statusText === "OK"
-
       return response.status;
     } catch (err) {
       console.error(err);
@@ -104,8 +97,9 @@ export default {
       let url = `https://switchitapi.azurewebsites.net/api/v1/businesspartners/${id}`;
       const response = await _axios.delete(url);
       console.log('response', response)
-      response.data.ok = response?.statusText === "OK"
-      return response.data;
+      // response.data.ok = response?.statusText === "OK"
+      // return response.data;
+      return response;
     } catch (err) {
       console.error(err);
     }

@@ -57,7 +57,7 @@ export default {
 
   async getBusinessPartners() {
     try {
-      let url = "https://switchitapi.azurewebsites.net/api/v1/businesspartners";
+      let url = "https://switchitapi.azurewebsites.net/api/v1/businesspartners?includeBusinessPartnerCountrys=true";
       const response = await _axios.get(url);
       return response.data;
     } catch (err) {

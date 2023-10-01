@@ -43,7 +43,10 @@
         </div>
         <div class="group">
           <label for="countriesOfOperation">countriesOfOperation</label>
-          <input type="text" id="countriesOfOperation" name="countriesOfOperation" v-model="businessPartnerBody.countriesOfOperation">
+          <!-- <input type="text" id="countriesOfOperation" name="countriesOfOperation" v-model="businessPartnerBody.countriesOfOperation">
+           -->
+           <div class="help">Separate by commas (DK, NO)</div>
+           <TagInput class="input fullwidth" v-model="businessPartnerBody.countriesOfOperation" :key="componentKey" />
         </div>
         <div class="group">
           <label for="countryCode">countryCode</label>
@@ -51,7 +54,8 @@
         </div>
         <div class="group">
           <label for="serviceTypes">serviceTypes</label>
-          <input type="text" id="serviceTypes" name="serviceTypes" v-model="businessPartnerBody.serviceTypes">
+          <!-- <input type="text" id="serviceTypes" name="serviceTypes" v-model="businessPartnerBody.serviceTypes"> -->
+          <TagInput class="input fullwidth" v-model="businessPartnerBody.serviceTypes" :key="componentKey" />
         </div>
         
         <button>Submit</button>
@@ -191,11 +195,13 @@
 
 // components 
 import ModalWindow from '@/components/ui/ModalWindow.vue';
-
+import TagInput from '@/components/ui/TagInput.vue'
+// import bitwiseDecode from '@/helpers/bitwise'
 
 export default {
   components: {
-    ModalWindow
+    ModalWindow,
+    TagInput
   },
   provide() {
     return {
@@ -218,8 +224,8 @@ export default {
         vatNumber: '23454314',
         address: '234523414 Main St',
         email: 'nto@switchit.ai',
-        countriesOfOperation: ['NO'],
-        countryCode: 'NO',
+        countriesOfOperation: ['DK', 'NO'],
+        countryCode: 'DK',
         serviceTypes: [1]
       },
       tabs: [
@@ -228,7 +234,8 @@ export default {
         { id: 'edit', label: 'editBusinessPartner' },
         { id: 'other', label: 'other' },
       ],
-      currentTab: 'get'
+      currentTab: 'get',
+      componentKey: 0
     };
   },
   computed: {
@@ -240,7 +247,6 @@ export default {
     triggerEditBP(id) {
       this.businessPartnerId = id
       this.currentTab = 'edit'
-      // change businessPartner body to match the one we want to edit
       this.businessPartnerBody = this.businessPartners.find(bp => bp.id === id)
 
     },  
@@ -262,6 +268,11 @@ export default {
 
     async getBusinessPartners() {
       this.businessPartners = (await this.$switchit.getBusinessPartners()).model
+      this.businessPartners.forEach(bp => {
+        bp.countriesOfOperation = ['DK','NO']
+        bp.serviceTypes = [1]
+        // bp.serviceTypes = bitwiseDecode(bp.serviceType - 1)
+      })
       console.log('this.businessPartners: ', this.businessPartners)
     },
     async createBusinessPartner() {

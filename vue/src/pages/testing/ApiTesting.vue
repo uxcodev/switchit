@@ -224,8 +224,8 @@ export default {
         vatNumber: '23454314',
         address: '234523414 Main St',
         email: 'nto@switchit.ai',
-        countriesOfOperation: ['NO'],
-        countryCode: 'NO',
+        countriesOfOperation: ['DK', 'NO'],
+        countryCode: 'DK',
         serviceTypes: [1]
       },
       tabs: [
@@ -269,7 +269,7 @@ export default {
     async getBusinessPartners() {
       this.businessPartners = (await this.$switchit.getBusinessPartners()).model
       this.businessPartners.forEach(bp => {
-        bp.countriesOfOperation = ['NO']
+        bp.countriesOfOperation = ['DK','NO']
         bp.serviceTypes = [1]
         // bp.serviceTypes = bitwiseDecode(bp.serviceType - 1)
       })

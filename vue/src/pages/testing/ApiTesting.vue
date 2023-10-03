@@ -252,6 +252,9 @@ export default {
     },  
     changeTab(tabId) {
       this.currentTab = tabId;
+      if (tabId === 'get') {
+        this.getBusinessPartners()
+      }
     },
     async call(method, path) {
       let response = await this.$switchit.whateverApiCall(method, path)
@@ -276,18 +279,38 @@ export default {
       console.log('this.businessPartners: ', this.businessPartners)
     },
     async createBusinessPartner() {
-      let body = this.businessPartnerBody
+      // let body = this.businessPartnerBody
+      let body = {
+        name: this.businessPartnerBody.name,
+        domain: this.businessPartnerBody.domain,
+        vatNumber: this.businessPartnerBody.vatNumber,
+        address: this.businessPartnerBody.address,
+        email: this.businessPartnerBody.email,
+        countryCode: this.businessPartnerBody.countryCode,
+        countriesOfOperation: this.businessPartnerBody.countriesOfOperation,
+        serviceTypes: this.businessPartnerBody.serviceTypes
+      }
       let response = await this.$switchit.createBusinessPartner(body)
       console.log('response: ', response)
     },
     async editBusinessPartner(id) {
-      let body = this.businessPartnerBody
+      let body = {
+        name: this.businessPartnerBody.name,
+        domain: this.businessPartnerBody.domain,
+        vatNumber: this.businessPartnerBody.vatNumber,
+        address: this.businessPartnerBody.address,
+        email: this.businessPartnerBody.email,
+        countryCode: this.businessPartnerBody.countryCode,
+        countriesOfOperation: this.businessPartnerBody.countriesOfOperation,
+        serviceTypes: this.businessPartnerBody.serviceTypes
+      }
       let response = await this.$switchit.editBusinessPartner(id, body)
       console.log('response: ', response)
     },
     async deleteBusinessPartner(id) {
       let response = await this.$switchit.deleteBusinessPartner(id)
       console.log('response: ', response)
+      this.getBusinessPartners()
     },
     submitBusinessPartner() {
      if (this.currentTab === 'create') {

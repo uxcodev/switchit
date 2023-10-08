@@ -3,13 +3,13 @@
     <SwitchitIcon @click="$router.push({ path: '/' })" class="logo" :width="40" :height="40" color="#03D0BF" />
     <div class="nav">
       <router-link title="dashboard" to="/dashboard" v-if="isActive" :class="{ icon: true, active: $route.name === 'dashboard' }"><span class="material-symbols-outlined">dashboard</span></router-link>
-      <router-link title="offers" to="/offers" :class="{ icon: true, active: $route.name === 'offers' }"><span class="material-symbols-outlined">request_page</span></router-link>
-      <router-link title="operations" to="/operations" :class="{ icon: true, active: $route.name === 'operations' }"><span class="material-symbols-outlined">location_city</span></router-link>
+      <router-link  v-if="isActive" title="offers" to="/offers" :class="{ icon: true, active: $route.name === 'offers' }"><span class="material-symbols-outlined">request_page</span></router-link>
+      <router-link  v-if="isActive" title="operations" to="/operations" :class="{ icon: true, active: $route.name === 'operations' }"><span class="material-symbols-outlined">location_city</span></router-link>
       <!-- <div v-if="isAdmin" class="icon button" @click="createFakeData" ><span class="material-symbols-outlined">input_circle</span></div> -->
       <!-- <router-link title="settings" to="/settings" v-if="isActive" :class="{ icon: true, active: $route.name === '' }"><span class="material-symbols-outlined">settings</span></router-link> -->
       <LanguagePicker title="change language" class="icon" />
-      <LoginButton title="login" v-if="!isAuthenticated"></LoginButton>
-      <LogoutButton title="logout" v-else></LogoutButton>
+      <AvatarDropdown v-if="isAuthenticated" />
+      <LoginButton v-else></LoginButton>
     </div>
   </div>
 </template>
@@ -17,12 +17,13 @@
 <script>
 import SwitchitIcon from "@/components/assets/SwitchitIcon.vue";
 import LoginButton from "../auth/LoginButton.vue";
-import LogoutButton from "../auth/LogoutButton.vue";
+import AvatarDropdown from "../auth/AvatarDropdown.vue";
+// import LogoutButton from "../auth/LogoutButton.vue";
 import LanguagePicker from "../ui/LanguagePicker.vue";
 
 
 export default {
-  components: { SwitchitIcon, LoginButton, LogoutButton, LanguagePicker },
+  components: { SwitchitIcon, LoginButton, LanguagePicker, AvatarDropdown },
   data() {
     return {
       isDisabled: true,
@@ -34,7 +35,7 @@ export default {
       return this.$store.getters.isAdmin
     },
     isActive() {
-      return this.$store.getters.activeUser ? this.$store.getters.activeUser.status === 'active' : false
+      return this.$store.getters.activeUser && this.$store.getters.activeBusinessPartner ? this.$store.getters.activeUser.status === 'active' : false
     }
   },
   methods: {
@@ -79,7 +80,7 @@ $transition-sidebar: 0
     flex-direction: row
     justify-content: flex-end
     gap: 20px
-    overflow: hidden
+    // overflow: hidden
     flex-grow: 1
 
     .spacer

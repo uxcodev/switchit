@@ -54,8 +54,13 @@ export default {
       this.modalComponent = component
     },
   },
-  mounted() {
-    // // console.log('starter page')
+ async mounted() {
+        let activeBusinessPartner = await this.$store.getters.activeBusinessPartner
+        if (activeBusinessPartner) {
+          this.$router.push({ path: '/dashboard' })
+      } else {
+        // this.$router.push({ path: '/onboarding' })
+      }
   }
 }
 </script>

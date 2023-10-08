@@ -61,12 +61,23 @@
         <button>Submit</button>
       </form>
       <div v-if="currentTab == 'get'" class="table">
+        <!-- add check box for toggling active business partners -->
+        <div class="item">
+          <div class="row">
+            <div class="field-group">
+              <div class="field b" @click="activeBusinessPartnersToggle = !activeBusinessPartnersToggle">
+                {{ activeBusinessPartnersToggle ? 'Active' : 'All' }} business partners
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div v-for="(businessPartner, index) in businessPartners" :key="index">
           <div class="item">
             <!-- <div class="row"  @click="$router.push({ path: '/createbusinessPartner', query: { id: businessPartner._id } })"> -->
             <div class="row">
               <div class="field-group">
-                <div class="field b">
+                <div class="field b link" @click="viewBusinessPartner(businessPartner.id)">
                   {{ businessPartner.name }}
                 </div>
                 <div class="field light xl">
@@ -90,6 +101,59 @@
                   </span>
                 </div>
               </div>
+  
+            </div>
+            <div class='status_wrapper' :class="businessPartner.status">
+              <select name="status" class="select status" v-model="businessPartner.status" @change="changeStatus(businessPartner)">
+                <option value="new">New</option>
+                <option value="pending">Pending</option>
+                <option value="active">Approved</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+            <div class="option" @click="deleteBusinessPartner(businessPartner.id)">
+              <span class="material-symbols-outlined">Delete</span>
+            </div>
+            <div class="option" @click="triggerEditBP(businessPartner.id)">
+              <span class="material-symbols-outlined">Edit</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-if="currentTab == 'view'" class="table">
+          <div class="item">
+            <!-- <div class="row"  @click="$router.push({ path: '/createbusinessPartner', query: { id: businessPartner._id } })"> -->
+            <div class="row">
+              <div class="field-group">
+                <div class="field b link" @click="viewBusinessPartner(businessPartner.id)">
+                  {{ businessPartner.name }}
+                </div>
+                <div class="field light xl">
+                  {{ businessPartner.id }}
+                </div>
+                <div class="field light xl">
+                  email:
+                  {{ businessPartner.email }}
+                </div>
+                <div class="field light">
+                  domain:
+                  {{ businessPartner.domain }}
+                </div>
+                <div class="field light">
+                  {{ businessPartner.contact_email }}
+                </div>
+                <div class="field light company">
+                  country:
+                  <span class="country">
+                    {{ businessPartner.countryCode }}
+                  </span>
+                </div>
+                <div class="field light company">
+                  serviceTypes:
+                  <span class="country">
+                    {{ businessPartner.serviceTypes }}
+                  </span>
+                </div>
   
             </div>
             <div class='status_wrapper' :class="businessPartner.status">
@@ -214,6 +278,8 @@ export default {
       modalComponent: null,
       companies: [],
       businessPartners: [],
+      businessPartner: null,
+      activeBusinessPartnersToggle: true,
       serviceTypes: [],
       user: this.$auth0.user,
       countries: [],
@@ -230,6 +296,7 @@ export default {
       },
       tabs: [
         { id: 'get', label: 'getBusinessPartners'},
+        { id: 'view', label: 'viewBusinessPartner'},
         { id: 'create', label: 'createBusinessPartner' },
         { id: 'edit', label: 'editBusinessPartner' },
         { id: 'other', label: 'other' },
@@ -237,6 +304,14 @@ export default {
       currentTab: 'get',
       componentKey: 0
     };
+  },
+  watch: {
+    activeBusinessPartnersToggle: {
+      handler: function () {
+        this.getBusinessPartners()
+      },
+      deep: true
+    }
   },
   computed: {
     currentContent() {
@@ -268,18 +343,27 @@ export default {
     },
 
     //*** BUSINESS PARTNERS ***/
-
+    async viewBusinessPartner(id) {
+      this.businessPartnerId = id
+      await this.getBusinessPartner(id)
+      this.changeTab('view')
+    },
+    async getBusinessPartner(id) {
+      this.businessPartner = await this.$switchit.getBusinessPartner(id)
+      // this.businessPartner.roles = this.businessPartner.businessPartnerBusinessPartnerRoleBusinessPartnerUserCollectionModels
+      console.log('this.businessPartner: ', this.businessPartner)
+      return
+    },
     async getBusinessPartners() {
-      this.businessPartners = (await this.$switchit.getBusinessPartners()).model
-      this.businessPartners.forEach(bp => {
-        bp.countriesOfOperation = ['DK','NO']
-        bp.serviceTypes = [1]
-        // bp.serviceTypes = bitwiseDecode(bp.serviceType - 1)
-      })
+      if (this.activeBusinessPartnersToggle) {
+        this.businessPartners = await this.$switchit.getMyBusinessPartners()
+      } else {
+        this.businessPartners = await this.$switchit.getBusinessPartners()
+      }
+      // this.businessPartners = (await this.$switchit.getBusinessPartners()).model
       console.log('this.businessPartners: ', this.businessPartners)
     },
     async createBusinessPartner() {
-      // let body = this.businessPartnerBody
       let body = {
         name: this.businessPartnerBody.name,
         domain: this.businessPartnerBody.domain,
@@ -292,6 +376,7 @@ export default {
       }
       let response = await this.$switchit.createBusinessPartner(body)
       console.log('response: ', response)
+      this.changeTab('get')
     },
     async editBusinessPartner(id) {
       let body = {
@@ -301,11 +386,14 @@ export default {
         address: this.businessPartnerBody.address,
         email: this.businessPartnerBody.email,
         countryCode: this.businessPartnerBody.countryCode,
-        countriesOfOperation: this.businessPartnerBody.countriesOfOperation,
-        serviceTypes: this.businessPartnerBody.serviceTypes
+        // countriesOfOperation: this.businessPartnerBody.countriesOfOperation,
+        // serviceTypes: this.businessPartnerBody.serviceTypes
+        countriesOfOperation: ['DK', 'NO'],
+        serviceTypes: [1]
       }
       let response = await this.$switchit.editBusinessPartner(id, body)
       console.log('response: ', response)
+      this.changeTab('get')
     },
     async deleteBusinessPartner(id) {
       let response = await this.$switchit.deleteBusinessPartner(id)

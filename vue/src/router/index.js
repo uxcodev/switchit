@@ -47,7 +47,15 @@ const routes = [
     path: '/onboarding',
     name: "onboarding",
     beforeEnter: authGuard,
-    component: () => import('@/pages/onboarding/CompanyOnboarding.vue')
+    // component: () => import('@/pages/onboarding/CompanyOnboarding.vue')
+    component: () => import('@/pages/onboarding/BusinessPartnerOnboarding.vue')
+  },
+  {
+    path: '/company',
+    name: "company",
+    beforeEnter: authGuard,
+    // component: () => import('@/pages/onboarding/CompanyOnboarding.vue')
+    component: () => import('@/pages/onboarding/EditBusinessPartner.vue')
   },
   {
     path: '/createcompanynode',

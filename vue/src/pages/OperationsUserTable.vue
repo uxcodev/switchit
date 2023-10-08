@@ -1,64 +1,57 @@
 <template>
-  <div class="content" v-if="!edit && !add">
-    <h2>Users</h2>
-    <div class="table_header">
-      <div class="row">
-        <div class="field">User</div>
-        <!-- <div class="field">Email</div> -->
-        <div class="field">Access requested</div>
-        <div class="field status">Status</div>
+    <div class="content" v-if="!edit && !add">
+      <h2>Users</h2>
+      <div class="table_header">
+        <div class="row">
+          <div class="field">User</div>
+          <!-- <div class="field">Email</div> -->
+          <div class="field">Access requested</div>
+          <div class="field status">Status</div>
+        </div>
+        <div class="option"></div>
       </div>
-      <div class="option"></div>
-    </div>
-    <div class="table">
-      <div v-for="(user, index) in users" :key="index">
-        <div class="item">
-          <div class="row">
-            <div class="field-group">
-              <div class="field b">
-                {{ user.first_name }} {{ user.last_name }}
+      <div class="table">
+        <div v-for="(user, index) in users" :key="index">
+          <div class="item">
+            <div class="row">
+              <div class="field-group">
+                <div class="field b">
+                  {{ user.first_name }} {{ user.last_name }}
+                </div>
+                <div class="field light">
+                  {{ user.email }}
+                </div>
+  
+                <div class="field light company" v-for="role in user.roles" :key="role">
+                  <span class="company-name" @click="openCompany(role.company?._id)">{{ role.company?.name }}</span>
+                  <span class="country" v-for="country in role.company?.countries" :key="country">
+                    {{ country }}
+                  </span>
+                </div>
+  
               </div>
-              <div class="field light">
-                {{ user.email }}
+              <IconsCategoryAccess :access="user.access"/>
+  
+              <div class='status_wrapper' :class="user.status">
+                <!-- <div :class="['dot', user.status]"></div> -->
+                <select name="status" class="select status" v-model="user.status" @change="changeStatus(user)">
+                  <option value="new">New</option>
+                  <option value="pending">Pending</option>
+                  <option value="active">Approved</option>
+                  <option value="rejected">Rejected</option>
+                </select>
               </div>
-
-              <div class="field light company" v-for="role in user.roles" :key="role">
-                <span class="company-name" @click="openCompany(role.company?._id)">{{ role.company?.name }}</span>
-                <span class="country" v-for="country in role.company?.countries" :key="country">
-                  {{ country }}
-                </span>
-              </div>
-
             </div>
-            <IconsCategoryAccess :access="user.access"/>
-
-            <div class='status_wrapper' :class="user.status">
-              <!-- <div :class="['dot', user.status]"></div> -->
-              <select name="status" class="select status" v-model="user.status" @change="changeStatus(user)">
-                <option value="new">New</option>
-                <option value="pending">Pending</option>
-                <option value="active">Approved</option>
-                <option value="rejected">Rejected</option>
-              </select>
+            <div class="option" @click="deleteUser(user._id)">
+              <span class="material-symbols-outlined">Delete</span>
             </div>
-          </div>
-          <div class="option" @click="deleteUser(user._id)">
-            <span class="material-symbols-outlined">Delete</span>
           </div>
         </div>
       </div>
+      <div>
+        <button disabled="true" class="mt10" @click="add = false">+ Add</button>
+      </div>
     </div>
-    <div>
-      <button disabled="true" class="mt10" @click="add = false">+ Add</button>
-    </div>
-  </div>
-  <div v-if="edit">
-    <!-- <SettingsUserEdit :selectedUser="selectedUser" @updateUser="updateUser" @closeEdit="close" /> -->
-  </div>
-  <div v-if="add">
-    <!-- <SettingsUserCreate @createUser="createUser" @closeEdit="close" /> -->
-    <!-- <SettingsUserCreate -->
-  </div>
 </template>
 <script>
 import IconsCategoryAccess from '@/components/ui/IconsCategoryAccess.vue'

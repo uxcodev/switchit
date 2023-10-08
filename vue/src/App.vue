@@ -84,6 +84,7 @@ export default {
       let email =  this.auth0User.email // || 'nto@switchit.ai'  // TEMP 
       let user = await this.$api_node.getActiveUser(email)
 
+      console.log('auth0 user: ', this.auth0User)
       // if there is no user, create one
       
       if (!user) {
@@ -97,8 +98,6 @@ export default {
         user = await this.$api_node.createUser(fields)
       }
 
-      // save active user to vuex
-
       // get active user from vuex
       let activeUser = this.$store.getters.activeUser
       if (!activeUser) {
@@ -108,10 +107,26 @@ export default {
 
       // redirect to onboarding or dashboard depending on user status
 
-      let status = user?.status || null
-      if (!status || status === 'new' || status === 'pending') {
+      this.$store.dispatch('setActiveBusinessPartner',null)
+      let myBusinessPartners = await this.$switchit.getMyBusinessPartners()
+      
+      // TEMPORARILY OVERRIDE TO SIMULATE NEW SIGN UP
+      // myBusinessPartners = []
+      
+      if (myBusinessPartners.length) {
+        let activeBusinessPartner = await this.$switchit.getBusinessPartner(myBusinessPartners[0].id)
+        
+        this.$store.dispatch('setActiveBusinessPartner',activeBusinessPartner)
+
+        console.log('activeBusinessPartner: ', this.$store.getters.activeBusinessPartner)
+      } else {
         this.$router.push({ path: '/onboarding' })
-      } 
+      }
+      
+      // let status = user?.status || null
+      // if (!status || status === 'new' || status === 'pending') {
+      //   this.$router.push({ path: '/onboarding' })
+      // } 
       this.loaded = true
     }
   },

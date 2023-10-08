@@ -7,6 +7,7 @@ export default {
     return {
       isAdmin: false,
       activeUser: null,
+      activeBusinessPartner: null,
       selectedLeads: null,
       activeCompany: null,
     };
@@ -23,8 +24,10 @@ export default {
     },
     setActiveCompany(state, payload) {
       state.activeCompany = payload.val
+    },
+    setActiveBusinessPartner(state, payload) {
+      state.activeBusinessPartner = payload.val
     }
-
   },
   actions: {
     async initializeAuth({ commit, dispatch }) {
@@ -61,6 +64,7 @@ export default {
     async setActiveUser(context, activeUser) {
       context.commit('setActiveUser', { val: activeUser });
       console.log('activeUser', activeUser)
+      if (activeUser.roles.length === 0 || !activeUser.roles) return
       let company = await api.getCompanyById(activeUser.roles[0].company)
       console.log('company', company)
       context.commit('setActiveCompany', { val: company });
@@ -68,6 +72,9 @@ export default {
     setSelectedLeads(context, selectedLeads) {
       context.commit('setSelectedLeads', { val: selectedLeads });
     },
+    setActiveBusinessPartner(context, activeBusinessPartner) {
+      context.commit('setActiveBusinessPartner', { val: activeBusinessPartner });
+    }
   },
   getters: {
     isAdmin(state) {
@@ -81,6 +88,9 @@ export default {
     },
     activeCompany(state) {
       return state.activeCompany;
+    },
+    activeBusinessPartner(state) {
+      return state.activeBusinessPartner;
     }
   }
 }

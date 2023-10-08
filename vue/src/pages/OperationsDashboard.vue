@@ -5,18 +5,18 @@
   <div class="main settings">
     <div class="header">
       <!-- Add buttons to change between pages -->
-      <!-- <div v-if="screens.length > 1" class="button-group">
+      <div v-if="screens.length > 1" class="button-group">
         <button v-for="(scr, index) in screens" :key="index" @click="changePage(scr)">{{ scr }}</button>
-      </div> -->
+      </div>
       <div></div>
       <div class="option-group">
         <button @click="openModal('CreateCompany')">+ Add company</button>
         <button @click="openModal('ImportCompanies')">Import</button>
       </div>
     </div>
-    <keep-alive>
+    <!-- <keep-alive> -->
       <component :key="componentKey" v-if="$auth0.isAuthenticated.value" @openModal="openModal" :is="screen"></component>
-    </keep-alive>
+    <!-- </keep-alive> -->
   </div>
 </template>
 <script>
@@ -24,6 +24,7 @@
 import ModalWindow from '@/components/ui/ModalWindow.vue';
 import Users from './OperationsUserTable.vue';
 import NodeCompanies from './OperationsCompanyTable_Node.vue';
+import BusinessPartners from './OperationsBusinessPartnerTable.vue';
 import Companies from './OperationsCompanyTable.vue';
 // import ImportCompanies from '@/components/import/ImportCompanies.vue';
 import ImportCompanies from '@/components/import/ImportCompaniesFromSheet.vue';
@@ -34,6 +35,7 @@ export default {
     Users,
     Companies,
     NodeCompanies,
+    BusinessPartners,
     ImportCompanies,
     CreateCompany
   },
@@ -42,7 +44,7 @@ export default {
       modalComponent: null,
       isModalVisible: false,
       // screens: ['Users', 'Companies', 'NodeCompanies'],
-      screens: ['Companies', 'Users'],
+      screens: ['Companies', 'Users', 'BusinessPartners'],
       screen: null,
       componentKey: 0,
       

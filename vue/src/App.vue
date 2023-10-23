@@ -44,7 +44,8 @@ export default {
       // check if there is an access token in local storage
       
       // is admin if email contains switchit.ai
-      let isAdmin = false // this.auth0User.email.includes('nto@switchit.ai')
+      let isAdmin = false
+      // let isAdmin = this.auth0User.email.includes('nto@switchit.ai')
       console.log('isAdmin: ', isAdmin)
       let access_token = localStorage.getItem('access_token')
  
@@ -120,10 +121,9 @@ export default {
         let activeBusinessPartner = await this.$switchit.getBusinessPartner(myBusinessPartners[0].id)
         this.$store.dispatch('setActiveBusinessPartner',activeBusinessPartner)
         console.log('activeBusinessPartner: ', this.$store.getters.activeBusinessPartner)
-        // if (isAdmin) {
-        //   console.log('is Admin')
-        // } else if (activeBusinessPartner.isApproved) {
-        if (activeBusinessPartner.isApproved) {
+        if (isAdmin) {
+          console.log('is Admin')
+        } else if (activeBusinessPartner.isApproved) {
           console.log('business partner is approved')
           this.$router.push({ path: '/dashboard' });
         } else {

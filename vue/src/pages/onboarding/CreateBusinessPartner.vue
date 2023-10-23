@@ -184,8 +184,7 @@ export default {
           this.$store.dispatch('setActiveBusinessPartner',activeBusinessPartner)
           console.log('created activeBusinessPartner: ', activeBusinessPartner)
           // this.$router.push({ path: '/operations', query: { q: 'Companies' } })
-          //reload router page
-          this.$router.go()
+          // this.$router.go()
         }
       } catch (error) {
         this.$toast_error.show(error)
@@ -231,14 +230,16 @@ export default {
   async mounted() {
     console.log('categories: ', this.categories)
     // populate BusinessPartner form with dummy data
-    this.form.businessPartner.name = 'Test Company'
-    this.form.businessPartner.domain = 'testcompany.com'
-    this.form.businessPartner.vatNumber = '12345678'
-    this.form.businessPartner.address = 'Test Address'
-    this.form.businessPartner.email = 'test@test.com'
-    this.form.businessPartner.countryCode = 'DK'
-    this.form.businessPartner.countriesOfOperation = ['DK', 'SE']
-    this.form.businessPartner.serviceTypes = [1, 2]
+    Object.assign(this.form.businessPartner, {
+    name: 'SwitchIt',
+    domain: 'switchit.ai',
+    vatNumber: '12345678',
+    address: '123 Main St',
+    email: 'nto@swithchit.ai',
+    countryCode: 'DK',
+    countriesOfOperation: ['DK', 'SE'],
+    serviceTypes: [1, 2]
+});
 
     try {
       this.loaded = true

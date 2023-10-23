@@ -42,9 +42,12 @@ export default {
     async initUser() {
       
       // check if there is an access token in local storage
-
+      
+      // is admin if email contains switchit.ai
+      let isAdmin = false // this.auth0User.email.includes('nto@switchit.ai')
+      console.log('isAdmin: ', isAdmin)
       let access_token = localStorage.getItem('access_token')
-
+ 
       // check if token is expired
 
       if (access_token) {
@@ -115,19 +118,27 @@ export default {
       
       if (myBusinessPartners.length) {
         let activeBusinessPartner = await this.$switchit.getBusinessPartner(myBusinessPartners[0].id)
-        
         this.$store.dispatch('setActiveBusinessPartner',activeBusinessPartner)
-
         console.log('activeBusinessPartner: ', this.$store.getters.activeBusinessPartner)
+        // if (isAdmin) {
+        //   console.log('is Admin')
+        // } else if (activeBusinessPartner.isApproved) {
+        if (activeBusinessPartner.isApproved) {
+          console.log('business partner is approved')
+          this.$router.push({ path: '/dashboard' });
+        } else {
+          console.log('business partner is not approved')
+          this.$router.push({ path: '/signup_success' });
+        }
       } else {
         this.$router.push({ path: '/onboarding' })
       }
+      this.loaded = true
       
       // let status = user?.status || null
       // if (!status || status === 'new' || status === 'pending') {
       //   this.$router.push({ path: '/onboarding' })
       // } 
-      this.loaded = true
     }
   },
   watch: {
@@ -136,6 +147,7 @@ export default {
     }
   },
   async mounted() {
+
 
     // setTimeout(()=> {
     //   this.initUser()

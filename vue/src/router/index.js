@@ -2,10 +2,9 @@
 import { authGuard } from "@auth0/auth0-vue";
 import { createRouter, createWebHistory } from 'vue-router'
 
-function homePageGuard(to, from, next) {
-  next('/dashboard');
+function apiGuard(to, from, next) {
+  next();
 }
-
 const routes = [
   {
     path: '/dashboard',
@@ -40,7 +39,7 @@ const routes = [
   {
     path: '/',
     name: "home",
-    beforeEnter: homePageGuard,
+    beforeEnter: authGuard,
     component: () => import('@/pages/HomePage.vue')
   },
   {
@@ -109,7 +108,7 @@ const routes = [
   {
     path: '/api',
     name: "api_testing",
-    beforeEnter: authGuard,
+    beforeEnter: apiGuard,
     component: () => import('@/pages/testing/ApiTesting.vue')
   },
 ]

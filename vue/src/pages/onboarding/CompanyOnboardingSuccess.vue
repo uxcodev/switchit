@@ -56,7 +56,7 @@ export default {
   },
  async mounted() {
         let activeBusinessPartner = await this.$store.getters.activeBusinessPartner
-        if (activeBusinessPartner) {
+        if (activeBusinessPartner && activeBusinessPartner.isApproved) {
           this.$router.push({ path: '/dashboard' })
       } else {
         // this.$router.push({ path: '/onboarding' })

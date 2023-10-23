@@ -48,24 +48,6 @@
         <div v-if="errors.length" class="msg_error">{{ errors[0] }}</div>
       </form>
     </div>
-    <div v-if="status === 'pending'" class="main clip" v-show="!isAdmin">
-      <div class="container clip">
-        <div class="pageheader__content">
-          <div class="cards lg">
-            <div class="banner_lg">
-              <h1>
-                Your account is pending approval.
-              </h1>
-              <p>Once your account is approved, your opportunities will appear in the dashboard below. In the meantime, you can start learning how to get the most out of your SwitchIt account.</p>
-              <button>Get more out of SwitchIt</button>
-            </div>
-          </div>
-        </div>
-        <div>
-          <img class="img_placeholder mt6" src="@/images/switchit_onboarding_placeholder.svg" />
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 <script>

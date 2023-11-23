@@ -104,11 +104,9 @@
   
             </div>
             <div class='status_wrapper' :class="businessPartner.status">
-              <select name="status" class="select status" v-model="businessPartner.status" @change="changeStatus(businessPartner)">
-                <option value="new">New</option>
-                <option value="pending">Pending</option>
-                <option value="active">Approved</option>
-                <option value="rejected">Rejected</option>
+              <select name="status" class="select status" v-model="businessPartner.isApproved" @change="changeStatus(businessPartner)">
+                <option :value="false">Not approved</option>
+                <option :value="true">Approved</option>
               </select>
             </div>
             <div class="option" @click="deleteBusinessPartner(businessPartner.id)">
@@ -323,8 +321,12 @@ export default {
       this.businessPartnerId = id
       this.currentTab = 'edit'
       this.businessPartnerBody = this.businessPartners.find(bp => bp.id === id)
-
+      
     },  
+    changeStatus(businessPartner) {
+      console.log('businessPartner: ', businessPartner)
+      this.$switchit.editBusinessPartner(businessPartner.id, businessPartner)
+    },
     changeTab(tabId) {
       this.currentTab = tabId;
       if (tabId === 'get') {

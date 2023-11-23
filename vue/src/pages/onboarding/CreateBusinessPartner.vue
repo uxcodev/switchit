@@ -178,13 +178,15 @@ export default {
         let body = this.form.businessPartner
         let response = await this.$switchit.createBusinessPartner(body)
         console.log('submitForm response', response)
-        if (response.data.ok) {
+        if (response.statusText === 'Created') {
           let id = response.headers.location.split('/').pop()
           let activeBusinessPartner = await this.$switchit.getBusinessPartner(id)
           this.$store.dispatch('setActiveBusinessPartner',activeBusinessPartner)
           console.log('created activeBusinessPartner: ', activeBusinessPartner)
           // this.$router.push({ path: '/operations', query: { q: 'Companies' } })
-          // this.$router.go()
+          this.$router.go()
+        } else {
+          throw new Error('Error creating business partner')
         }
       } catch (error) {
         this.$toast_error.show(error)
@@ -235,7 +237,7 @@ export default {
     domain: 'switchit.ai',
     vatNumber: '12345678',
     address: '123 Main St',
-    email: 'nto@swithchit.ai',
+    email: this.$auth0.user._value.email,
     countryCode: 'DK',
     countriesOfOperation: ['DK', 'SE'],
     serviceTypes: [1, 2]

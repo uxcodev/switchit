@@ -44,8 +44,13 @@ export default {
       // check if there is an access token in local storage
       
       // is admin if email contains switchit.ai
-      let isAdmin = false
-      // let isAdmin = this.auth0User.email.includes('nto@switchit.ai')
+      // let isAdmin = false
+      // url is app.switchit.ai/api?isAdmin=1 - get the value of isAdmin from the url
+      let isAdminQuery = this.$route.query.isAdmin
+      console.log('isAdminq: ', isAdminQuery)
+      let isAdminEmail = this.auth0User.email.includes('@switchit.ai')
+      console.log('isAdmin: ', isAdminEmail)
+      let isAdmin = isAdminQuery && isAdminEmail
       console.log('isAdmin: ', isAdmin)
       let access_token = localStorage.getItem('access_token')
  

@@ -5,7 +5,6 @@
     <LoaderAniOverlay v-if="!loaded" />
     <router-view v-else></router-view>
   </div>
-  <pre>{{ myBusinessPartners }}</pre>
 </template>
 
 <script>
@@ -121,6 +120,7 @@ export default {
       this.$store.dispatch('setActiveBusinessPartner',null)
       let myBusinessPartners = await this.$switchit.getMyBusinessPartners()
       console.log('myBusinessPartners: ', myBusinessPartners)
+
       // TEMPORARILY OVERRIDE TO SIMULATE NEW SIGN UP
       // myBusinessPartners = []
 
@@ -135,13 +135,15 @@ export default {
             this.$router.push({ path: '/dashboard' });
           } else {
             console.log('business partner is not approved')
-            // this.$router.push({ path: '/signup_success' });
+            this.$router.push({ path: '/signup_success' });
           }
         } else {
           this.$router.push({ path: '/onboarding' })
         }
+        this.loaded = true
+      } else {
+        this.loaded = true
       }
-      this.loaded = true
       
       // let status = user?.status || null
       // if (!status || status === 'new' || status === 'pending') {

@@ -46,10 +46,11 @@ export default {
       // is admin if email contains switchit.ai
       // let isAdmin = false
       // url is app.switchit.ai/api?isAdmin=1 - get the value of isAdmin from the url
+      console.log('route query: ', this.$route.query)
       let isAdminQuery = this.$route.query.isAdmin
       console.log('isAdminq: ', isAdminQuery)
       let isAdminEmail = this.auth0User.email.includes('@switchit.ai')
-      console.log('isAdmin: ', isAdminEmail)
+      console.log('isAdmine: ', isAdminEmail)
       let isAdmin = isAdminQuery && isAdminEmail
       console.log('isAdmin: ', isAdmin)
       let access_token = localStorage.getItem('access_token')
@@ -118,27 +119,31 @@ export default {
 
       this.$store.dispatch('setActiveBusinessPartner',null)
       let myBusinessPartners = await this.$switchit.getMyBusinessPartners()
-      
+      console.log('myBusinessPartners: ', myBusinessPartners)
+
       // TEMPORARILY OVERRIDE TO SIMULATE NEW SIGN UP
       // myBusinessPartners = []
-      
-      if (myBusinessPartners.length) {
-        let activeBusinessPartner = await this.$switchit.getBusinessPartner(myBusinessPartners[0].id)
-        this.$store.dispatch('setActiveBusinessPartner',activeBusinessPartner)
-        console.log('activeBusinessPartner: ', this.$store.getters.activeBusinessPartner)
-        if (isAdmin) {
-          console.log('is Admin')
-        } else if (activeBusinessPartner.isApproved) {
-          console.log('business partner is approved')
-          this.$router.push({ path: '/dashboard' });
+
+      // use redirects if not admin
+      if (!isAdmin) {
+        if (myBusinessPartners.length) {
+          let activeBusinessPartner = await this.$switchit.getBusinessPartner(myBusinessPartners[0].id)
+          this.$store.dispatch('setActiveBusinessPartner',activeBusinessPartner)
+          console.log('activeBusinessPartner: ', this.$store.getters.activeBusinessPartner)
+          if (activeBusinessPartner.isApproved) {
+            console.log('business partner is approved')
+            this.$router.push({ path: '/dashboard' });
+          } else {
+            console.log('business partner is not approved')
+            this.$router.push({ path: '/signup_success' });
+          }
         } else {
-          console.log('business partner is not approved')
-          this.$router.push({ path: '/signup_success' });
+          this.$router.push({ path: '/onboarding' })
         }
+        this.loaded = true
       } else {
-        this.$router.push({ path: '/onboarding' })
+        this.loaded = true
       }
-      this.loaded = true
       
       // let status = user?.status || null
       // if (!status || status === 'new' || status === 'pending') {

@@ -47,7 +47,7 @@ export default {
     this.status = user?.status || 'new';
 
     if (this.status === 'pending') {
-      this.$router.push({ path: '/signup_success' });
+      // this.$router.push({ path: '/signup_success' });
     } else if (user?.status === "active") {
     //   this.$router.push({ path: '/dashboard' });
     } else {

@@ -173,11 +173,10 @@ export default {
     async submitForm() {
 
       try {
-        // let body = this.form.company
-        // let response = await this.$switchit.createCompany(body)
         let body = this.form.businessPartner
         let response = await this.$switchit.createBusinessPartner(body)
         console.log('submitForm response', response)
+      
         if (response.statusText === 'Created') {
           let id = response.headers.location.split('/').pop()
           let activeBusinessPartner = await this.$switchit.getBusinessPartner(id)
@@ -186,7 +185,8 @@ export default {
           // this.$router.push({ path: '/operations', query: { q: 'Companies' } })
           this.$router.go()
         } else {
-          throw new Error('Error creating business partner')
+          console.log("error response:" , response)
+          throw new Error(response)
         }
       } catch (error) {
         this.$toast_error.show(error)

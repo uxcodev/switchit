@@ -173,8 +173,6 @@ export default {
     async submitForm() {
 
       try {
-        // let body = this.form.company
-        // let response = await this.$switchit.createCompany(body)
         let body = this.form.businessPartner
         let response = await this.$switchit.createBusinessPartner(body)
         console.log('submitForm response', response)

@@ -105,7 +105,9 @@ export default {
     } catch (err) {
       let response = err.response.data.issues[0].messages[0] || err
       response = response === "ALREADY_EXISTS" ? "Business Partner already exists" : response
-
+      if (!response) {
+        response = "Error creating Business Partner"
+      }
       console.log("Full error: ", response);
       return response
     }

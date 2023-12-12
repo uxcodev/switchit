@@ -106,7 +106,6 @@ export default {
       console.log('myBusinessPartners: ', myBusinessPartners)
 
       // TEMPORARILY OVERRIDE TO SIMULATE NEW SIGN UP
-      
       // myBusinessPartners = []
 
       // use redirects if not admin
@@ -129,6 +128,11 @@ export default {
       } else {
         this.loaded = true
       }
+      
+      // let status = user?.status || null
+      // if (!status || status === 'new' || status === 'pending') {
+      //   this.$router.push({ path: '/onboarding' })
+      // } 
     }
   },
   watch: {
@@ -137,6 +141,12 @@ export default {
     }
   },
   async mounted() {
+
+
+    // setTimeout(()=> {
+    //   this.initUser()
+    // }, 1000)
+
   }
 };
 </script>

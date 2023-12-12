@@ -37,6 +37,12 @@ const routes = [
     component: () => import('@/pages/SettingsPage.vue')
   },
   {
+    path: '/profile',
+    name: "profile",
+    beforeEnter: authGuard,
+    component: () => import('@/components/auth/AuthProfile.vue')
+  },
+  {
     path: '/',
     name: "home",
     beforeEnter: authGuard,

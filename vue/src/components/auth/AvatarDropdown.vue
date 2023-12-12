@@ -1,8 +1,9 @@
 <template>
   <div @click="showDropdown = !showDropdown" class="avatar-container">
-    <img :src="avatarUrl" alt="User Avatar" class="avatar" />
+    <img v-if="avatarUrl" :src="avatarUrl" alt="User Avatar" class="avatar" />
     <div v-if="showDropdown" class="dropdown">
-      <div class="dropdown-item"><span class="material-symbols-outlined">person</span>Account</div>
+      <!-- <div class="dropdown-item"><span class="material-symbols-outlined">person</span>Account</div> -->
+      <router-link to="/account" class="dropdown-item"><span class="material-symbols-outlined">person</span>Account</router-link>
       <!-- <div class="dropdown-item"><span class="material-symbols-outlined">location_city</span> {{ businessPartner?.name }}</div> -->
       <router-link v-if="businessPartner" to="/company" class="dropdown-item"><span class="material-symbols-outlined">location_city</span>{{ businessPartner?.name }}</router-link>
 
@@ -17,13 +18,16 @@ export default {
   data() {
     return {
       showDropdown: false,
-      avatarUrl: 'https://lh3.googleusercontent.com/a/ACg8ocLjsQymkM29uVn7-BHOKZy0OVpqSWOnJ05QzhxW70Ru=s96-c',
+      //avatarUrl: this.$auth0.user.picture //'https://lh3.googleusercontent.com/a/ACg8ocLjsQymkM29uVn7-BHOKZy0OVpqSWOnJ05QzhxW70Ru=s96-c',
       // businessPartner: this.$store.getters.activeBusinessPartner
     }
   },
   computed: {
     businessPartner() {
       return this.$store.getters.activeBusinessPartner
+    },
+    avatarUrl() {
+      return this.$auth0.user.value.picture
     }
   },
   methods: {
@@ -36,8 +40,6 @@ export default {
     }
   },
   async mounted() {
-    // let business = this.$store.getters.activeBusinessPartner
-    // console.log('business', business)
   },
 
 }

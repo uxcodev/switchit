@@ -106,7 +106,6 @@ export default {
       console.log('myBusinessPartners: ', myBusinessPartners)
 
       // TEMPORARILY OVERRIDE TO SIMULATE NEW SIGN UP
-      
       // myBusinessPartners = []
 
       // use redirects if not admin
@@ -129,14 +128,25 @@ export default {
       } else {
         this.loaded = true
       }
+      
+      // let status = user?.status || null
+      // if (!status || status === 'new' || status === 'pending') {
+      //   this.$router.push({ path: '/onboarding' })
+      // } 
     }
   },
   watch: {
     async auth0User() {
-      this.initUser()
+      // this.initUser()  // TEMP - UNCOMMENT FOR LIVE
+      this.loaded = true   // TEMP
     }
   },
   async mounted() {
+
+    // setTimeout(()=> {
+    //   this.initUser()
+    // }, 1000)
+
   }
 };
 </script>

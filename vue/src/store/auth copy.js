@@ -45,7 +45,6 @@ export default {
 
       console.log('auth0.user', auth0.user)
       let email = auth0.user.email
-      console.log('vuex email', email)
       let user = await api.getActiveUser(email)
       // let status = user.status
 

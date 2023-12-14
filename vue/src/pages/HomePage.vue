@@ -5,6 +5,7 @@
   <div class="main">
     <!-- <h2>This is an empty page</h2> -->
     <!-- redirecting to dashboard... -->
+
   </div>
 </template>
 

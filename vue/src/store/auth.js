@@ -47,15 +47,9 @@ export default {
       await permissions.forEach(item => {
         if (item.includes('lm_')) access.push(item.replace('lm_', ''))
       })
-      console.log('vuex access', access)
       dispatch('setAccess', access)
-
-      console.log('auth0.user', auth0.user)
       let email = auth0.user.email
-      console.log('vuex email', email)
       let user = await api.getActiveUser(email)
-      // let status = user.status
-
       commit('setActiveUser', user)
     },
     isAdmin(context, val) {
@@ -63,10 +57,8 @@ export default {
     },
     async setActiveUser(context, activeUser) {
       context.commit('setActiveUser', { val: activeUser });
-      console.log('activeUser', activeUser)
       if (activeUser.roles.length === 0 || !activeUser.roles) return
       let company = await api.getCompanyById(activeUser.roles[0].company)
-      console.log('company', company)
       context.commit('setActiveCompany', { val: company });
     },
     setSelectedLeads(context, selectedLeads) {

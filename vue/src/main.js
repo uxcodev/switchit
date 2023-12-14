@@ -25,6 +25,7 @@ app.use(plugin)
 
 import store from '@/store/index.js'
 app.use(store)
+// app.provide('store', store);
 
 /* import plugins and custom components */
 
@@ -63,10 +64,6 @@ app.use(i18n)
 // check if mobile
 store.dispatch('isMobile')
 
-/* use Router */
-
-import router from "./router";
-app.use(router)
 
 /* use Auth0 */
 
@@ -74,6 +71,10 @@ import auth0 from '@/helpers/auth0.js';
 app.use(auth0);
 
 
+/* use Router */
+
+import router from "./router";
+app.use(router)
 
 app.mount('#app')
 

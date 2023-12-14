@@ -2,24 +2,20 @@
   <div @click="showDropdown = !showDropdown" class="avatar-container">
     <img v-if="avatarUrl" :src="avatarUrl" alt="User Avatar" class="avatar" />
     <div v-if="showDropdown" class="dropdown">
-      <!-- <div class="dropdown-item"><span class="material-symbols-outlined">person</span>Account</div> -->
-      <router-link to="/account" class="dropdown-item"><span class="material-symbols-outlined">person</span>Account</router-link>
-      <!-- <div class="dropdown-item"><span class="material-symbols-outlined">location_city</span> {{ businessPartner?.name }}</div> -->
+      <router-link to="/profile" class="dropdown-item"><span class="material-symbols-outlined">person</span>Your profile</router-link>
       <router-link v-if="businessPartner" to="/company" class="dropdown-item"><span class="material-symbols-outlined">location_city</span>{{ businessPartner?.name }}</router-link>
-
-      <!-- <div class="dropdown-item"><span class="material-symbols-outlined">exit_to_app</span> Logout</div> -->
       <div class="dropdown-item" @click="logout"><span class="material-symbols-outlined">power_rounded</span> Logout</div>
     </div>
   </div>
 </template>
 
 <script>
+
+import avatarDefault from '@/images/avatar_default.png'
 export default {
   data() {
     return {
       showDropdown: false,
-      //avatarUrl: this.$auth0.user.picture //'https://lh3.googleusercontent.com/a/ACg8ocLjsQymkM29uVn7-BHOKZy0OVpqSWOnJ05QzhxW70Ru=s96-c',
-      // businessPartner: this.$store.getters.activeBusinessPartner
     }
   },
   computed: {
@@ -27,7 +23,7 @@ export default {
       return this.$store.getters.activeBusinessPartner
     },
     avatarUrl() {
-      return this.$auth0.user.value.picture
+      return this.$auth0.user.value.picture || avatarDefault
     }
   },
   methods: {
@@ -37,7 +33,7 @@ export default {
           returnTo: window.location.origin
         }
       });
-    }
+    },
   },
   async mounted() {
   },
@@ -80,6 +76,7 @@ export default {
   font-size: 14px;
   gap: 10px;
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .dropdown-item:hover {

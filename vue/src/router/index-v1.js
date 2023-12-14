@@ -2,6 +2,7 @@
 import store from '@/store/index.js';
 // import auth0 from '@/helpers/auth0.js';
 // import node_api from '@/api/api.js';
+import api from '@/api/switchit.js';
 import { authGuard } from "@auth0/auth0-vue";
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -137,34 +138,52 @@ const router = createRouter({
   routes,
 })
 
-
 router.beforeResolve(async (to, from, next) => {
+
+
+  // check if it's a public route (has public meta tag)
   if (to.matched.some(record => record.meta.public)) {
-    return next();
+    return next()
   }
 
-  let isAdmin = to.query.isAdmin;
+  let isAdmin = to.query.isAdmin
   if (isAdmin) {
-    return next();
+    return next()
   }
 
-  const activeBusinessPartner = await store.dispatch('fetchAndSetActiveBusinessPartner');
-  console.log('activeBusinessPartner:', activeBusinessPartner)
-  if (!activeBusinessPartner && to.path !== '/onboarding') {
-    return next('/onboarding');
+  let activeBusinessPartner = store.getters.activeBusinessPartner
+
+  // if there is no active business partner, redirect to onboarding
+
+  if (!activeBusinessPartner) {
+    let myBusinessPartners = await api.getMyBusinessPartners();
+    console.log('myBusinessPartners: ', myBusinessPartners);
+
+    if (myBusinessPartners.length) {
+      activeBusinessPartner = await api.getBusinessPartner(myBusinessPartners[0].id);
+      store.dispatch('setActiveBusinessPartner', activeBusinessPartner);
+      console.log('activeBusinessPartner: ', activeBusinessPartner);
+    } else {
+      // No business partners, redirect to onboarding unless already there
+      if (to.path !== '/onboarding') {
+        return next('/onboarding');
+      }
+    }
   }
 
-  if (activeBusinessPartner && !activeBusinessPartner.isApproved && to.path !== '/signup_success') {
-    return next('/signup_success');
+  // Redirect based on the approval status of the business partner
+  if (activeBusinessPartner) {
+    if (!activeBusinessPartner.isApproved && to.path !== '/signup_success') {
+      return next('/signup_success');
+    }
   }
 
-  if (activeBusinessPartner && activeBusinessPartner.isApproved && (to.path === '/' || to.path === '/onboarding' || to.path === '/signup_success')) {
+  // Redirect to dashboard if onboarding is complete
+  if (to.path === '/' || to.path === '/onboarding' || to.path === '/signup_success') {
     return next('/dashboard');
   }
-
-  return next();
-});
-
+  return next()
+})
 
 
 export default router;

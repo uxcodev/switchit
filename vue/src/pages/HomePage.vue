@@ -40,8 +40,6 @@ export default {
     },
   },
   mounted() {
-    // redirect to /dashboard
-    this.$router.push('/dashboard')
   }
 }
 </script>

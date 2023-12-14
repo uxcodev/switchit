@@ -1,4 +1,6 @@
+import jwtDecode from 'jwt-decode'
 import api from '@/api/switchit.js'
+import auth0 from '@/helpers/auth0.js';
 
 export default {
   state() {
@@ -28,6 +30,28 @@ export default {
     }
   },
   actions: {
+    async initializeAuth({ commit, dispatch }) {
+      let access_token = localStorage.getItem('access_token')
+
+      if (!access_token) {
+        access_token = await auth0.getAccessTokenSilently()
+        localStorage.setItem('access_token', access_token)
+      }
+
+      let permissions = await (jwtDecode(access_token)).permissions;
+      if (permissions.includes('superadmin')) {
+        commit('isAdmin', true)
+      }
+
+      let access = []
+      await permissions.forEach(item => {
+        if (item.includes('lm_')) access.push(item.replace('lm_', ''))
+      })
+      dispatch('setAccess', access)
+      let email = auth0.user.email
+      let user = await api.getActiveUser(email)
+      commit('setActiveUser', user)
+    },
     isAdmin(context, val) {
       context.commit('isAdmin', { val: val });
     },

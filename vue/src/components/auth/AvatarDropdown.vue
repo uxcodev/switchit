@@ -23,7 +23,8 @@ export default {
       return this.$store.getters.activeBusinessPartner
     },
     avatarUrl() {
-      return this.$auth0.user.value.picture || avatarDefault
+      // return this.$auth0.user.value.picture || avatarDefault
+      return avatarDefault
     }
   },
   methods: {

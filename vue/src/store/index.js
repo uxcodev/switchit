@@ -1,15 +1,18 @@
 import { createStore } from 'vuex';
-// import VueCookies from 'vue-cookies'
+
+import { ref } from 'vue';
+export const loading = ref(true);
+
 import auth from './auth'
 import filters from './filters'
 import import_sheet from './import_sheet'
 import import_ from './import'
 import mobile from './mobile'
-import menu from './menu'
+import ui from './ui'
 
 const store = createStore({
   modules: {
-    menu: menu,
+    ui: ui,
     auth: auth,
     filters: filters,
     import: import_,

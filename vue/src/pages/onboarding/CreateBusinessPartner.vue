@@ -175,13 +175,10 @@ export default {
       try {
         let body = this.form.businessPartner
         let response = await this.$switchit.createBusinessPartner(body)
-        console.log('submitForm response', response)
-      
         if (response.statusText === 'Created') {
           let id = response.headers.location.split('/').pop()
           let activeBusinessPartner = await this.$switchit.getBusinessPartner(id)
           this.$store.dispatch('setActiveBusinessPartner',activeBusinessPartner)
-          console.log('created activeBusinessPartner: ', activeBusinessPartner)
           // this.$router.push({ path: '/operations', query: { q: 'Companies' } })
           this.$router.go()
         } else {
@@ -196,20 +193,23 @@ export default {
   },
   async created() {
     try {
-      console.log('createCompany created');
-      console.log('createCompany active user', this.activeUser);
       // check if editing
       this.id = this.$route.query.id
       this.isEditing = this.id ? true : false;
 
       // populate the countries dropdown
       let countryCodes = await this.$switchit.getCountries()
-      let country_options = countryCodes.map(country => ({
-        label: country.name,
-        value: country.code
-      }));
 
-      this.country_options.push(...country_options)
+      if (countryCodes?.length) {
+      
+        let country_options = countryCodes.map(country => ({
+          label: country.name,
+          value: country.code
+        }));
+  
+        this.country_options.push(...country_options)
+
+      }
 
       // populate the users and company differently depending on whether admin, and whether editing
 
@@ -224,18 +224,17 @@ export default {
         this.user._id = this.activeUser?._id;
       }
     } catch (error) {
-      console.log('error: ', error)
+      console.error('error: ', error)
       this.$toast_error.show(error)
     }
   },
 
   async mounted() {
-    console.log('categories: ', this.categories)
-    // populate BusinessPartner form with dummy data
     Object.assign(this.form.businessPartner, {
     name: 'SwitchIt',
     domain: 'switchit.ai',
-    vatNumber: '12345678',
+    // generate random vat number, 8 to 10 digits, convert to string
+    vatNumber: Math.floor(Math.random() * (99999999 - 10000000 + 1) + 10000000).toString(),    
     address: '123 Main St',
     email: this.$auth0.user._value.email,
     countryCode: 'DK',

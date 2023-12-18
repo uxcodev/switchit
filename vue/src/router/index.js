@@ -1,7 +1,5 @@
-// import { inject } from '@vue/runtime-core';
 import store from '@/store/index.js';
-// import auth0 from '@/helpers/auth0.js';
-// import node_api from '@/api/api.js';
+import { loading } from '@/store/index.js';
 import { authGuard } from "@auth0/auth0-vue";
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -56,7 +54,7 @@ const routes = [
   {
     path: '/profile',
     name: "profile",
-    beforeEnter: authGuard,
+    meta: { public: true },
     component: () => import('@/components/auth/AuthProfile.vue')
   },
 
@@ -149,7 +147,6 @@ router.beforeResolve(async (to, from, next) => {
   }
 
   const activeBusinessPartner = await store.dispatch('fetchAndSetActiveBusinessPartner');
-  console.log('activeBusinessPartner:', activeBusinessPartner)
   if (!activeBusinessPartner && to.path !== '/onboarding') {
     return next('/onboarding');
   }
@@ -165,6 +162,14 @@ router.beforeResolve(async (to, from, next) => {
   return next();
 });
 
+router.beforeEach((to, from, next) => {
+  loading.value = true; // set loading to true before each navigation
+  next();
+});
 
+
+router.afterEach(() => {
+  loading.value = false; // set loading to false after navigation is complete
+});
 
 export default router;

@@ -33,7 +33,7 @@ export default {
     },
     async setActiveUser(context, activeUser) {
       context.commit('setActiveUser', { val: activeUser });
-      if (activeUser.roles.length === 0 || !activeUser.roles) return
+      if (activeUser?.roles?.length === 0 || !activeUser?.roles) return
       let company = await api.getCompanyById(activeUser.roles[0].company)
       context.commit('setActiveCompany', { val: company });
     },
@@ -45,7 +45,6 @@ export default {
     },
     async fetchAndSetActiveBusinessPartner({ commit, state }) {
       if (state.activeBusinessPartner) {
-        console.log('state.activeBusinessPartner:', state.activeBusinessPartner)
         return state.activeBusinessPartner;
       }
       try {

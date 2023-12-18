@@ -215,8 +215,6 @@ export default {
   },
   async created() {
     try {
-      console.log('createCompany created');
-      console.log('createCompany active user', this.activeUser);
       // check if editing
       this.id = this.$route.query.id
       this.isEditing = this.id ? true : false;
@@ -249,7 +247,6 @@ export default {
   },
 
   async mounted() {
-    console.log('categories: ', this.categories)
     // populate BusinessPartner form with dummy data
     // this.form.businessPartner.name = 'Test Company'
     // this.form.businessPartner.domain = 'testcompany.com'

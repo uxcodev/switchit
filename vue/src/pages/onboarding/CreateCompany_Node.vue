@@ -235,7 +235,7 @@ export default {
   },
   async created() {
     try {
-      console.log('createCompany created');
+      console.log('createCompany_Node created');
       console.log('createCompany active user', this.activeUser);
       // check if editing
       this.id = this.$route.query.id

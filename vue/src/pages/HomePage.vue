@@ -41,6 +41,7 @@ export default {
   },
   mounted() {
     // redirect to /dashboard
+    console.log('HomePage mounted')
     this.$router.push('/dashboard');
   }
 }

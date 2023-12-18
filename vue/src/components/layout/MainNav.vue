@@ -2,13 +2,13 @@
   <div class="navbar">
     <SwitchitIcon @click="$router.push({ path: '/' })" class="logo" :width="40" :height="40" color="#03D0BF" />
     <div class="nav">
-      <router-link title="dashboard" to="/dashboard" v-if="isActive" :class="{ icon: true, active: $route.name === 'dashboard' }"><span class="material-symbols-outlined">dashboard</span></router-link>
-      <router-link  v-if="isActive" title="offers" to="/offers" :class="{ icon: true, active: $route.name === 'offers' }"><span class="material-symbols-outlined">request_page</span></router-link>
-      <router-link  v-if="isActive" title="operations" to="/operations" :class="{ icon: true, active: $route.name === 'operations' }"><span class="material-symbols-outlined">location_city</span></router-link>
+      <router-link title="dashboard" to="/dashboard" v-if="isApproved" :class="{ icon: true, active: $route.name === 'dashboard' }"><span class="material-symbols-outlined">dashboard</span></router-link>
+      <router-link  v-if="isApproved" title="offers" to="/offers" :class="{ icon: true, active: $route.name === 'offers' }"><span class="material-symbols-outlined">request_page</span></router-link>
+      <router-link  v-if="isApproved" title="operations" to="/operations" :class="{ icon: true, active: $route.name === 'operations' }"><span class="material-symbols-outlined">location_city</span></router-link>
       <!-- <div v-if="isAdmin" class="icon button" @click="createFakeData" ><span class="material-symbols-outlined">input_circle</span></div> -->
-      <!-- <router-link title="settings" to="/settings" v-if="isActive" :class="{ icon: true, active: $route.name === '' }"><span class="material-symbols-outlined">settings</span></router-link> -->
+      <!-- <router-link title="settings" to="/settings" v-if="isApproved" :class="{ icon: true, active: $route.name === '' }"><span class="material-symbols-outlined">settings</span></router-link> -->
       <LanguagePicker title="change language" class="icon" />
-      <AvatarDropdown v-if="isAuthenticated" />
+      <AvatarDropdown v-if="$auth0?.isAuthenticated" />
       <LoginButton v-else></LoginButton>
     </div>
   </div>
@@ -27,15 +27,14 @@ export default {
   data() {
     return {
       isDisabled: true,
-      isAuthenticated: this.$auth0.isAuthenticated,
     };
   },
   computed: {
     isAdmin() {
       return this.$store.getters.isAdmin
     },
-    isActive() {
-      return this.$store.getters.activeUser && this.$store.getters.activeBusinessPartner ? this.$store.getters.activeUser.status === 'active' : false
+    isApproved() {
+      return this.$store.getters.activeBusinessPartner?.isApproved
     }
   },
   methods: {

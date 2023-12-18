@@ -43,11 +43,11 @@ export default {
     },
   },
   async mounted() {
-    let user = this.$store.getters.activeUser;
-    console.log('onboarding user', user);
+    // let user = this.$store.getters.activeUser;
+    // console.log('onboarding user', user);
 
-    let businessPartner = this.$store.getters.activeBusinessPartner;
-    console.log('onboarding businessPartner', businessPartner);
+    // let businessPartner = this.$store.getters.activeBusinessPartner;
+    // console.log('onboarding businessPartner', businessPartner);
   }
 }
 </script>

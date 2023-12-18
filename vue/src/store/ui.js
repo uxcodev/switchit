@@ -3,12 +3,13 @@ export default {
     return {
       isOpen: false,
       counter: 0,
+      loading: false,
     };
   },
   mutations: {
     setMenu(state, payload) {
       state.isOpen = payload.val
-    }
+    },
   },
   actions: {
     openMenu(context) {

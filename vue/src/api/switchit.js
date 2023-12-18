@@ -59,7 +59,7 @@ export default {
     try {
       let url = "https://switchitapi.azurewebsites.net/api/v1/businesspartners?includeBusinessPartnerCountrys=true";
       const response = await _axios.get(url);
-      return response.data.model;
+      return response?.data?.model;
     } catch (err) {
       console.error(err);
     }
@@ -76,8 +76,7 @@ export default {
       delete bp.businessPartnerBusinessPartnerCountrysModels
       delete bp.businessPartnerBusinessPartnerRolesModels
       delete bp.businessPartnerBusinessPartnerRoleBusinessPartnerUserCollectionModels
-      console.log('response', response)
-      return response.data.model;
+      return response?.data?.model;
     } catch (err) {
       console.error(err);
     }
@@ -88,7 +87,8 @@ export default {
     try {
       let url = "https://switchitapi.azurewebsites.net/api/v1/mybusinesspartners?includeBusinessPartnerCountrys=true";
       const response = await _axios.get(url);
-      return response.data.model;
+      // console.log('getMyBusinessPartners response', response)
+      return response?.data?.model;
     } catch (err) {
       console.error(err);
     }
@@ -99,8 +99,6 @@ export default {
     try {
       let url = "https://switchitapi.azurewebsites.net/api/v1/businesspartners";
       const response = await _axios.post(url, body);
-      console.log('response', response)
-      console.log('body', body)
       return response;
     } catch (err) {
       let response = err.response.data.issues[0].messages[0] || err
@@ -108,7 +106,6 @@ export default {
       if (!response) {
         response = "Error creating Business Partner"
       }
-      console.log("Full error: ", response);
       return response
     }
   },

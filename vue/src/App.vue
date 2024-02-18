@@ -19,7 +19,7 @@ export default {
     MainNav,
     FilterPanel,
     LoaderAniOverlay
-},
+  },
   name: "App",
   data() {
     return {
@@ -37,30 +37,30 @@ export default {
   },
   methods: {
     async initUser() {
-      // let isAdminQuery = this.$route.query.isAdmin
-      // let isAdminEmail = this.auth0User.email.includes('@switchit.ai')
-      // let isAdmin = isAdminQuery && isAdminEmail
       let access_token = localStorage.getItem('access_token')
- 
+      let decoded = access_token ? jwtDecode(access_token) : null
+      let expiration = 3600
+
       // check if token is expired
 
       if (access_token) {
-        let decoded = jwtDecode(access_token)
-        let now = new Date()
-        let exp = new Date(decoded.exp * 1000)
-        if (now > exp) {
-          access_token = null
-          localStorage.removeItem('access_token')
+        let now = Math.floor(Date.now() / expiration);
+        let exp = decoded.exp;
+        let iat = decoded.iat;
+        if (now > exp || (now - iat) > expiration) {
+          access_token = null;
+          localStorage.removeItem('access_token');
         }
       }
 
       // if there's no token, get one from Auth0
-      
+
       if (!access_token) {
         access_token = await this.$auth0.getAccessTokenSilently()
         localStorage.setItem('access_token', access_token)
       }
 
+      console.log('decoded token: ', decoded)
       // get permissions from access token, and set access to services
 
       let permissions = (jwtDecode(access_token)).permissions;
@@ -78,13 +78,13 @@ export default {
 
       // find user in our database with the email address from Auth0
 
-      let email =  this.auth0User.email
+      let email = this.auth0User.email
       let user = await this.$api_node.getActiveUser(email)
 
       // console.log('auth0 user: ', this.auth0User)
-      
+
       // if there is no user, create one
-      
+
       if (!user) {
         let fields = {
           email: this.auth0User.email,
@@ -134,12 +134,12 @@ export default {
         this.loaded = true
       }
        */
-      
+
       // let status = user?.status || null
       // if (!status || status === 'new' || status === 'pending') {
       //   this.$router.push({ path: '/onboarding' })
       // } 
-      
+
       // this.loading = false
 
     }
@@ -150,7 +150,7 @@ export default {
     }
   },
   async mounted() {
-    setTimeout(()=> {
+    setTimeout(() => {
       if (loading) {
         this.initUser()
       }

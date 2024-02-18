@@ -44,7 +44,7 @@
         <div class="checkboxes">
           <div v-for="(categoryData, category) in this.services" :key="category" class="checkbox">
             <label class="checkbox-label">
-              <input v-model="selectedCategories" type="checkbox" @change="onCheckboxChange" :value="category" />
+              <input :name="category" v-model="selectedCategories" type="checkbox" @change="onCheckboxChange" :value="category" />
               <span class="checkmark"></span>
               <span class="checkbox-text">
                 <span class="checkbox-icon material-symbols-outlined">{{ categoryData.icon }}

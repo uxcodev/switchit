@@ -12,7 +12,7 @@
   
     <div v-if="type === 'string'">
       <div class="input_group">
-        <input type="text" :class="filterValue ? '' : 'inactive'" placeholder="" v-model="filterValue" @input="onFilterChanged" />
+        <input name="string" type="text" :class="filterValue ? '' : 'inactive'" placeholder="" v-model="filterValue" @input="onFilterChanged" />
         <div class="legend">includes</div>
       </div>
     </div>
@@ -21,11 +21,11 @@
   
     <div class="number" v-if="type === 'identifier_number'">
       <div class="input_group">
-        <input type="number" :class="filterRange[0] ? '' : 'inactive'" placeholder="0" v-model="filterRange[0]" @input="onFilterChanged" />
+        <input name="from" type="number" :class="filterRange[0] ? '' : 'inactive'" placeholder="0" v-model="filterRange[0]" @input="onFilterChanged" />
         <div class="legend">from</div>
       </div>
       <div class="input_group">
-        <input type="number" :class="filterRange[1] ? '' : 'inactive'" placeholder="0" v-model="filterRange[1]" @input="onFilterChanged" />
+        <input name="to" type="number" :class="filterRange[1] ? '' : 'inactive'" placeholder="0" v-model="filterRange[1]" @input="onFilterChanged" />
         <div class="legend">to</div>
       </div>
     </div>
@@ -34,11 +34,11 @@
   
     <div class="number" v-if="type === 'range_number'">
       <div class="input_group">
-        <input type="number" :class="filterRange[0] ? '' : 'inactive'" placeholder="0" v-model="filterRange[0]" @input="onFilterChanged" />
+        <input name="from" type="number" :class="filterRange[0] ? '' : 'inactive'" placeholder="0" v-model="filterRange[0]" @input="onFilterChanged" />
         <div class="legend">from</div>
       </div>
       <div class="input_group">
-        <input type="number" :class="filterRange[1] ? '' : 'inactive'" placeholder="0" v-model="filterRange[1]" @input="onFilterChanged" />
+        <input name="to" type="number" :class="filterRange[1] ? '' : 'inactive'" placeholder="0" v-model="filterRange[1]" @input="onFilterChanged" />
         <div class="legend">to</div>
       </div>
     </div>
@@ -47,11 +47,11 @@
   
     <div class="number" v-if="type === 'range_amount'">
       <div class="input_group">
-        <input type="number" :class="filterRange[0] ? '' : 'inactive'" placeholder="0" v-model="filterRange[0]" @input="onFilterChanged" />
+        <input name="from" type="number" :class="filterRange[0] ? '' : 'inactive'" placeholder="0" v-model="filterRange[0]" @input="onFilterChanged" />
         <div class="legend">from</div>
       </div>
       <div class="input_group">
-        <input type="number" :class="filterRange[1] ? '' : 'inactive'" placeholder="0" v-model="filterRange[1]" @input="onFilterChanged" />
+        <input name="to" type="number" :class="filterRange[1] ? '' : 'inactive'" placeholder="0" v-model="filterRange[1]" @input="onFilterChanged" />
         <div class="legend">to</div>
       </div>
     </div>
@@ -74,11 +74,11 @@
   
     <div class="number" v-if="type === 'amount'">
       <div class="input_group">
-        <input type="number" :class="filterRange[0] ? '' : 'inactive'" placeholder="0" v-model="filterRange[0]" @input="onFilterChanged" />
+        <input name="from" type="number" :class="filterRange[0] ? '' : 'inactive'" placeholder="0" v-model="filterRange[0]" @input="onFilterChanged" />
         <div class="legend">from</div>
       </div>
       <div class="input_group">
-        <input type="number" :class="filterRange[1] ? '' : 'inactive'" placeholder="0" v-model="filterRange[1]" @input="onFilterChanged" />
+        <input name="to" type="number" :class="filterRange[1] ? '' : 'inactive'" placeholder="0" v-model="filterRange[1]" @input="onFilterChanged" />
         <div class="legend">to</div>
       </div>
     </div>
@@ -87,11 +87,11 @@
   
     <div class="date" v-else-if="type === 'date'">
       <div class="input_group">
-        <input type="date" :class="filterRange[0] ? '' : 'inactive'" v-model="filterRange[0]" @input="onFilterChanged" />
+        <input name="from" type="date" :class="filterRange[0] ? '' : 'inactive'" v-model="filterRange[0]" @input="onFilterChanged" />
         <div class="legend">from</div>
       </div>
       <div class="input_group">
-        <input type="date" :class="filterRange[1] ? '' : 'inactive'" v-model="filterRange[1]" @input="onFilterChanged" />
+        <input  name="to" type="date" :class="filterRange[1] ? '' : 'inactive'" v-model="filterRange[1]" @input="onFilterChanged" />
         <div class="legend">to</div>
       </div>
     </div>
@@ -103,22 +103,22 @@
       Start date:
       <div class="date">
         <div class="input_group">
-          <input type="date" :class="filterRange[0] ? '' : 'inactive'" v-model="filterRange[0]" @input="onFilterChanged" />
+          <input name="from" type="date" :class="filterRange[0] ? '' : 'inactive'" v-model="filterRange[0]" @input="onFilterChanged" />
           <div class="legend">from</div>
         </div>
         <div class="input_group">
-          <input type="date" :class="filterRange[1] ? '' : 'inactive'" v-model="filterRange[1]" @input="onFilterChanged" />
+          <input name="to" type="date" :class="filterRange[1] ? '' : 'inactive'" v-model="filterRange[1]" @input="onFilterChanged" />
           <div class="legend">to</div>
         </div>
       </div>
       End date:
       <div class="date">
         <div class="input_group">
-          <input type="date" :class="filterRangeEnd[0] ? '' : 'inactive'" v-model="filterRangeEnd[0]" @input="onFilterChanged" />
+          <input name="from" type="date" :class="filterRangeEnd[0] ? '' : 'inactive'" v-model="filterRangeEnd[0]" @input="onFilterChanged" />
           <div class="legend">from</div>
         </div>
         <div class="input_group">
-          <input type="date" :class="filterRangeEnd[1] ? '' : 'inactive'" v-model="filterRangeEnd[1]" @input="onFilterChanged" />
+          <input name="to" type="date" :class="filterRangeEnd[1] ? '' : 'inactive'" v-model="filterRangeEnd[1]" @input="onFilterChanged" />
           <div class="legend">to</div>
         </div>
       </div>
@@ -128,7 +128,7 @@
   
     <div v-if="type === 'boolean'">
       <label class="checkbox-label">
-        <input class="checkbox" type="checkbox" v-model="filterValue" @input="onFilterChanged" />
+        <input name="boolean" class="checkbox" type="checkbox" v-model="filterValue" @input="onFilterChanged" />
         <span class="checkmark"></span>
       </label>
     </div>

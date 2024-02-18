@@ -102,7 +102,7 @@
         <div class="table-header">
           <div class="table-header-check">
             <label class="checkbox-label">
-              <input class="checkbox" type="checkbox" v-model="selectVisible" @change="toggleSelectVisible" id="select_all" />
+              <input class="checkbox" type="checkbox" v-model="selectVisible" @change="toggleSelectVisible" name="select_all" />
               <span class="checkmark transparent"></span>
             </label>
           </div>
@@ -118,7 +118,7 @@
           <div v-for="(lead, index) in leads" :key="index" class="table-row">
             <div class="table-row-check">
               <label class=" checkbox-label nolabel">
-                <input v-show="false" class="checkbox" v-model="lead.selected" @change="updateSelectedLeads(lead)" type="checkbox" id="select_all" />
+                <input v-show="false" class="checkbox" v-model="lead.selected" @change="updateSelectedLeads(lead)" type="checkbox" name="select_all" />
                 <span class="checkmark"></span>
               </label>
 

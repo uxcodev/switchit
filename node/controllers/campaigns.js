@@ -2,7 +2,6 @@ const Campaign = require("../models/campaign");
 // const queries = require('../util/queries')
 
 exports.createCampaign = (req, res, next) => {
-
   console.log(req.body.fields)
   let campaignObj = req.body.fields
   campaignObj.campaignName = campaignObj.offer_details.name
@@ -29,7 +28,6 @@ exports.deleteCampaign = async (req, res, next) => {
 }
 
 exports.updateCampaign = async (req, res, next) => {
-
   try {
     let campaign = await Campaign.findById(req.params.id)
     let campaignObj = req.body.campaign

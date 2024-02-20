@@ -42,7 +42,7 @@
                 {{ $dayjs(offer.offer_details.start_date).format('YY/MM/DD') }} - {{ $dayjs(offer.offer_details.expiry_date).format('YY/MM/DD') }}
               </div>
               <div class="access_icons table-row-content-med wrap">
-                <span v-for="(cat, key) in categories" :key="key" :class="offer.offer.hasOwnProperty(key) ? 'active' : ''" class="material-symbols-outlined">{{ categories[key] ? categories[key].icon : '' }}</span>
+                <span v-for="(cat, key) in categories" :key="key" :class="offer?.offer?.hasOwnProperty(key) ? 'active' : ''" class="material-symbols-outlined">{{ categories[key] ? categories[key].icon : '' }}</span>
               </div>
               <div class="table-row-content-sm">
                 <div>
@@ -62,6 +62,9 @@
         <div>
         <h2 class="mt8 mb2">Campaigns</h2>
         <div style="color:#666">Any customers matching the criteria for your campaign will see the offer</div>
+      </div>
+      <div class="banner_warn">
+        This feature is in development. Campaigns will not be active.
       </div>
         <div class="table-header">
           <div v-show="false" class="table-header-check">
@@ -226,7 +229,8 @@ export default {
         offer_details: offer.offer_details,
         filters: offer.filters,
         campaignName: offer.offer_details.name + ' campaign',
-        companyId: this.$store.getters.activeCompany._id,
+        // companyId: this.$store.getters.activeCompany._id,
+        businessPartnerId: this.$store.getters.activeBusinessPartner.id,
         createdBy: this.$store.getters.activeUser._id,
       }
       console.log('save these filters as campaign:', campaign)

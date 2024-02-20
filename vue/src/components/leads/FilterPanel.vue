@@ -8,7 +8,7 @@
         <div class="inline_center button mb3" @click="toggleFilterOptions">
           <span class="material-symbols-outlined">page_info</span> Filter presets
         </div>
-  
+        
         <div v-if="showFiltersetOptions" class="pl7">
           <form @submit.prevent="createFilterset" class="switchit-form sm">
             <div v-if="Object.keys(filterObj).length"  class="group">
@@ -24,6 +24,19 @@
           </form>
   
           <div v-if="filtersets.length" class="mt3">
+            <div v-if="isAdmin" class="inline_center mb4">
+          <span>Show filters from: </span>
+          <span class="link" @click="showFiltersFrom('all')">
+            All
+          </span>
+          <span class="link" @click="showFiltersFrom('company')">
+            Company
+          </span>
+          <span class="link" @click="showFiltersFrom('me')">
+            Me
+          </span>
+        </div>
+
             <div v-for="(filterset, index) in filtersets" :key="index" class="filterset">
               <div class="filterset-list_item">
                 <div class="filterset-name" @click="loadFilters(filterset.filters)">{{ filterset.filtersetName || 'untitled' }}</div>
@@ -96,6 +109,7 @@ export default {
   },
   data() {
     return {
+      isAdmin: this.$store.getters.isAdmin,
       isDisabled: true,
       categoryAccess: this.$store.getters.categories,
       selectedCategories: [],
@@ -172,6 +186,16 @@ export default {
 
   },
   methods: {
+    showFiltersFrom(creator) {
+      console.log('showFiltersFrom called with creator: ', creator)
+      if (creator === 'all') {
+        this.getAllFiltersets()
+      } else if (creator === 'company') {
+        this.getFiltersetsByBusinessPartnerId()
+      } else if (creator === 'me') {
+        this.getFiltersetsByUserId()
+      }
+    },
     toggleFilterOptions() {
       this.showFiltersetOptions = !this.showFiltersetOptions
       this.getFiltersets()
@@ -210,9 +234,11 @@ export default {
     },
 
     async createFilterset() {
+
       let filterset = {
         filtersetName: this.filtersetName,
-        companyId: this.$store.getters.activeCompany._id,
+        // companyId: this.$store.getters.activeCompany._id,
+        businessPartnerId: this.$store.getters.activeBusinessPartner.id,
         createdBy: this.$store.getters.activeUser._id,
         filters: this.filterObj,
       }
@@ -223,8 +249,25 @@ export default {
       }, 500)
     },
 
+    // default to user filters
     async getFiltersets() {
-      this.filtersets = await api.getFiltersets()
+      // this.getFiltersetsByUserId()
+      this.getFiltersetsByBusinessPartnerId()
+    },
+
+    async getFiltersetsByUserId() {
+      let userId = this.$store.getters.activeUser._id
+      let businessPartnerId = this.$store.getters.activeBusinessPartner.id
+      this.filtersets = await api.getFiltersetsByUserId(businessPartnerId, userId)
+    },
+
+    async getFiltersetsByBusinessPartnerId() {
+      let id = this.$store.getters.activeBusinessPartner.id
+      this.filtersets = await api.getFiltersetsByBusinessPartnerId(id)
+    },
+
+    async getAllFiltersets() {
+      this.filtersets = await api.getAllFiltersets()
     },
 
     async deleteCampain(id) {
@@ -285,6 +328,10 @@ export default {
     },
   },
   mounted() {
+    let activeBusinessPartner = this.$store.getters.activeBusinessPartner
+    console.log('activeBusinessPartner: ', activeBusinessPartner)
+    // let businessPartnerId = this.$store.getters.activeBusinessPartner.id
+    // console.log('businessPartnerId: ', businessPartnerId)
     this.getFiltersets()
   },
 };

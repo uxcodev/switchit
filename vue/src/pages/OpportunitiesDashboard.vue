@@ -298,6 +298,12 @@ export default {
     // ***** Leads *****
 
     onMounted(async () => {
+      // let activeBusinessPartner = store.getters.activeBusinessPartner
+      // console.log('activeBusinessPartner: ', activeBusinessPartner)
+
+      let activeUser = store.getters.activeUser
+      console.log('activeUser: ', activeUser)
+
       await loadLeads();
     });
 
@@ -306,7 +312,6 @@ export default {
       // router.push({ path: `/create_offer`, query: { lead: id } });
       // save single lead to session storage
       $storeSessionValue('offer_selectedLeads', [id], 60);
-
       router.push({ path: `/offer`, query: { lead: id } });
     }
 

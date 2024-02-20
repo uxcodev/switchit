@@ -54,14 +54,11 @@ export default {
           activeBusinessPartner = await api.getBusinessPartner(myBusinessPartners[0].id);
           commit('setActiveBusinessPartner', { val: activeBusinessPartner });
         } else {
-          // No business partners found, commit null or handle as needed
           commit('setActiveBusinessPartner', { val: null });
         }
         return activeBusinessPartner;
       } catch (error) {
         console.error('Error fetching business partner:', error);
-        // Handle the error appropriately
-        // Optionally, you can commit a null or error state to the Vuex store
         commit('setActiveBusinessPartner', { val: null });
       }
     },

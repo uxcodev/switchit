@@ -9,9 +9,9 @@ const router = express.Router();
 router.post("/filterset", validateAccessToken, feedController.createFilterset);
 // router.get("/filterset", validateAccessToken, feedController.getFilterset);
 router.get("/filtersets", validateAccessToken, feedController.getFiltersets);
-// router.put("/filterset", validateAccessToken, feedController.updateFilterset);
-
-// delete filterset. api call looks like const response = await _axios.delete(`/filtersets/filterset?id=${id}`);
+router.get("/businesspartner/:id", validateAccessToken, feedController.getFiltersetsByBusinessPartnerId);
+router.get("/:businessPartnerId/:userId", validateAccessToken, feedController.getFiltersetsByUserId);
+router.put("/filterset", validateAccessToken, feedController.updateFilterset);
 router.delete("/filterset", validateAccessToken, feedController.deleteFilterset);
 
 module.exports = router;

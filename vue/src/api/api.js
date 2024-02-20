@@ -431,17 +431,43 @@ export default {
       console.error(err);
     }
   },
-  async getFiltersets(companyId) {
+  // async getFiltersets(companyId) {
+  //   try {
+  //     const response = await _axios.get('/filtersets/filtersets?companyId=' + companyId);
+  //     response.data.ok = response?.statusText === "OK"
+  //     return response.data;
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // },
+  async getAllFiltersets() {
+    // for super admin only
     try {
-      const response = await _axios.get('/filtersets/filtersets?companyId=' + companyId);
+      const response = await _axios.get('/filtersets/filtersets');
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
       console.error(err);
-
     }
   },
-
+  async getFiltersetsByBusinessPartnerId(businessPartnerId) {
+    try {
+      const response = await _axios.get(`/filtersets/businesspartner/${businessPartnerId}`);
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+  async getFiltersetsByUserId(businessPartnerId, userId) {
+    try {
+      const response = await _axios.get(`/filtersets/${businessPartnerId}/${userId}`);
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
   async deleteFilterset(id) {
     try {
       const response = await _axios.delete(`/filtersets/filterset?id=${id}`);

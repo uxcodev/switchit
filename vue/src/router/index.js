@@ -31,7 +31,7 @@ const routes = [
     path: '/dashboard_data',
     name: "dashboard_data",
     beforeEnter: authGuard,
-    component: () => import('@/pages/OpportunitiesDashboardData.vue')
+    component: () => import('@/pages/testing/OpportunitiesDashboard_RunDataUpdate.vue')
   },
   {
     path: '/operations',

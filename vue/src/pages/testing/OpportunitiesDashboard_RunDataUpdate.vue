@@ -169,9 +169,9 @@
 </template>
 <script>
 import ModalWindow from "@/components/ui/ModalWindow.vue";
-import FilterTabs from "../components/ui/FilterTabs.vue";
+import FilterTabs from "@/components/ui/FilterTabs.vue";
 import IconsCategoryAccess from "@/components/ui/IconsCategoryAccess.vue";
-import ChartDealsWon_temp from "../components/ui/charts/ChartDealsWon_temp.vue";
+import ChartDealsWon_temp from "@/components/ui/charts/ChartDealsWon_temp.vue";
 import { Chart as ChartJS, ArcElement, Tooltip } from "chart.js";
 import { Doughnut } from "vue-chartjs";
 
@@ -297,8 +297,10 @@ export default {
     // ***** Leads *****
 
     onMounted(async () => {
+      // this api call is used to make bulk edits to the leads
       let response = await api.updateLeads()
       console.log('updateLeads response: ', response)
+      // get activeBusinessPartner from store
       await loadLeads();
 
     });

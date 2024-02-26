@@ -188,6 +188,8 @@
       <!-- <button @click="call('GET', 'countrydialcodes')">Country Dial Codes</button> -->
       <button @click="getServiceTypes()">getServiceTypes</button>
       <button @click="addServicesToCompany()">addServicesToCompany</button>
+      <button @click="getLeads()">getLeads</button>
+      <button @click="createLead()">createLead</button>
     </div>
     <pre>{{ result }}</pre>
     <div v-for="(item, index) in countries" :key="index">
@@ -242,6 +244,9 @@
             <span class="material-symbols-outlined">Delete</span>
           </div>
         </div>
+        <pre>
+          {{  lead }}
+        </pre>
       </div>
     </div>
     </div>
@@ -255,6 +260,9 @@
 
 // import api from '@/api/api';
 
+// const api = instance.appContext.config.globalProperties.$api_node;
+
+import api from '@/api/api';
 // components 
 import ModalWindow from '@/components/ui/ModalWindow.vue';
 import TagInput from '@/components/ui/TagInput.vue'
@@ -279,6 +287,9 @@ export default {
       businessPartner: null,
       activeBusinessPartnersToggle: true,
       serviceTypes: [],
+      leads: [],
+      lead: null,
+      newLead: null,
       user: this.$auth0.user,
       countries: [],
       businessPartnerId: "57eb0b57-31a4-47b2-ad37-27f57fb6fdb3",
@@ -299,7 +310,7 @@ export default {
         { id: 'edit', label: 'editBusinessPartner' },
         { id: 'other', label: 'other' },
       ],
-      currentTab: 'get',
+      currentTab: 'other',
       componentKey: 0
     };
   },
@@ -317,6 +328,7 @@ export default {
     }
   },
   methods: {
+  
     triggerEditBP(id) {
       this.businessPartnerId = id
       this.currentTab = 'edit'
@@ -401,6 +413,45 @@ export default {
       let response = await this.$switchit.deleteBusinessPartner(id)
       console.log('response: ', response)
       this.getBusinessPartners()
+    },
+    async getLeads() {
+
+      let response = await api.getLeads({
+        filters: null
+      });
+      this.leads = await response.leads
+
+      this.lead = this.leads[0]
+      console.log('this.leads: ', this.leads)
+
+
+    },  
+    async getLead() {
+      let household = await this.$switchit.getHouseholds()
+      household = household.model[0]
+      console.log('household: ', household)
+      
+      this.lead = await api.getLead('645523adf94c6954738ddae9')
+      let serviceFields = this.lead.data
+      console.log('serviceFields: ', serviceFields)
+      delete serviceFields.general
+
+      // serviceFields = JSON.stringify(serviceFields);
+
+      let newLead = {
+          "householdId": household.id,
+          "householdPartialAddress": household.postalCode,
+          "serviceType": 1,
+          "amount": 0,
+          "currencyType": 1,
+          "serviceFields": "test string"
+        }
+        console.log('newLead: ', newLead)
+       this.newLead = newLead
+    },  
+    async createLead() {
+      let response = await this.$switchit.createLead(this.newLead)
+      console.log('response: ', response)
     },
     submitBusinessPartner() {
      if (this.currentTab === 'create') {
@@ -553,6 +604,7 @@ export default {
   },
   async mounted() {
     this.getBusinessPartners()
+    this.getLead()
   }
 }
 </script>

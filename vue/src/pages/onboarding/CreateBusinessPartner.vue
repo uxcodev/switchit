@@ -186,6 +186,7 @@ export default {
           throw new Error(response)
         }
       } catch (error) {
+        console.error('I console logged an error: ', error)
         this.$toast_error.show(error)
       }
     },

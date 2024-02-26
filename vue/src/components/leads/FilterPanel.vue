@@ -23,7 +23,7 @@
             
           </form>
   
-          <div v-if="filtersets.length" class="mt3">
+          <div v-if="filtersets?.length" class="mt3">
             <div v-if="isAdmin" class="inline_center mb4">
           <span>Show filters from: </span>
           <span class="link" @click="showFiltersFrom('all')">
@@ -328,10 +328,6 @@ export default {
     },
   },
   mounted() {
-    let activeBusinessPartner = this.$store.getters.activeBusinessPartner
-    console.log('activeBusinessPartner: ', activeBusinessPartner)
-    // let businessPartnerId = this.$store.getters.activeBusinessPartner.id
-    // console.log('businessPartnerId: ', businessPartnerId)
     this.getFiltersets()
   },
 };

@@ -1,5 +1,7 @@
 import store from '@/store/index.js'
 import axios from 'axios';
+import auth0 from '@/helpers/auth0.js'
+import jwtDecode from 'jwt-decode'
 
 const _axios = axios.create({
   baseURL: process.env.VUE_APP_API_URL,
@@ -10,9 +12,19 @@ const _axios = axios.create({
 });
 
 _axios.interceptors.request.use(async (config) => {
+
   let token = localStorage.getItem('access_token')
-  if (!token) {
-    token = await this.$auth0.getAccessTokenSilently();
+  let token_expiration = 600 // 10 minutes
+
+  if (token) {
+    const decoded = jwtDecode(token); // Assuming you have a jwtDecode function
+    const now = Date.now() / 1000; // Convert to seconds
+    const isTokenExpired = now > decoded.exp || (now - decoded.iat) > (token_expiration * 3600);
+
+    if (isTokenExpired) {
+      token = await auth0.getAccessTokenSilently();
+      localStorage.setItem('access_token', token);
+    }
   }
 
   config.headers.Authorization = `Bearer ${token}`;
@@ -33,7 +45,6 @@ _axios.interceptors.response.use((response) => {
 export default {
 
   // Switchit API calls
-
 
   // TESTING 
 
@@ -95,10 +106,9 @@ export default {
     }
   },
 
-
   async getActiveUser(email) {  //getUser
     try {
-      const user = (await _axios.get(`/users/get-active-user?email=${email}`)).data;
+      const user = (await _axios.get(`/users/get-active-user?email=${email}`))?.data;
       store.dispatch('setActiveUser', user)
       return user;
     } catch (err) {

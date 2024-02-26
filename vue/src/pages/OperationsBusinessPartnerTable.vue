@@ -32,9 +32,16 @@
                   {{ businessPartner.contact_email }}
                 </div>
                 <div class="field light" v>
-                  domains: 
-                  <span class="role" v-for="domain in businessPartner.domains" :key="domain">
-                    {{ domain.domainName }}
+                  users: 
+                  <span class="users" v-for="(user, index) in businessPartner.users" :key="index">
+                    {{ user.email }}
+                    <!-- {{ role.user.email }} -->
+                  </span>
+                </div>
+                <div class="field light" v>
+                  domain:
+                  <span class="" >
+                    {{ businessPartner.domain }}
                     <!-- {{ role.user.email }} -->
                   </span>
                 </div>

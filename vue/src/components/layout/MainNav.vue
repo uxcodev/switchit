@@ -35,6 +35,7 @@ export default {
     },
     isApproved() {
       return this.$store.getters.activeBusinessPartner?.isApproved
+      // return true
     }
   },
   methods: {

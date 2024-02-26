@@ -5,7 +5,6 @@
 
 <script>
 
-// Options API
 export default {
   methods: {
     login() {

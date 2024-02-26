@@ -11,7 +11,7 @@ const routes = [
   {
     path: '/',
     name: "home",
-    beforeEnter: authGuard,
+    // beforeEnter: authGuard,
     component: () => import('@/pages/HomePage.vue')
   },
   {
@@ -137,6 +137,8 @@ const router = createRouter({
 
 
 router.beforeResolve(async (to, from, next) => {
+  const activeBusinessPartner = await store.dispatch('fetchAndSetActiveBusinessPartner');
+  // console.log('activeBusinessPartner', activeBusinessPartner);
   if (to.matched.some(record => record.meta.public)) {
     return next();
   }
@@ -146,7 +148,6 @@ router.beforeResolve(async (to, from, next) => {
     return next();
   }
 
-  const activeBusinessPartner = await store.dispatch('fetchAndSetActiveBusinessPartner');
   if (!activeBusinessPartner && to.path !== '/onboarding') {
     return next('/onboarding');
   }

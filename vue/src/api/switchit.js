@@ -1,5 +1,7 @@
 // import store from '@/store/index.js'
 import axios from 'axios';
+import auth0 from '@/helpers/auth0.js';
+import jwtDecode from 'jwt-decode';
 
 const _axios = axios.create({
   baseURL: process.env.VUE_APP_API_URL,
@@ -10,9 +12,19 @@ const _axios = axios.create({
 });
 
 _axios.interceptors.request.use(async (config) => {
+
   let token = localStorage.getItem('access_token')
-  if (!token) {
-    token = await this.$auth0.getAccessTokenSilently();
+  let token_expiration = 600 // 10 minutes
+
+  if (token) {
+    const decoded = jwtDecode(token); // Assuming you have a jwtDecode function
+    const now = Date.now() / 1000; // Convert to seconds
+    const isTokenExpired = now > decoded.exp || (now - decoded.iat) > (token_expiration * 3600);
+
+    if (isTokenExpired) {
+      token = await auth0.getAccessTokenSilently();
+      localStorage.setItem('access_token', token);
+    }
   }
 
   config.headers.Authorization = `Bearer ${token}`;
@@ -101,8 +113,8 @@ export default {
       const response = await _axios.post(url, body);
       return response;
     } catch (err) {
-      let response = err.response.data.issues[0].messages[0] || err
-      response = response === "ALREADY_EXISTS" ? "Business Partner already exists" : response
+      let response = err.response?.data?.issues[0]?.messages[0] || err
+      response = response === "ALREADY_EXISTS" ? "Business Partner already exists" : err.response
       if (!response) {
         response = "Error creating Business Partner"
       }
@@ -281,6 +293,16 @@ export default {
     }
   },
 
+  async getHouseholds() {
+    try {
+      let url = "https://switchitapi.azurewebsites.net/api/v1/households";
+      const response = await _axios.get(url);
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
   async getPsd2Institutions() {
     try {
       let url = "https://switchitapi.azurewebsites.net/api/v1/psd2Institutions";
@@ -291,5 +313,38 @@ export default {
       console.error(err);
     }
   },
+
+  // *** LEADS ***/
+
+  async getLeads() {
+    try {
+      let url = "https://switchitapi.azurewebsites.net/api/v1/leads";
+      const response = await _axios.get(url);
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
+  async getLead(id) {
+    try {
+      let url = `https://switchitapi.azurewebsites.net/api/v1/leads/${id}`;
+      const response = await _axios.get(url);
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
+  async createLead(body) {
+    try {
+      let url = "https://switchitapi.azurewebsites.net/api/v1/leads";
+      const response = await _axios.post(url, body);
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
 
 }

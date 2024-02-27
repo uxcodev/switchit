@@ -2,7 +2,7 @@ import axios from 'axios';
 import { faker } from '@faker-js/faker';
 
 const _axios = axios.create({
-  baseURL: process.env.VUE_APP_API_URL,
+  baseURL: process.env.VUE_APP_NODE_URL,
   headers: {
     accept: "application/json",
   },

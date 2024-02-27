@@ -444,12 +444,16 @@ export default {
           "serviceType": 1,
           "amount": 0,
           "currencyType": 1,
-          "serviceFields": "test string"
+          "serviceFields": {"key": "value"}
         }
         console.log('newLead: ', newLead)
        this.newLead = newLead
     },  
     async createLead() {
+      if(!this.newLead) {
+        this.$toast_error.show('Hit "Get Lead" first to populate newLead object.')
+        return
+      }
       let response = await this.$switchit.createLead(this.newLead)
       console.log('response: ', response)
     },

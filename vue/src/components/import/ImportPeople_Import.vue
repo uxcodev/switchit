@@ -69,7 +69,7 @@ import ImportedCompanies from './ImportCompanies_Import_Results.vue';
 import LoaderAni from '@/components/ui/LoaderAni.vue'
 
 const _axios = axios.create({
-  baseURL: process.env.VUE_APP_API_URL,
+  baseURL: process.env.VUE_APP_NODE_URL,
   headers: {
     accept: "application/json",
   },

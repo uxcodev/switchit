@@ -4,7 +4,7 @@ import auth0 from '@/helpers/auth0.js'
 import jwtDecode from 'jwt-decode'
 
 const _axios = axios.create({
-  baseURL: process.env.VUE_APP_API_URL,
+  baseURL: process.env.VUE_APP_NODE_URL,
   headers: {
     accept: "application/json",
     "Content-Type": "application/json",

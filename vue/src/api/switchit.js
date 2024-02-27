@@ -4,7 +4,7 @@ import auth0 from '@/helpers/auth0.js';
 import jwtDecode from 'jwt-decode';
 
 const _axios = axios.create({
-  baseURL: process.env.VUE_APP_API_URL,
+  baseURL: process.env.VUE_APP_API,
   headers: {
     accept: "application/json",
     "Content-Type": "application/json",
@@ -50,7 +50,7 @@ export default {
 
   async whateverApiCall(method, path) {
     try {
-      let url = "https://switchitapi.azurewebsites.net/api/" + path;
+      let url = "/api/" + path;
 
       const response = await _axios({
         method: method,
@@ -69,7 +69,7 @@ export default {
 
   async getBusinessPartners() {
     try {
-      let url = "https://switchitapi.azurewebsites.net/api/v1/businesspartners?includeBusinessPartnerCountrys=true";
+      let url = "/api/v1/businesspartners?includeBusinessPartnerCountrys=true";
       const response = await _axios.get(url);
       return response?.data?.model;
     } catch (err) {
@@ -79,7 +79,7 @@ export default {
 
   async getBusinessPartner(id) {
     try {
-      let url = `https://switchitapi.azurewebsites.net/api/v1/businesspartners/${id}?includeBusinessPartnerRoles=true&includeBusinessPartnerCountrys=true&includeBusinessPartnerRoleBusinessPartnerUsers=true`;
+      let url = `/api/v1/businesspartners/${id}?includeBusinessPartnerRoles=true&includeBusinessPartnerCountrys=true&includeBusinessPartnerRoleBusinessPartnerUsers=true`;
       const response = await _axios.get(url);
       let bp = response.data.model
       bp.roles = bp.businessPartnerBusinessPartnerRolesModels
@@ -97,7 +97,7 @@ export default {
 
   async getMyBusinessPartners() {
     try {
-      let url = "https://switchitapi.azurewebsites.net/api/v1/mybusinesspartners?includeBusinessPartnerCountrys=true";
+      let url = "/api/v1/mybusinesspartners?includeBusinessPartnerCountrys=true";
       const response = await _axios.get(url);
       // console.log('getMyBusinessPartners response', response)
       return response?.data?.model;
@@ -109,7 +109,7 @@ export default {
 
   async createBusinessPartner(body) {
     try {
-      let url = "https://switchitapi.azurewebsites.net/api/v1/businesspartners";
+      let url = "/api/v1/businesspartners";
       const response = await _axios.post(url, body);
       return response;
     } catch (err) {
@@ -124,7 +124,7 @@ export default {
 
   async editBusinessPartner(id, body) {
     try {
-      let url = `https://switchitapi.azurewebsites.net/api/v1/businesspartners/${id}`;
+      let url = `/api/v1/businesspartners/${id}`;
       const response = await _axios.put(url, body);
       return response;
     } catch (err) {
@@ -134,7 +134,7 @@ export default {
 
   async deleteBusinessPartner(id) {
     try {
-      let url = `https://switchitapi.azurewebsites.net/api/v1/businesspartners/${id}`;
+      let url = `/api/v1/businesspartners/${id}`;
       const response = await _axios.delete(url);
       console.log('response', response)
       // response.data.ok = response?.statusText === "OK"
@@ -150,7 +150,7 @@ export default {
 
   async createCompany(body) {
     try {
-      let url = "https://switchitapi.azurewebsites.net/api/v1/companies";
+      let url = "/api/v1/companies";
       const response = await _axios.post(url, body);
       console.log('response', response)
       response.data.ok = response?.statusText === "OK"
@@ -166,7 +166,7 @@ export default {
   },
   async importCompanies(body) {
     try {
-      let url = "https://switchitapi.azurewebsites.net/api/v1/companies/import";
+      let url = "/api/v1/companies/import";
       const response = await _axios.post(url, body);
       console.log('response', response)
       response.data.ok = response?.statusText === "OK"
@@ -182,7 +182,7 @@ export default {
     //   return
     // }
     try {
-      let url = `https://switchitapi.azurewebsites.net/api/v1/companys/${id}`;
+      let url = `/api/v1/companys/${id}`;
       const response = await _axios.put(url, body);
       // console.log('response', response)
       // response.data.ok = response?.statusText === "OK"
@@ -195,7 +195,7 @@ export default {
 
   async deleteCompany(id) {
     try {
-      let url = `https://switchitapi.azurewebsites.net/api/v1/companies/${id}`;
+      let url = `/api/v1/companies/${id}`;
       const response = await _axios.delete(url);
       console.log('deleteCompany response', response)
       response.data.ok = response?.statusText === "OK"
@@ -208,7 +208,7 @@ export default {
 
   async getCompanies() {
     try {
-      let url = "https://switchitapi.azurewebsites.net/api/v1/companies";
+      let url = "/api/v1/companies";
       const response = await _axios.get(url);
       return response.data;
     } catch (err) {
@@ -224,7 +224,7 @@ export default {
       let includeCompanyServiceTypes = true;
       let includeCompanyPsd2Handles = true;
 
-      let url = `https://switchitapi.azurewebsites.net/api/v1/companies?includeCompanyDomains=${includeCompanyDomains}&includeCompanyCountrys=${includeCompanyCountrys}&includeCompanyIbans=${includeCompanyIbans}&includeCompanyServiceTypes=${includeCompanyServiceTypes}&includeCompanyPsd2Handles=${includeCompanyPsd2Handles}`;
+      let url = `/api/v1/companies?includeCompanyDomains=${includeCompanyDomains}&includeCompanyCountrys=${includeCompanyCountrys}&includeCompanyIbans=${includeCompanyIbans}&includeCompanyServiceTypes=${includeCompanyServiceTypes}&includeCompanyPsd2Handles=${includeCompanyPsd2Handles}`;
       const response = await _axios.get(url);
       return response.data;
     } catch (err) {
@@ -234,7 +234,7 @@ export default {
 
   async getCompany(id) {
     try {
-      let url = `https://switchitapi.azurewebsites.net/api/v1/companys/${id}`;
+      let url = `/api/v1/companys/${id}`;
       let response = await _axios.get(url)
       console.log(response)
       return response.data;
@@ -252,7 +252,7 @@ export default {
       let includeCompanyServiceTypes = true;
       let includeCompanyPsd2Handles = true;
 
-      let url = `https://switchitapi.azurewebsites.net/api/v1/companys/${id}?includeCompanyDomains=${includeCompanyDomains}&includeCompanyCountrys=${includeCompanyCountrys}&includeCompanyIbans=${includeCompanyIbans}&includeCompanyServiceTypes=${includeCompanyServiceTypes}&includeCompanyPsd2Handles=${includeCompanyPsd2Handles}`;
+      let url = `/api/v1/companys/${id}?includeCompanyDomains=${includeCompanyDomains}&includeCompanyCountrys=${includeCompanyCountrys}&includeCompanyIbans=${includeCompanyIbans}&includeCompanyServiceTypes=${includeCompanyServiceTypes}&includeCompanyPsd2Handles=${includeCompanyPsd2Handles}`;
 
       let response = await _axios.get(url)
       console.log(response)
@@ -264,7 +264,7 @@ export default {
 
   async getServiceTypes() {
     try {
-      return (await _axios.get("https://switchitapi.azurewebsites.net/api/v1/servicetypes")).data;
+      return (await _axios.get("/api/v1/servicetypes")).data;
     } catch (err) {
       console.error(err);
     }
@@ -272,7 +272,7 @@ export default {
 
   async addServicesToCompany(serviceTypes) {
     try {
-      let url = "https://switchitapi.azurewebsites.net/api/v1/companyservicetypes";
+      let url = "/api/v1/companyservicetypes";
       const response = await _axios.post(url, serviceTypes);
       return response.data;
     } catch (err) {
@@ -284,7 +284,7 @@ export default {
 
   async getCountries() {
     try {
-      let url = "https://switchitapi.azurewebsites.net/api/countrydialcodes";
+      let url = "/api/countrydialcodes";
       const response = await _axios.get(url);
       response.data.ok = response?.statusText === "OK"
       return response.data;
@@ -295,7 +295,7 @@ export default {
 
   async getHouseholds() {
     try {
-      let url = "https://switchitapi.azurewebsites.net/api/v1/households";
+      let url = "/api/v1/households";
       const response = await _axios.get(url);
       response.data.ok = response?.statusText === "OK"
       return response.data;
@@ -305,7 +305,7 @@ export default {
   },
   async getPsd2Institutions() {
     try {
-      let url = "https://switchitapi.azurewebsites.net/api/v1/psd2Institutions";
+      let url = "/api/v1/psd2Institutions";
       const response = await _axios.get(url);
       response.data.ok = response?.statusText === "OK"
       return response.data;
@@ -318,7 +318,7 @@ export default {
 
   async getLeads() {
     try {
-      let url = "https://switchitapi.azurewebsites.net/api/v1/leads";
+      let url = "/api/v1/leads";
       const response = await _axios.get(url);
       return response.data;
     } catch (err) {
@@ -328,7 +328,7 @@ export default {
 
   async getLead(id) {
     try {
-      let url = `https://switchitapi.azurewebsites.net/api/v1/leads/${id}`;
+      let url = `/api/v1/leads/${id}`;
       const response = await _axios.get(url);
       return response.data;
     } catch (err) {
@@ -338,13 +338,13 @@ export default {
 
   async createLead(body) {
     try {
-      let url = "https://switchitapi.azurewebsites.net/api/v1/leads";
+      body = JSON.stringify(body);
+      console.log('body', body)
+      let url = "/api/v1/leads";
       const response = await _axios.post(url, body);
       return response.data;
     } catch (err) {
       console.error(err);
     }
   }
-
-
 }

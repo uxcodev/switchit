@@ -254,16 +254,24 @@ export default {
 
       });
       this.userEmailDomain = this.$auth0.user._value.email.split('@')[1]
-      this.form.businessPartner.domain = this.userEmailDomain
-      // userEmailDomain = 'asdf.asdf'
-      let businessPartners = await this.$switchit.getBusinessPartners()
-      let businessPartner = await businessPartners.find(bp => bp.domain === this.userEmailDomain)
-      if (businessPartner) {
-        this.businessPartnerExists = true
-        // this.$toast_error.show({duration: 6000, message: 'BUSINESS_PARTNER_ALREADY_EXISTS'})
+      
+      /* If not a switchit email, check to make sure domain is unique */
+      
+      if (this.userEmailDomain === 'switchit.ai') {
+        this.loaded = true
+        return
+      } else {
+        this.form.businessPartner.domain = this.userEmailDomain
+        // userEmailDomain = 'asdf.asdf'
+        let businessPartners = await this.$switchit.getBusinessPartners()
+        let businessPartner = await businessPartners.find(bp => bp.domain === this.userEmailDomain)
+        if (businessPartner) {
+          this.businessPartnerExists = true
+          // this.$toast_error.show({duration: 6000, message: 'BUSINESS_PARTNER_ALREADY_EXISTS'})
+        }
+        console.log('businessPartner', businessPartner)
+        this.loaded = true
       }
-      console.log('businessPartner', businessPartner)
-      this.loaded = true
     } catch (error) {
       this.$toast_error.show(error)
     }

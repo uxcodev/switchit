@@ -14,9 +14,7 @@
         <button @click="openModal('ImportCompanies')">Import</button>
       </div>
     </div>
-    <!-- <keep-alive> -->
       <component :key="componentKey" v-if="$auth0.isAuthenticated.value" @openModal="openModal" :is="screen"></component>
-    <!-- </keep-alive> -->
   </div>
 </template>
 <script>
@@ -43,7 +41,6 @@ export default {
       screens: ['Companies', 'Users', 'BusinessPartners'],
       screen: null,
       componentKey: 0,
-      
     }
   },
   methods: {
@@ -69,22 +66,6 @@ export default {
       this.$router.replace({ path: this.$route.path, query: { q : page } })
     }
   },
- /*  data() {
-    return {
-      isModalVisible: false,
-    };
-  },
-  methods: {
-    openModal() {
-      this.isModalVisible = true;
-    },
-    onSave() {
-      this.isModalVisible = false;
-    },
-    onCancel() {
-      this.isModalVisible = false;
-    },
-  }, */
   async mounted() {
     let query = this.$route.query.q
     this.screen = query || this.screens[0]

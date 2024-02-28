@@ -90,21 +90,10 @@ export default {
   },
   async mounted() {
 
-    // /* TEMP TEST */
-    // let leads = await this.$switchit.getLeads()
-    // console.log('temporary leads test: ', leads[0])
+    /* TEMP TEST */
+    let leads = await this.$switchit.getLeads()
+    console.log('app.vue leads:', leads)
     
-    // // loop through each lead
-    // for (let lead of leads) {
-    //   let jsonString = lead.serviceFields
-    //   let cleanJsonString = jsonString.replace(/\\n/g, '').replace(/\s/g, '');
-    //   console.log('services: ', cleanJsonString)
-    //   // remove the first "{" and the last "}"
-    //   cleanJsonString = cleanJsonString.substring(1, cleanJsonString.length - 1)
-    //   let validJson = JSON.parse(cleanJsonString)
-    //   console.log('services_json: ', validJson)
-    //   console.log(JSON.stringify(validJson, null, 2));
-    // }
     setTimeout(async () => {
       if (!this.activeUser) {
         console.log('no activeUser found')

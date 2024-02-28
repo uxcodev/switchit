@@ -6,7 +6,7 @@
     <div class="container">
       <div class="header_options">
         <FilterTabs @applyFilterTabs="applyFilterTabs" />
-        <div title="create 20 leads" v-if="isAdmin" class="icon button" @click="createFakeData"><span class="material-symbols-outlined">list_alt_add</span></div>
+        <!-- <div title="create 20 leads" v-if="isAdmin" class="icon button" @click="createFakeData"><span class="material-symbols-outlined">list_alt_add</span></div> -->
       </div>
 
       <section>

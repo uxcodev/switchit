@@ -327,7 +327,20 @@ export default {
     try {
       let url = "/api/v1/leads";
       const response = await _axios.get(url);
-      return response.data.model;
+      let leads = response.data.model
+
+      for (let lead of leads) {
+        let jsonString = lead.serviceFields
+        let cleanJsonString = jsonString
+          .replace(/\\n/g, '')
+          .replace(/\\/g, '')
+          .replace(/\s/g, '')
+          .replace(/[\u201C\u201D]/g, '"')
+
+        let validJson = JSON.parse(cleanJsonString)
+        lead.serviceFields = validJson
+      }
+      return leads;
     } catch (err) {
       console.error(err);
     }

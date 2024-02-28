@@ -1,4 +1,5 @@
 const Filterset = require("../models/filterset");
+const User = require("../models/user");
 // const queries = require('../util/queries')
 
 exports.createFilterset = (req, res, next) => {
@@ -20,10 +21,11 @@ exports.getFiltersetsByBusinessPartnerId = async (req, res, next) => {
   res.status(200).json(filtersets)
 }
 
-exports.getFiltersetsByUserId = async (req, res, next) => {
-  let userId = req.params.userId
+exports.getFiltersetsByUserEmail = async (req, res, next) => {
+  let email = req.params.email
   let businessPartnerId = req.params.businessPartnerId
-  let filtersets = await Filterset.find({ businessPartnerId: businessPartnerId, createdBy: userId })
+  // let creator = req.params.creator
+  let filtersets = await Filterset.find({ businessPartnerId: businessPartnerId, creator: email })
   res.status(200).json(filtersets)
 }
 
@@ -37,4 +39,23 @@ exports.deleteFilterset = async (req, res, next) => {
   let id = req.query.id
   let filterset = await Filterset.findByIdAndDelete(id)
   res.status(200).json(filterset)
+}
+
+exports.addEmailToAllFiltersets = async (req, res, next) => {
+
+  const filtersets = await Filterset.find();
+
+  for (let filterset of filtersets) {
+    const userId = filterset.createdBy;
+    const user = await User.findById(userId);
+
+    if (user) {
+      filterset.creator = user.email;
+      await filterset.save();
+    } else {
+      console.log("user not found:", userId);
+    }
+  }
+  let updated_filtersets = await Filterset.find()
+  res.status(200).json(updated_filtersets)
 }

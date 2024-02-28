@@ -4,6 +4,16 @@
 import { createVNode, render } from 'vue';
 import Toast from '@/plugins/ToastNotification.vue';
 
+import i18n from '@/i18n';
+
+console.log('i18n', i18n)
+const t = (key) => {
+  return i18n.global.t(key);
+}
+
+// Use the translate function
+// console.log(t("NOT_FOUND_OR_NOT_ALLOWED"));
+
 export default {
   install: (app, options) => {
     const container = document.createElement('div');
@@ -11,6 +21,7 @@ export default {
 
     app.config.globalProperties.$toast = {
       show(params) {
+        params.message = t(params.message);
         // toast.props = { ...toast.props, ...params };
         render(toast, container);
         if (!container.isConnected) {
@@ -25,15 +36,21 @@ export default {
         // toast.props = { ...toast.props, ...params };
         render(toast, container);
         if (!container.isConnected) {
+          // remove any existing toasts
+          // const toasts = document.querySelectorAll('.toast-notification');
+          // toasts.forEach(toast => {
+          //   toast.remove();
+          // }
+          // )
           document.body.appendChild(container);
         }
         console.log('error', error)
         toast.component.proxy.show(
           {
-            message: error.message,
+            message: t(error.message),
             type: "error",
             icon: "error",
-            duration: 6000,
+            duration: error.duration || 6000,
             key: Date.now(),
           }
         );
@@ -50,7 +67,7 @@ export default {
         console.log('message', message)
         toast.component.proxy.show(
           {
-            message: message,
+            message: t(message),
             type: "warning",
             icon: "warning",
             duration: 6000,

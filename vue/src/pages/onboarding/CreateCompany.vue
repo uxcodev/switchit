@@ -9,7 +9,8 @@
       <form v-else @submit.prevent="submitForm" class="switchit-form sm">
         <div class="group" v-if="isAdmin">
           <label for="email">Created by (email address)</label>
-          <input v-model="form.company.createdby" type="text" id="first_name" class="input lg" />
+          <!-- <input v-model="form.company.createdby" type="text" id="first_name" class="input lg" /> -->
+          <input v-model="form.company.creator" type="text" id="first_name" class="input lg" />
         </div>
         <div class="group" v-if="isAdmin">
           <label for="admin">Select a company admin</label>

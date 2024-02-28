@@ -232,6 +232,7 @@ export default {
         // companyId: this.$store.getters.activeCompany._id,
         businessPartnerId: this.$store.getters.activeBusinessPartner.id,
         createdBy: this.$store.getters.activeUser._id,
+        creator: this.$auth0.user._value.email
       }
       console.log('save these filters as campaign:', campaign)
       let response = await api.createCampaign(campaign)

@@ -1,0 +1,7 @@
+{
+	"NOT_FOUND_OR_NOT_ALLOWED": "You are not authorized to delete business partners",
+  "NO_ACCESS": "You are not authorized to do that",
+  "ERROR_PROCESSING_REQUEST": "There was an unknown error processing your request",
+  "BUSINESS_PARTNER_ALREADY_EXISTS": "There is already an account for this domain. While in beta, only one user is allowed per domain",
+  "test": "test"
+}

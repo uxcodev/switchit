@@ -23,10 +23,8 @@
 
 import ModalWindow from '@/components/ui/ModalWindow.vue';
 import Users from './OperationsUserTable.vue';
-import NodeCompanies from './OperationsCompanyTable_Node.vue';
 import BusinessPartners from './OperationsBusinessPartnerTable.vue';
 import Companies from './OperationsCompanyTable.vue';
-// import ImportCompanies from '@/components/import/ImportCompanies.vue';
 import ImportCompanies from '@/components/import/ImportCompaniesFromSheet.vue';
 import CreateCompany from '@/components/admin/CreateCompany.vue';
 export default {
@@ -34,7 +32,6 @@ export default {
     ModalWindow,
     Users,
     Companies,
-    NodeCompanies,
     BusinessPartners,
     ImportCompanies,
     CreateCompany
@@ -43,7 +40,6 @@ export default {
     return {
       modalComponent: null,
       isModalVisible: false,
-      // screens: ['Users', 'Companies', 'NodeCompanies'],
       screens: ['Companies', 'Users', 'BusinessPartners'],
       screen: null,
       componentKey: 0,

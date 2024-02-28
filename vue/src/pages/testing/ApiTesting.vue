@@ -190,6 +190,8 @@
       <button @click="addServicesToCompany()">addServicesToCompany</button>
       <button @click="getLeads()">getLeads</button>
       <button @click="createLead()">createLead</button>
+      <button @click="addEmailToAllFiltersets()">addEmailToAllFiltersets</button>
+
     </div>
     <pre>{{ result }}</pre>
     <div v-for="(item, index) in countries" :key="index">
@@ -605,6 +607,10 @@ export default {
       console.log('countries ', this.countries)
 
     },
+    async addEmailToAllFiltersets() {
+      let response = await this.$api_node.addEmailToAllFiltersets()
+      console.log('response: ', response)
+    }
   },
   async mounted() {
     this.getBusinessPartners()

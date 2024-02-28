@@ -60,15 +60,15 @@ exports.signupCompany = async (req, res, next) => {
         userObj[key] = value
       }
       user = new User(userObj);
-      user.roles = [{
-        company: company._id,
-        role: "owner"
-      }];
+      // user.roles = [{
+      //   company: company._id,
+      //   role: "owner"
+      // }];
 
-      company.roles = [{
-        user: user._id,
-        role: "owner"
-      }];
+      // company.roles = [{
+      //   user: user._id,
+      //   role: "owner"
+      // }];
 
       await Promise.all([user.save(), company.save()]);
       res.status(201).json(company);

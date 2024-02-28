@@ -10,8 +10,11 @@ router.post("/filterset", validateAccessToken, feedController.createFilterset);
 // router.get("/filterset", validateAccessToken, feedController.getFilterset);
 router.get("/filtersets", validateAccessToken, feedController.getFiltersets);
 router.get("/businesspartner/:id", validateAccessToken, feedController.getFiltersetsByBusinessPartnerId);
-router.get("/:businessPartnerId/:userId", validateAccessToken, feedController.getFiltersetsByUserId);
+router.get("/:businessPartnerId/:email", validateAccessToken, feedController.getFiltersetsByUserEmail);
 router.put("/filterset", validateAccessToken, feedController.updateFilterset);
 router.delete("/filterset", validateAccessToken, feedController.deleteFilterset);
+
+// ustilities
+router.get("/addEmailToAllFiltersets", validateAccessToken, feedController.addEmailToAllFiltersets);
 
 module.exports = router;

@@ -9,9 +9,15 @@
     flex-direction: column
   .inline
     display: inline
+  .inline-flex
+    display: flex
+    align-items: center
   &.sm
     .input, .select, .textarea
       max-width: 260px
+      &.error
+        border: 1px solid rgba(255, 0, 0, .3)
+        background: rgba(255, 0, 0, .05)
   .input::placeholder
     color: #aaa
   .input:disabled
@@ -19,6 +25,13 @@
     border: $input-border
     background: #f1f1f1
     cursor: default
+  .error_msg
+    display: flex
+    align-items: center
+    padding-left: 10px
+    gap: 4px
+    color: $red
+  
 .help
   margin: -4px 0 4px 0
   font-size: .7rem

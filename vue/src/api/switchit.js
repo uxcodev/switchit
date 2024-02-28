@@ -126,9 +126,16 @@ export default {
     try {
       let url = `/api/v1/businesspartners/${id}`;
       const response = await _axios.put(url, body);
-      return response;
+      if (response.status > 199 && response.status < 300) {
+        response.statusText = "OK"
+        return response;
+      } else {
+        throw new Error("ERROR_PROCESSING_REQUEST")
+      }
     } catch (err) {
-      console.error(err);
+      console.error("editBusinessPartner:", err);
+      let error = err?.response?.data?.issues[0]?.messages[0] || err
+      return { error: error }
     }
   },
 
@@ -136,12 +143,12 @@ export default {
     try {
       let url = `/api/v1/businesspartners/${id}`;
       const response = await _axios.delete(url);
-      console.log('response', response)
-      // response.data.ok = response?.statusText === "OK"
-      // return response.data;
-      return response;
+      response.data.ok = response?.statusText === "OK"
+      return response?.data;
     } catch (err) {
       console.error(err);
+      let error = err.response?.data?.issues[0]?.messages[0] || err
+      return { error: error }
     }
   },
 

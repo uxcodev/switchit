@@ -101,11 +101,15 @@ export default {
     },
   },
   async mounted() {
-    this.users = await this.$api_node.getUsers()
-    // console.log(this.users)
-
-    // // console.log('UserTable')
-    console.log('this.users: ', this.users)
+    try {
+      let response = await this.$api_node.getUsers()
+      console.log('response: ', response)
+      this.users = response
+    } catch (error) {
+      console.log('error: ', error)
+      this.$toast_error.show({ message: error })
+    }
+    // console.log('this.users: ', this.users)
   },
 }
 </script>

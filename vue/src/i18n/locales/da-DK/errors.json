@@ -1,0 +1,6 @@
+{
+  "NOT_FOUND_OR_NOT_ALLOWED": "Du har ikke adgang til at slette forretningspartnere",
+  "NO_ACCESS": "Du har ikke adgang til at gøre det",
+  "ERROR_PROCESSING_REQUEST": "Der var en ukendt fejl under behandlingen af din anmodning",
+  "BUSINESS_PARTNER_ALREADY_EXISTS": "Der er allerede en konto for dette domæne. Mens i beta, er kun én bruger tilladt pr. domæne"
+}

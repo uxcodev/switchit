@@ -43,6 +43,13 @@ app.use("/filtersets", filtersetRoutes);
 
 app.use(errorController.get404);
 
+// Error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(err.statusCode || 500).json({ error: err.message || 'Internal Server Error' });
+});
+
+
 // console.log(process.env.MONGO_DB)
 mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.pn3wxtf.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`)
   .then(result => {

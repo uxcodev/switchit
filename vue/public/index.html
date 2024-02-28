@@ -19,6 +19,7 @@
   <title>
     <%= htmlWebpackPlugin.options.title %>
   </title>
+  <script data-jsd-embedded data-key="e4616a85-3da5-427e-b677-3ef85a502787" data-base-url="https://jsd-widget.atlassian.com" src="https://jsd-widget.atlassian.com/assets/embed.js"></script>
 
 </head>
 
@@ -28,25 +29,6 @@
         Please enable it to continue.</strong>
   </noscript>
   <div id="app"></div>
-  <!-- built files will be auto injected -->
-  <script id="jsd"></script>
-<script>
-let tag = document.getElementById('jsd');
-let jsdEmbedded = document.createAttribute('data-jsd-embedded');
-let dataKey = document.createAttribute('data-key');
-dataKey.value = 'e4616a85-3da5-427e-b677-3ef85a502787';
-let dataBaseUrl = document.createAttribute('data-base-url');
-dataBaseUrl.value = 'https://jsd-widget.atlassian.com';
-tag.setAttributeNode(jsdEmbedded);
-tag.setAttributeNode(dataKey);
-tag.setAttributeNode(dataBaseUrl);
-tag.setAttribute('src', 'https://jsd-widget.atlassian.com/assets/embed.js');
-console.debug('injected:', tag);
-</script>
+
 </body>
-
-
-<!-- <script data-jsd-embedded data-key=“e4616a85-3da5-427e-b677-3ef85a502787” data-base-url=“https://jsd-widget.atlassian.com” src=“https://jsd-widget.atlassian.com/assets/embed.js”></script> -->
-
-
 </html>

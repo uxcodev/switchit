@@ -336,6 +336,7 @@ export default {
       // this.offer_obj.companyId = this.$store.getters.activeCompany._id,
       this.offer_obj.businessPartnerId = this.$store.getters.activeBusinessPartner.id
       this.offer_obj.createdBy = this.$store.getters.activeUser._id
+      this.offer_obj.creator = this.$auth0.user._value.email
     },
     async createOffer() {
       await this.trimOfferObj()

@@ -140,6 +140,8 @@ export default {
   watch: {
     'form.businessPartner.domain': function (val) {
       this.domainMatch = val === this.userEmailDomain
+      // override for switchit users
+      if (this.userEmailDomain === 'switchit.ai') this.domainMatch = true
     }
   },
   methods: {

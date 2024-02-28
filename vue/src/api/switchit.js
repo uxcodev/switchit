@@ -327,7 +327,7 @@ export default {
     try {
       let url = "/api/v1/leads";
       const response = await _axios.get(url);
-      return response.data;
+      return response.data.model;
     } catch (err) {
       console.error(err);
     }

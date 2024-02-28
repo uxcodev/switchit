@@ -10,6 +10,10 @@ const messages = {
 const i18n = createI18n({
   locale: 'en-US', // Set the initial locale
   fallbackLocale: 'en-US', // Set the fallback locale for when a translation is missing
+  missing: (locale, key) => {
+    // Just return the key itself
+    return key;
+  },
   messages
 });
 

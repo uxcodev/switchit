@@ -193,7 +193,7 @@ export default {
       } else if (creator === 'company') {
         this.getFiltersetsByBusinessPartnerId()
       } else if (creator === 'me') {
-        this.getFiltersetsByUserId()
+        this.getFiltersetsByUserEmail()
       }
     },
     toggleFilterOptions() {
@@ -240,6 +240,7 @@ export default {
         // companyId: this.$store.getters.activeCompany._id,
         businessPartnerId: this.$store.getters.activeBusinessPartner.id,
         createdBy: this.$store.getters.activeUser._id,
+        creator: this.$auth0.user._value.email,
         filters: this.filterObj,
       }
       await api.createFilterset(filterset)
@@ -251,14 +252,15 @@ export default {
 
     // default to user filters
     async getFiltersets() {
-      // this.getFiltersetsByUserId()
+      // this.getFiltersetsByUserEmail()
       this.getFiltersetsByBusinessPartnerId()
     },
 
-    async getFiltersetsByUserId() {
-      let userId = this.$store.getters.activeUser._id
+    async getFiltersetsByUserEmail() {
+      let email = this.$auth0.user._value.email
+      console.log('email: ', email)
       let businessPartnerId = this.$store.getters.activeBusinessPartner.id
-      this.filtersets = await api.getFiltersetsByUserId(businessPartnerId, userId)
+      this.filtersets = await api.getFiltersetsByUserEmail(businessPartnerId, email)
     },
 
     async getFiltersetsByBusinessPartnerId() {

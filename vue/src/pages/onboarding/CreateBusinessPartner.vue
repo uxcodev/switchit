@@ -3,50 +3,57 @@
     <div class="container white">
       <h2 v-if="isAdmin">{{ isEditing ? 'Edit business partner' : 'Create business partner' }}</h2>
       <h2 v-else>Request access to Switchit</h2>
-      <div v-if="loading">
+      <div v-if="!loaded">
         <LoaderAni />
       </div>
-     
+      <div v-else-if="businessPartnerExists">
+        A business partner with this domain already exists. During beta, only one user per business partner is allowed. For more information, feel free to contact us through the help widget below.
+      </div>
       <form v-else @submit.prevent="submitForm" class="switchit-form sm">
-          <!-- inputs for creating business partner -->
-          <div class="group">
-            <label for="company">Company name</label>
-            <input v-model="form.businessPartner.name" placeholder="" type="text" id="company" class="input lg" />
+        <!-- inputs for creating business partner -->
+        <div class="group">
+          <label for="company">Company name</label>
+          <input v-model="form.businessPartner.name" placeholder="" type="text" id="company" class="input lg" />
+        </div>
+        <div class="group">
+          <label for="website">Company email</label>
+          <input v-model="form.businessPartner.email" placeholder="" type="text" id="company_email" class="input lg" />
+        </div>
+        <div class="group">
+          <label for="website">Company VAT number</label>
+          <input v-model="form.businessPartner.vatNumber" placeholder="" type="text" id="vat_number" class="input lg" />
+        </div>
+        <div class="group">
+          <label for="website">Company website</label>
+          <!-- add 'error' class if domainMatch is false -->
+          <div class="inline-flex">
+            <input :class="{ error: !domainMatch }" v-model="form.businessPartner.domain" placeholder="" type="text" id="domain" class="input lg" />
+            <div v-if="!domainMatch" class="error_msg"><span class="material-symbols-outlined">error</span> Domain must match email domain</div>
+            <!-- add material symbol 'error' -->
           </div>
-          <div class="group">
-            <label for="website">Company email</label>
-            <input v-model="form.businessPartner.email" placeholder="" type="text" id="company_email" class="input lg" />
+        </div>
+        <div class="group">
+          <label for="address">Company address</label>
+          <input v-model="form.businessPartner.address" placeholder="" type="text" id="address" class="input lg" />
+        </div>
+        <div class="group">
+          <label for="country">Company country</label>
+          <Multiselect v-model="form.businessPartner.countryCode" mode="single" :searchable="true" :close-on-select="false" :options="country_options" />
+        </div>
+        <div class="group">
+          <label for="countries">Countries the company is active in</label>
+          <Multiselect v-model="form.businessPartner.countriesOfOperation" mode="tags" @select="countrySelected" :searchable="true" :close-on-select="false" :options="country_options" />
+        </div>
+        <div class="group">
+          <label for="markets">Markets the company serves</label>
+          <div class="checkbox-group">
+            <label v-for="(category, key) in categories" :key="key" class="checkbox-label">
+              <input class="checkbox" type="checkbox" :checked="isCategorySelected(category.code)" :id="category.name" @change="toggleCategorySelection(category.code)" />{{ $t(key) }}
+              <span class="checkmark"></span>
+            </label>
           </div>
-          <div class="group">
-            <label for="website">Company VAT number</label>
-            <input v-model="form.businessPartner.vatNumber" placeholder="" type="text" id="vat_number" class="input lg" />
-          </div>
-          <div class="group">
-            <label for="website">Company website</label>
-            <input v-model="form.businessPartner.domain" placeholder="" type="text" id="domain" class="input lg" />
-          </div>
-          <div class="group">
-            <label for="address">Company address</label>
-            <input v-model="form.businessPartner.address" placeholder="" type="text" id="address" class="input lg" />
-          </div>
-          <div class="group">
-            <label for="country">Company country</label>
-            <Multiselect v-model="form.businessPartner.countryCode" mode="single" :searchable="true" :close-on-select="false" :options="country_options" />
-          </div>
-          <div class="group">
-            <label for="countries">Countries the company is active in</label>
-            <Multiselect v-model="form.businessPartner.countriesOfOperation" mode="tags" @select="countrySelected" :searchable="true" :close-on-select="false" :options="country_options" />  
-          </div>
-          <div class="group">
-            <label for="markets">Markets the company serves</label>
-            <div class="checkbox-group">
-              <label v-for="(category, key) in categories" :key="key" class="checkbox-label">
-                <input class="checkbox" type="checkbox" :checked="isCategorySelected(category.code)" :id="category.name" @change="toggleCategorySelection(category.code)" />{{ $t(key) }}
-                <span class="checkmark"></span>
-              </label>
-            </div>
-          </div>
-          <button class="icon">Submit</button>
+        </div>
+        <button :disabled="!domainMatch" class="icon">Submit</button>
 
         <div v-if="errors.length" class="msg_error">{{ errors[0] }}</div>
       </form>
@@ -83,17 +90,18 @@ export default {
     LoaderAni,
   },
   data() {
-
     return {
       isAdmin: this.$store.getters.isAdmin,
       loaded: false,
-      loading: false,
       status: null,
       isEditing: false,
       modalComponent: null,
       screen: 'UserTable',
       categories: this.$store.getters.categories,
       activeUser: this.$store.getters.activeUser,
+      businessPartnerExists: null,
+      userEmailDomain: null,
+      domainMatch: true,
       user: {
         first_name: "",
         last_name: "",
@@ -104,17 +112,16 @@ export default {
         _id: null
       },
       form: {
-
-       businessPartner: {
-        name: ``,
-        domain: "",
-        vatNumber: "",
-        address: "",
-        email: "",
-        countryCode: "",
-        countriesOfOperation: [],
-        serviceTypes: []
-      },
+        businessPartner: {
+          name: ``,
+          domain: "",
+          vatNumber: "",
+          address: "",
+          email: "",
+          countryCode: "",
+          countriesOfOperation: [],
+          serviceTypes: []
+        },
       },
       selectedAdmin: null,
       users: [],
@@ -131,7 +138,9 @@ export default {
     }
   },
   watch: {
-   
+    'form.businessPartner.domain': function (val) {
+      this.domainMatch = val === this.userEmailDomain
+    }
   },
   methods: {
     async countrySelected() {
@@ -171,18 +180,17 @@ export default {
       this.screen = page
     },
     async submitForm() {
-
       try {
         let body = this.form.businessPartner
         let response = await this.$switchit.createBusinessPartner(body)
         if (response.statusText === 'Created') {
           let id = response.headers.location.split('/').pop()
           let activeBusinessPartner = await this.$switchit.getBusinessPartner(id)
-          this.$store.dispatch('setActiveBusinessPartner',activeBusinessPartner)
+          this.$store.dispatch('setActiveBusinessPartner', activeBusinessPartner)
           // this.$router.push({ path: '/operations', query: { q: 'Companies' } })
           this.$router.go()
         } else {
-          console.log("error response:" , response)
+          console.log("error response:", response)
           throw new Error(response)
         }
       } catch (error) {
@@ -190,7 +198,6 @@ export default {
         this.$toast_error.show(error)
       }
     },
-    
   },
   async created() {
     try {
@@ -202,12 +209,12 @@ export default {
       let countryCodes = await this.$switchit.getCountries()
 
       if (countryCodes?.length) {
-      
+
         let country_options = countryCodes.map(country => ({
           label: country.name,
           value: country.code
         }));
-  
+
         this.country_options.push(...country_options)
 
       }
@@ -231,19 +238,29 @@ export default {
   },
 
   async mounted() {
-    Object.assign(this.form.businessPartner, {
-    name: 'SwitchIt',
-    domain: 'switchit.ai',
-    // generate random vat number, 8 to 10 digits, convert to string
-    vatNumber: Math.floor(Math.random() * (99999999 - 10000000 + 1) + 10000000).toString(),    
-    address: '123 Main St',
-    email: this.$auth0.user._value.email,
-    countryCode: 'DK',
-    countriesOfOperation: ['DK', 'SE'],
-    serviceTypes: [1, 2]
-});
-
     try {
+      Object.assign(this.form.businessPartner, {
+        name: 'SwitchIt',
+        domain: 'switchit.ai',
+        // generate random vat number, 8 to 10 digits, convert to string
+        vatNumber: Math.floor(Math.random() * (99999999 - 10000000 + 1) + 10000000).toString(),
+        address: '123 Main St',
+        email: this.$auth0.user._value.email,
+        countryCode: 'DK',
+        countriesOfOperation: ['DK', 'SE'],
+        serviceTypes: [1, 2]
+
+      });
+      this.userEmailDomain = this.$auth0.user._value.email.split('@')[1]
+      this.form.businessPartner.domain = this.userEmailDomain
+      // userEmailDomain = 'asdf.asdf'
+      let businessPartners = await this.$switchit.getBusinessPartners()
+      let businessPartner = await businessPartners.find(bp => bp.domain === this.userEmailDomain)
+      if (businessPartner) {
+        this.businessPartnerExists = true
+        // this.$toast_error.show({duration: 6000, message: 'BUSINESS_PARTNER_ALREADY_EXISTS'})
+      }
+      console.log('businessPartner', businessPartner)
       this.loaded = true
     } catch (error) {
       this.$toast_error.show(error)

@@ -302,7 +302,7 @@ export default {
       // console.log('activeBusinessPartner: ', activeBusinessPartner)
 
       let activeUser = store.getters.activeUser
-      console.log('activeUser: ', activeUser)
+      console.log('dashboard activeUser: ', activeUser)
 
       await loadLeads();
     });

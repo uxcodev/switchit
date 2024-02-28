@@ -18,16 +18,21 @@ export default {
       type: '',
       icon: '',
       duration: 0,
+      toastTimer: null,
     };
   },
   methods: {
-    show(params) {
-      console.log('new params', params)
-      console.log(this.message, this.type, this.icon, this.duration)
+    async show(params) {
+      console.log('new params', params);
       Object.assign(this.$data, this.$options.data.call(this), params);
       this.visible = true;
+    
+      if (this.toastTimer) {
+        clearTimeout(this.toastTimer);
+      }
+  
       if (this.duration !== 0) {
-        setTimeout(() => {
+        this.toastTimer = setTimeout(() => {
           this.visible = false;
         }, this.duration);
       }
@@ -54,7 +59,7 @@ export default {
   gap: 10px;
   position: fixed;
   bottom: 20px;
-  right: 20px;
+  left: 20px;
   background-color: #444;
   color: white;
   padding: 10px 20px;

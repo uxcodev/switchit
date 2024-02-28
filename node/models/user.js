@@ -10,10 +10,10 @@ const userSchema = new Schema({
   status: { type: String, required: false },
   auth0_id: { type: String, required: false },
   admin: { type: Boolean, required: false },
-  roles: [{
-    company: { type: ObjectId, ref: "Company", required: false },
-    role: { type: String, required: false },
-  }],
+  // roles: [{
+  //   company: { type: ObjectId, ref: "Company", required: false },
+  //   role: { type: String, required: false },
+  // }],
   access: {
     mortgage: {
       status: { type: Boolean, required: false },

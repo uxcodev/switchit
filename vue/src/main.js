@@ -29,14 +29,19 @@ app.use(store)
 
 /* import plugins and custom components */
 
+
+import locale from '@/plugins/locale'
+app.use(locale)
+
+import i18n from './i18n';
+app.use(i18n)
+export default i18n;
+
 import FilterComponent from '@/plugins/FilterComponent.vue';
 app.component('filter-component', FilterComponent);
 
 import ToastPlugin from '@/plugins/toast';
 app.use(ToastPlugin);
-
-import locale from '@/plugins/locale'
-app.use(locale)
 
 import forms from '@/plugins/forms'
 app.use(forms)
@@ -55,10 +60,6 @@ let options = {
 }
 app.use(VueTelInput, options);
 
-// use i18n
-
-import i18n from './i18n';
-app.use(i18n)
 
 
 // check if mobile
@@ -70,11 +71,11 @@ store.dispatch('isMobile')
 import auth0 from '@/helpers/auth0.js';
 app.use(auth0);
 
-
 /* use Router */
 
 import router from "./router";
 app.use(router)
+
 
 app.mount('#app')
 

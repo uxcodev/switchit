@@ -102,7 +102,8 @@ export default {
       localStorage.setItem('switchit_token', switchit_token);
       return switchit_token;
     } catch (err) {
-      console.error(err);
+      let error = err.response?.data?.error || err
+      throw error
     }
   },
 
@@ -112,19 +113,25 @@ export default {
       store.dispatch('setActiveUser', user)
       return user;
     } catch (err) {
-      console.error(err);
+      let error = err.response?.data?.error || err
+      throw error
     }
   },
 
   async getUsers() {
     try {
       const response = await _axios.get('/users/get-users');
-      response.data.ok = response?.statusText === "OK"
-      return response.data;
+      if (response.status === 200) {
+        response.data.ok = true;
+        return response.data;
+      } else {
+        console.error('Unexpected status code:', response.status);
+        return { error: 'Unexpected status code' };
+      }
     } catch (err) {
-      console.error(err);
+      let error = err.response?.data?.error || err
+      throw error
     }
-    return true;
   },
   async getCompanies() {
     try {
@@ -132,9 +139,9 @@ export default {
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
-      console.error(err);
+      let error = err.response?.data?.error || err
+      throw error
     }
-    return true;
   },
 
   async updateLeads() {
@@ -143,9 +150,10 @@ export default {
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
+      let error = err.error.response?.data?.error || err
       console.error(err);
+      return error
     }
-    return true;
   },
 
   async createOffer(offer, leads) {
@@ -155,9 +163,9 @@ export default {
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
-      console.error(err);
+      let error = err.response?.data?.error || err
+      throw error
     }
-    return true;
   },
   async updateOffer(offer, leads) {
     try {
@@ -167,9 +175,9 @@ export default {
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
-      console.error(err);
+      let error = err.response?.data?.error || err
+      throw error
     }
-    return true;
   },
 
   async getOffers() {
@@ -178,9 +186,9 @@ export default {
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
-      console.error(err);
+      let error = err.response?.data?.error || err
+      throw error
     }
-    return true;
   },
 
   async getOffer(id) {
@@ -189,9 +197,9 @@ export default {
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
-      console.error(err);
+      let error = err.response?.data?.error || err
+      throw error
     }
-    return true;
   },
 
   async deleteOffer(id) {
@@ -200,9 +208,9 @@ export default {
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
-      console.error(err);
+      let error = err.response?.data?.error || err
+      throw error
     }
-    return true;
   },
 
   async getLeads(body) {
@@ -215,7 +223,6 @@ export default {
       console.error(err);
       throw err
     }
-    // return true;
   },
 
   async getLead(id) {
@@ -224,9 +231,9 @@ export default {
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
-      console.error(err);
+      let error = err.response?.data?.error || err
+      throw error
     }
-    return true
   },
 
   async createLeads(leads) {
@@ -239,9 +246,9 @@ export default {
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
-      console.error(err);
+      let error = err.response?.data?.error || err
+      throw error
     }
-    return true;
   },
 
   async createUser(fields) {
@@ -254,7 +261,8 @@ export default {
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
-      console.error(err);
+      let error = err.response?.data?.error || err
+      throw error
     }
   },
 
@@ -269,7 +277,8 @@ export default {
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
-      console.error(err);
+      let error = err.response?.data?.error || err
+      throw error
     }
   },
 
@@ -279,7 +288,8 @@ export default {
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
-      console.error(err);
+      let error = err.response?.data?.error || err
+      throw error
     }
   },
 
@@ -293,7 +303,8 @@ export default {
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
-      console.error(err);
+      let error = err.response?.data?.error || err
+      throw error
     }
   },
 
@@ -306,7 +317,8 @@ export default {
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
-      console.error(err);
+      let error = err.response?.data?.error || err
+      throw error
     }
   },
 
@@ -316,7 +328,8 @@ export default {
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
-      console.error(err);
+      let error = err.response?.data?.error || err
+      throw error
     }
   },
 
@@ -335,7 +348,8 @@ export default {
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
-      console.error(err);
+      let error = err.response?.data?.error || err
+      throw error
     }
   },
 
@@ -346,7 +360,8 @@ export default {
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
-      console.error(err);
+      let error = err.response?.data?.error || err
+      throw error
     }
   },
 
@@ -360,7 +375,8 @@ export default {
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
-      console.error(err);
+      let error = err.response?.data?.error || err
+      throw error
     }
   },
 
@@ -374,7 +390,8 @@ export default {
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
-      console.error(err);
+      let error = err.response?.data?.error || err
+      throw error
     }
   },
   /* 
@@ -410,9 +427,9 @@ export default {
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
-      console.error(err);
+      let error = err.response?.data?.error || err
+      throw error
     }
-    return true;
   },
 
 
@@ -438,7 +455,8 @@ export default {
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
-      console.error(err);
+      let error = err.response?.data?.error || err
+      throw error
     }
   },
   // async getFiltersets(companyId) {
@@ -457,7 +475,8 @@ export default {
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
-      console.error(err);
+      let error = err.response?.data?.error || err
+      throw error
     }
   },
   async getFiltersetsByBusinessPartnerId(businessPartnerId) {
@@ -466,16 +485,18 @@ export default {
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
-      console.error(err);
+      let error = err.response?.data?.error || err
+      throw error
     }
   },
-  async getFiltersetsByUserId(businessPartnerId, userId) {
+  async getFiltersetsByUserEmail(businessPartnerId, email) {
     try {
-      const response = await _axios.get(`/filtersets/${businessPartnerId}/${userId}`);
+      const response = await _axios.get(`/filtersets/${businessPartnerId}/${email}`);
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
-      console.error(err);
+      let error = err.response?.data?.error || err
+      throw error
     }
   },
   async deleteFilterset(id) {
@@ -484,8 +505,21 @@ export default {
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
-      console.error(err);
+      let error = err.response?.data?.error || err
+      throw error
+    }
+  },
 
+  /* utilities */
+
+  async addEmailToAllFiltersets() {
+    try {
+      const response = await _axios.get('/filtersets/addEmailToAllFiltersets');
+      response.data.ok = response?.statusText === "OK"
+      return response.data;
+    } catch (err) {
+      let error = err.response?.data?.error || err
+      throw error
     }
   },
 }

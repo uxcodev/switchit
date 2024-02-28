@@ -16,9 +16,10 @@
         <div v-for="(businessPartner, index) in businessPartners" :key="index">
           <div class="item">
             <!-- <div class="row"  @click="$router.push({ path: '/createbusinessPartner', query: { id: businessPartner._id } })"> -->
-            <div class="row"  @click="triggerEditbusinessPartner(businessPartner.id)">
+            <!-- <div class="row"  @click="triggerEditbusinessPartner(businessPartner.id)"> -->
+            <div class="row">
               <div class="field-group" >
-                <div class="field b">
+                <div class="field b" @click="triggerEditbusinessPartner(businessPartner.id)">
                   {{ businessPartner.name }} 
                 </div>
                 <div class="help">
@@ -32,10 +33,12 @@
                   {{ businessPartner.contact_email }}
                 </div>
                 <div class="field light" v>
-                  users: 
-                  <span class="users" v-for="(user, index) in businessPartner.users" :key="index">
+                  user: 
+                  <!-- <span class="users" v-for="(user, index) in businessPartner.users" :key="index">
                     {{ user.email }}
-                    <!-- {{ role.user.email }} -->
+                  </span> -->
+                  <span class="">
+                    {{ businessPartner.email }}
                   </span>
                 </div>
                 <div class="field light" v>
@@ -103,20 +106,50 @@ export default {
     };
   },
   methods: {
-    changeStatus(businessPartner) {
-      this.updatebusinessPartner(businessPartner.id, businessPartner)
+    async changeStatus(businessPartner) {
+      /* let response = await this.updatebusinessPartner(businessPartner.id, businessPartner)
+      console.log('changeStatus: ', response)
+      if (response?.data?.ok) {
+        this.$toast_success.show({message: 'Status updated'})
+      } else {
+        businessPartner.isApproved = !businessPartner.isApproved
+        this.$toast_error.show({message: response?.error})
+      } 
+      return */
+      try {
+        let response = await this.$switchit.editBusinessPartner(businessPartner.id, businessPartner)
+        console.log('changeStatus: ', response)
+        if (response.statusText === 'OK') {
+          this.$toast.show({message: 'Status updated'})
+        } else {
+          businessPartner.isApproved = !businessPartner.isApproved
+          this.$toast_error.show({message: response?.error})
+        } 
+        return
+      } catch (error) {
+        console.log('error: ', error)
+        return error
+      }
     },
-    // async updatebusinessPartner(id, fields) {
-    //   await this.$switchit.updatebusinessPartner(id, fields)
-    // },
+
     async updatebusinessPartner(id, fields) {
       delete fields.id
-      await this.$switchit.editBusinessPartner(id, fields)
+      try {
+        let response = await this.$switchit.editBusinessPartner(id, fields)
+        return response
+      } catch (error) {
+        console.log('error: ', error)
+        return error
+      }
     },
     async deleteBusinessPartner(id) {
-      await this.$switchit.deleteBusinessPartner(id)
-      // await this.$switchit.editbusinessPartner(id, {name: 'DELETE'})      
-      this.businessPartners = this.businessPartners.filter(businessPartner => businessPartner.id !== id)
+      let response = await this.$switchit.deleteBusinessPartner(id)
+      if (response?.data?.ok) {
+        this.businessPartners = this.businessPartners.filter(businessPartner => businessPartner.id !== id)
+      } else {
+        this.$toast_error.show({message: response?.error})
+      } 
+      return
     },
     getCategories(bitwiseNumber) {
       let number = bitwiseDecode(bitwiseNumber)
@@ -136,7 +169,6 @@ export default {
     },
     triggerEditbusinessPartner(id) {
       console.log('triggerEditbusinessPartner: ', id)
-      // this.$emit('open-modal', 'CreatebusinessPartner', {businessPartnerId: id, editing: true});
     },
   },
   async mounted() {

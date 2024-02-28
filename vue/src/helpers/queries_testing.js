@@ -81,7 +81,7 @@ db.movies.countDocuments({ 'genres': { $in: ['Drama', 'Horror'] } })
 
 db.users.insertMany([
   { name: 'Nick', hobbies: [{ title: 'Sports', frequency: 3 }, { title: 'Cooking', frequency: 6 }], phone: 2505409702 },
-  { name: 'Manuel', hobbies: [{ title: 'Cooking', frequency: 5 }, { title: 'Cars', frequency: 2 }], age: 30, phone: 0123234123 }
+  { name: 'Manuel', hobbies: [{ title: 'Cooking', frequency: 5 }, { title: 'Cars', frequency: 2 }], age: 30, phone: '0123234123' },
 ])
 
 db.users.find({ age: { $exists: true, $gt: 30 } })

@@ -36,7 +36,7 @@ const routes = [
   {
     path: '/operations',
     name: "operations",
-    beforeEnter: authGuard,
+    // beforeEnter: authGuard,
     component: () => import('@/pages/OperationsDashboard.vue')
   },
   {

@@ -17,7 +17,7 @@
         </div>
         <div class="group">
           <label for="website">Company email</label>
-          <input v-model="form.businessPartner.email" placeholder="" type="text" id="company_email" class="input lg" />
+          <input v-model="form.businessPartner.email" :disabled="isSwitchitUser" placeholder="" type="text" id="company_email" class="input lg" />
         </div>
         <div class="group">
           <label for="website">Company VAT number</label>
@@ -27,8 +27,8 @@
           <label for="website">Company website</label>
           <!-- add 'error' class if domainMatch is false -->
           <div class="inline-flex">
-            <input :class="{ error: !domainMatch }" v-model="form.businessPartner.domain" placeholder="" type="text" id="domain" class="input lg" />
-            <div v-if="!domainMatch" class="error_msg"><span class="material-symbols-outlined">error</span> Domain must match email domain</div>
+            <input :class="{ error: !domainMatch }" :disabled="isSwitchitUser" v-model="form.businessPartner.domain" placeholder="" type="text" id="domain" class="input lg" />
+            <div v-if="!domainMatch" class="error_msg"><span class="material-symbols-outlined">error</span> Must match domain of logged in user ({{ user.email }})</div>
             <!-- add material symbol 'error' -->
           </div>
         </div>
@@ -95,6 +95,7 @@ export default {
       loaded: false,
       status: null,
       isEditing: false,
+      isSwitchitUser: false,
       modalComponent: null,
       screen: 'UserTable',
       categories: this.$store.getters.categories,
@@ -206,6 +207,9 @@ export default {
       // check if editing
       this.id = this.$route.query.id
       this.isEditing = this.id ? true : false;
+      // let bp = this.$store.getters.activeBusinessPartner
+      // console.log('bp', bp)
+      this.isAdmin = this.$store.getters.activeBusinessPartner ? this.$store.getters.isAdmin : false
 
       // populate the countries dropdown
       let countryCodes = await this.$switchit.getCountries()
@@ -241,23 +245,24 @@ export default {
 
   async mounted() {
     try {
-      Object.assign(this.form.businessPartner, {
-        name: 'SwitchIt',
-        domain: 'switchit.ai',
-        // generate random vat number, 8 to 10 digits, convert to string
-        vatNumber: Math.floor(Math.random() * (99999999 - 10000000 + 1) + 10000000).toString(),
-        address: '123 Main St',
-        email: this.$auth0.user._value.email,
-        countryCode: 'DK',
-        countriesOfOperation: ['DK', 'SE'],
-        serviceTypes: [1, 2]
-
-      });
       this.userEmailDomain = this.$auth0.user._value.email.split('@')[1]
       
       /* If not a switchit email, check to make sure domain is unique */
       
       if (this.userEmailDomain === 'switchit.ai') {
+        this.isSwitchitUser = true
+        let switchitUser = this.$auth0.user._value.email.split('@')[0]
+        this.form.businessPartner.domain = 'switchit.' + switchitUser
+        Object.assign(this.form.businessPartner, {
+          name: 'SwitchIt',
+          domain: 'switchit.' + switchitUser,
+          vatNumber: Math.floor(Math.random() * (99999999 - 10000000 + 1) + 10000000).toString(),
+          address: '123 Main St',
+          email: this.$auth0.user._value.email,
+          countryCode: 'DK',
+          countriesOfOperation: ['DK', 'SE'],
+          serviceTypes: [1, 2]
+        });
         this.loaded = true
         return
       } else {

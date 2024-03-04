@@ -2,7 +2,7 @@
   <ModalWindow v-if="modalComponent" :component="modalComponent"  @cancel="onCancel" @save="onSave" @closeModal="closeModal">
     <component :is="modalComponent" :props="componentProps" @closeModal="closeModal" @save="onSave"></component>
   </ModalWindow>
-  <div class="main settings">
+  <div v-if="isAdmin" class="main settings">
     <div class="header">
       <!-- Add buttons to change between pages -->
       <div v-if="screens.length > 1" class="button-group">
@@ -41,6 +41,7 @@ export default {
       screens: ['Companies', 'Users', 'BusinessPartners'],
       screen: null,
       componentKey: 0,
+      isAdmin: this.$store.getters.isAdmin,
     }
   },
   methods: {
@@ -67,6 +68,9 @@ export default {
     }
   },
   async mounted() {
+    if (!this.isAdmin) {
+      this.$router.push({ path: '/dashboard' })
+    }
     let query = this.$route.query.q
     this.screen = query || this.screens[0]
   }

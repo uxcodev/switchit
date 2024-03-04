@@ -25,6 +25,7 @@ import BusinessPartners from './OperationsBusinessPartnerTable.vue';
 import Companies from './OperationsCompanyTable.vue';
 import ImportCompanies from '@/components/import/ImportCompaniesFromSheet.vue';
 import CreateCompany from '@/components/admin/CreateCompany.vue';
+
 export default {
   components: {
     ModalWindow,
@@ -38,7 +39,8 @@ export default {
     return {
       modalComponent: null,
       isModalVisible: false,
-      screens: ['Companies', 'Users', 'BusinessPartners'],
+      // screens: ['Companies', 'Users', 'BusinessPartners'],
+      screens: ['Companies', 'BusinessPartners'],
       screen: null,
       componentKey: 0,
       isAdmin: this.$store.getters.isAdmin,
@@ -68,9 +70,15 @@ export default {
     }
   },
   async mounted() {
-    if (!this.isAdmin) {
+    // setTimeout
+    setTimeout(() => {
+      this.isAdmin = this.$store.getters.isAdmin
+      console.log('operations isAdmin:', this.isAdmin)
+      if (!this.isAdmin) {
       this.$router.push({ path: '/dashboard' })
     }
+    }, 2000)
+
     let query = this.$route.query.q
     this.screen = query || this.screens[0]
   }

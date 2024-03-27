@@ -81,8 +81,6 @@ export default {
     },
   },
   mounted() {
-    console.log('chartData', this.chartDataTemp)
-    console.log('chartOfferStats mounted')
   }
 };
 </script>

@@ -4,7 +4,7 @@ export default {
     let result = '';
     Object.entries(data).forEach(([category, categoryData]) => {
       result += `${category}:\n`;
-      if (categoryData.interaction_data) {
+      if (categoryData?.interaction_data) {
         console.log('category', category, 'categoryData', categoryData)
         Object.entries(categoryData.interaction_data).forEach(([dataType, dataTypeData]) => {
           result += `  ${dataType}:\n`;
@@ -38,7 +38,7 @@ export default {
           });
         });
       }
-      if (categoryData.preference_data) {
+      if (categoryData?.preference_data) {
         result += `  preference_data:\n`;
         Object.entries(categoryData.preference_data).forEach(([dataType, dataTypeData]) => {
           result += `    ${dataType}: `;

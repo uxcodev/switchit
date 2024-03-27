@@ -8,7 +8,7 @@
         <FilterTabs @applyFilterTabs="applyFilterTabs" />
         <!-- <div title="create 20 leads" v-if="isAdmin" class="icon button" @click="createFakeData"><span class="material-symbols-outlined">list_alt_add</span></div> -->
       </div>
-
+      
       <section>
         <h1>Stats</h1>
         <div class="pageheader__boxes stats">
@@ -16,7 +16,7 @@
           <div class="card stats-rating">
             <div class="card-top">
               <div class="stats-title">
-                Your rating
+                Your rating 
               </div>
               <div class="rating">
                 4.3
@@ -94,7 +94,7 @@
             {{ selectedLeads.length }} leads selected
             <a href="#" class="ml5 link" @click="clearSelection">Clear selection</a>
           </div>
-          <!-- <a href="#" class="link" @click="selectAll">Select all {{ leadCount }} users</a> -->
+          <a href="#" class="link" @click="selectAll">Select all {{ leadCount }} users</a>
           <button @click="openFilters"><span class="material-symbols-outlined">tune</span>Filter</button>
         </div>
       </div>
@@ -123,7 +123,7 @@
               </label>
 
             </div>
-            <div @click="openLead(lead.id)" class="table-row-content">
+            <div @click="openLead(lead._id)" class="table-row-content">
               <div class="table-row-content-sm">
                 <div class="donut">
                   <Doughnut class='chart' id="my-chart-id" :options="chartOptions" :data="chartData" />
@@ -147,18 +147,17 @@
         </div>
       </div>
       <div class="pagination">
-        <!-- {{ pg }} -->
-        <button :disabled="pg.pageCount<=1" class="pagination-back active" @click="pg_back">
+        <div class="pagination-back active" @click="pg_back">
           <span class="material-symbols-outlined">chevron_left</span>
-        </button>
-        <button @click="gotoPage(1)" v-if="!displayedPages.includes(1)">1</button>
+        </div>
+        <div @click="gotoPage(1)" v-if="!displayedPages.includes(1)">1</div>
         <div class="disabled" v-if="!displayedPages.includes(1)">...</div>
-        <button v-for="page in displayedPages" :key="page" @click="gotoPage(page)" :class="page === pg.currentPage ? 'active' : ''">{{ page }}</button>
+        <div v-for="page in displayedPages" :key="page" @click="gotoPage(page)" :class="page === pg.currentPage ? 'active' : ''">{{ page }}</div>
         <div class="disabled" v-if="!displayedPages.includes(pg.pageCount)">...</div>
-        <button @click="pg_last" v-if="!displayedPages.includes(pg.pageCount)">{{ pg.pageCount }}</button>
-        <button :disabled="pg.pageCount<=1" class="pagination-forward active" @click="pg_forward">
+        <div @click="pg_last" v-if="!displayedPages.includes(pg.pageCount)">{{ pg.pageCount }}</div>
+        <div class="pagination-forward active" @click="pg_forward">
           <span class="material-symbols-outlined">chevron_right</span>
-        </button>
+        </div>
       </div>
     </div>
   </div>
@@ -181,7 +180,7 @@ import { ref, computed, watch, onMounted, reactive, toRefs, getCurrentInstance }
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
-// import fake_data from "@/api/fake_data.js"; // uncomment to create fake data
+import fake_data from "@/api/fake_data.js"; // uncomment to create fake data
 
 ChartJS.register(ArcElement, Tooltip);
 
@@ -196,9 +195,9 @@ export default {
 
   setup() {
     const instance = getCurrentInstance();
-    // const api = instance.appContext.config.globalProperties.$api_node;
-    const switchit = instance.appContext.config.globalProperties.$switchit
-    // const $toast = instance.appContext.config.globalProperties.$toast
+    const api = instance.appContext.config.globalProperties.$api_node;
+    const switchit = instance.appContext.config.globalProperties.$switchit;
+    const $toast = instance.appContext.config.globalProperties.$toast
     const $storeSessionValue = instance.appContext.config.globalProperties.$storeSessionValue
     const router = useRouter();
     const store = useStore();
@@ -229,31 +228,37 @@ export default {
 
       if (selectVisible.value) {
         // Add new leads to selectedLeads array
-        const newLeads = leads.value.filter((lead) => !selectedLeads.value.includes(lead.id));
-        selectedLeads.value.push(...newLeads.map((lead) => lead.id));
+        const newLeads = leads.value.filter((lead) => !selectedLeads.value.includes(lead._id));
+        selectedLeads.value.push(...newLeads.map((lead) => lead._id));
       } else {
         // Remove unselected leads from selectedLeads array
         selectedLeads.value = selectedLeads.value.filter((id) =>
-          leads.value.find((lead) => lead.id === id && lead.selected)
+          leads.value.find((lead) => lead._id === id && lead.selected)
         );
       }
 
-      // console.log('toggleSelectVisible', selectedLeads.value)
+      console.log('toggleSelectVisible', selectedLeads.value)
     }
 
     function updateSelectedLeads(lead) {
       if (lead.selected) {
-        selectedLeads.value.push(lead.id);
+        selectedLeads.value.push(lead._id);
       } else {
-        selectedLeads.value = selectedLeads.value.filter((id) => id !== lead.id);
+        selectedLeads.value = selectedLeads.value.filter((id) => id !== lead._id);
       }
       console.log('updateSelectedLeads', selectedLeads.value)
     }
 
     async function selectAll() {
-      let response = await switchit.getLeads();
-      console.log('selectAll', response);
-      selectedLeads.value = response
+      let response = await switchit.getLeads({
+        // limit: limit,
+        // skip: skip,
+        filters: filters.value,
+        ids: true
+      });
+      selectedLeads.value = await response.leads
+      // console.log('selectAll', response.leads);
+      // console.log('selectedLeads', selectedLeads.value)
       selectVisible.value = true
       toggleSelectVisible()
     }
@@ -294,42 +299,56 @@ export default {
     // ***** Leads *****
 
     onMounted(async () => {
+      // let activeBusinessPartner = store.getters.activeBusinessPartner
+      // console.log('activeBusinessPartner: ', activeBusinessPartner)
+
       await loadLeads();
     });
 
     function openLead(id) {
       store.dispatch("setSelectedLeads", [id]);
+      // router.push({ path: `/create_offer`, query: { lead: id } });
+      // save single lead to session storage
       $storeSessionValue('offer_selectedLeads', [id], 60);
       router.push({ path: `/offer`, query: { lead: id } });
     }
 
     function openLeads() {
+      // store.dispatch("setSelectedLeads", selectedLeads);
+      // save selectedLeads to session storage
       $storeSessionValue('offer_selectedLeads', selectedLeads.value, 60);
       router.push({ path: `/offer` });
     }
 
     async function loadLeads() {
-        let response = await switchit.getLeads({
-          take: 999999, 
-          skip: 0,
-          filterData: store.getters.filters || null,
-        });
-        leadCount.value = response.length;
-        pg.pageCount = Math.ceil(response.length / pg.limit);
-        console.log('getLeads', response.length, pg.pageCount, pg.limit, response);
 
-        // NOTE: temporarily doing two api calls - one to count total leads, 
-        // and one to get the number of leads for this page. in the future,
-        // we should be able to get the total count from the first call by
-        // passing a flag to the api
+      let switchit_leads = await switchit.getLeads()
+      console.log('switchit_leads: ', switchit_leads)
+      let response = await switchit.getLeads({
+        limit: pg.limit,
+        skip: 0,
+        filters: store.getters.filters || null,
+      });
+      leads.value = response.leads;
+      leadCount.value = response.count;
 
-        response = await switchit.getLeads({
-          take: pg.limit,
-          skip: 0,
-          filterData: store.getters.filters || null,
-        });
+      pg.pageCount = Math.ceil(response.count / pg.limit);
+    }
 
-        leads.value = response;
+
+    // ***** Fake data *****
+    const isAdmin = computed(() => store.getters.isAdmin);
+
+    async function createFakeData() {
+      // console.log(fake_data)
+      await fake_data.getLeads()
+      loadLeads()
+      $toast.show({
+        message: '20 new leads created',
+        type: 'success',
+        icon: 'check',
+        duration: 3000,
+      });
     }
 
     // Modal window
@@ -418,16 +437,15 @@ export default {
     watch(() => pg.currentPage, async () => {
       let limit = pg.limit;
       let skip = (pg.currentPage - 1) * limit;
-
       let response = await switchit.getLeads({
-        take: limit,
+        limit: limit,
         skip: skip,
-        filterData: filters.value,
+        filters: filters.value,
       });
-      leads.value = response;
+      leads.value = response.leads;
       leads.value = leads.value.map((lead) => ({
         ...lead,
-        selected: selectedLeads.value.includes(lead.id),
+        selected: selectedLeads.value.includes(lead._id),
       }));
 
       leadCount.value = response.count;
@@ -439,6 +457,8 @@ export default {
       ...toRefs(pg),
       modalComponent,
       screen,
+      createFakeData,
+      isAdmin,
       selectedLeads,
       selectVisible,
       selectMultiple,
@@ -487,10 +507,7 @@ export default {
   gap: 6px
   max-width: 100%
   overflow: hidden
-  button,
   div
-    outline: none
-    border: 0
     cursor: pointer
     display: flex
     justify-content: center
@@ -500,7 +517,6 @@ export default {
     border-radius: 6px
     background: #eee
     color: #aaa
-    padding: 3px
     &.active
       background: $primary
       color: white

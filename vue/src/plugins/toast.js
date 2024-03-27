@@ -6,7 +6,6 @@ import Toast from '@/plugins/ToastNotification.vue';
 
 import i18n from '@/i18n';
 
-console.log('i18n', i18n)
 const t = (key) => {
   return i18n.global.t(key);
 }

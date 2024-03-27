@@ -23,7 +23,6 @@ export default {
   },
   methods: {
     async show(params) {
-      console.log('new params', params);
       Object.assign(this.$data, this.$options.data.call(this), params);
       this.visible = true;
     

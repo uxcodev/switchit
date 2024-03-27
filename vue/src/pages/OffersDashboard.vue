@@ -26,7 +26,7 @@
           </div>
           <div class="table-row-actions"></div>
         </div>
-        <div class="table-rows">
+        <div v-if="offers.length" class="table-rows">
           <div v-for="(offer, index) in offers" :key="index" class="table-row">
             <div v-show="false" class="table-row-check">
               <label class=" checkbox-label nolabel">
@@ -34,12 +34,12 @@
                 <span class="checkmark"></span>
               </label>
             </div>
-            <div @click="openOffer(offer._id)" class="table-row-content">
+            <div @click="openOffer(offer.id)" class="table-row-content">
               <div class="table-row-content-med bold">
-                {{ offer.offer_details.name }}
+                {{ offer.title}}
               </div>
               <div class="table-row-content-med">
-                {{ $dayjs(offer.offer_details.start_date).format('YY/MM/DD') }} - {{ $dayjs(offer.offer_details.expiry_date).format('YY/MM/DD') }}
+                {{ $dayjs(offer.startDate).format('YY/MM/DD') }} - {{ $dayjs(offer.endDate).format('YY/MM/DD') }}
               </div>
               <div class="access_icons table-row-content-med wrap">
                 <span v-for="(cat, key) in categories" :key="key" :class="offer?.offer?.hasOwnProperty(key) ? 'active' : ''" class="material-symbols-outlined">{{ categories[key] ? categories[key].icon : '' }}</span>
@@ -143,10 +143,13 @@ export default {
       deep: true,
       async handler(page) {
         // let page = this.pg.currentPage
-        let limit = this.pg.limit
-        let skip = (page - 1) * limit
-        let filters = this.$store.getters.filters
-        let response = await this.$api_node.getOffers({ limit: limit, skip: skip, filter: filters })
+        // let limit = this.pg.limit
+        // let skip = (page - 1) * limit
+        // let filters = this.$store.getters.filters
+        // let response = await this.$api_node.getOffers({ limit: limit, skip: skip, filter: filters })
+        console.log(page)
+        let response = await this.$switchit.getOffers()
+        this.$toast_show('pagination not implemented yet')
         this.offers = response?.offers
         // this.pg.pageCount = Math.ceil(response.count / limit)
       }
@@ -243,7 +246,6 @@ export default {
     },
     async loadCampaigns() {
       this.campaigns = await api.getCampaigns()
-      console.log('campaigns: ', this.campaigns)
     },
     closeModal() {
       this.modalComponent = null
@@ -304,20 +306,30 @@ export default {
       this.loadCampaigns()
     },
     async loadOffers() {
-      let response = await this.$api_node.getOffers()
+      // let response = await this.$api_node.getOffers()
 
+      let body = {
+        businessPartnerId: this.$store.getters.activeBusinessPartner.id,
+        skip: 0,
+        take: 20
+      }
+
+      let householdId = this.$route.query.householdId
+      if (householdId) {
+        body.householdId = householdId
+      }
+
+      let response = await this.$switchit.getOffers(body)
       this.offers = response
 
       for (let offer of this.offers) {
         offer.stats = this.createOfferStats()
       }
-      console.log(this.offers)
     }
   },
   async mounted() {
-    this.loadCampaigns()
+    // this.loadCampaigns()
     this.loadOffers()
-    console.log('OffersDashboard mounted')
   }
 }
 </script>

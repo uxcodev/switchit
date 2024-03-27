@@ -65,13 +65,6 @@ const routes = [
     component: () => import('@/pages/onboarding/EditBusinessPartner.vue')
   },
   {
-    path: '/create_offer',
-    name: "create_offer",
-    props: true,
-    beforeEnter: authGuard,
-    component: () => import('@/pages/CreateOffer.vue')
-  },
-  {
     path: '/offers',
     name: "offers",
     beforeEnter: authGuard,
@@ -81,25 +74,25 @@ const routes = [
     path: '/offer/:id',
     name: "offer",
     beforeEnter: authGuard,
-    component: () => import('@/pages/OfferPage.vue')
+    component: () => import('@/pages/OfferEditor.vue')
   },
   {
     path: '/offer',
     name: "create_offer_",
     beforeEnter: authGuard,
-    component: () => import('@/pages/OfferPage.vue')
+    component: () => import('@/pages/OfferEditor.vue')
   },
   {
     path: '/campaign/:id',
     name: "edit_campaign",
     beforeEnter: authGuard,
-    component: () => import('@/pages/OfferPage.vue')
+    component: () => import('@/pages/OfferEditor.vue')
   },
   {
     path: '/campaign',
     name: "create_campaign",
     beforeEnter: authGuard,
-    component: () => import('@/pages/OfferPage.vue')
+    component: () => import('@/pages/OfferEditor.vue')
   },
   {
     path: '/onboarding',

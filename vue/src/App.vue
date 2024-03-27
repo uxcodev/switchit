@@ -41,11 +41,9 @@ export default {
       let access_token = await this.$auth0.getAccessTokenSilently()
       localStorage.setItem('access_token', access_token)
       let isAdminEmail = this.auth0User.email.includes('@switchit.ai')
-      console.log('isAdminEmail:', isAdminEmail)
       let permissions = (jwtDecode(access_token)).permissions;
       if (permissions.includes('superadmin') || isAdminEmail) {
         this.$store.dispatch('isAdmin', true)
-        console.log('is Admin')
       }
 
       
@@ -57,7 +55,7 @@ export default {
       this.$store.dispatch('setAccess', access)
 
       // find activeUser in our database with the email address from Auth0
-
+/* 
       let email = this.auth0User.email
       let activeUser = await this.$api_node.getActiveUser(email)
       
@@ -79,21 +77,16 @@ export default {
       if (!store_user) {
         this.$store.dispatch('setActiveUser', store_user)
         // console.log('activeUser stored in vuex:', activeUser)
-      }
+      } */
     }
   },
   watch: {
     async auth0User() {
       await this.initUser()
-      console.log('watch initUser complete')
+      // console.log('watch initUser complete')
     }
   },
-  async mounted() {
-
-    /* TEMP TEST */
-    let leads = await this.$switchit.getLeads()
-    console.log('app.vue leads:', leads)
-    
+  async mounted() {    
     setTimeout(async () => {
       if (!this.activeUser) {
         console.log('no activeUser found')

@@ -70,12 +70,11 @@ export default {
     }
   },
   async mounted() {
-    // setTimeout
     setTimeout(() => {
       this.isAdmin = this.$store.getters.isAdmin
-      console.log('operations isAdmin:', this.isAdmin)
       if (!this.isAdmin) {
-      this.$router.push({ path: '/dashboard' })
+      // this.$router.push({ path: '/dashboard' })
+      this.$toast_error.show({ message: 'You are not authorized to view this page' })
     }
     }, 2000)
 

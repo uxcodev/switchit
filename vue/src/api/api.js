@@ -36,7 +36,7 @@ _axios.interceptors.request.use(async (config) => {
 _axios.interceptors.response.use((response) => {
   return response;
 }, (error) => {
-  if (error.response.status === 401) {
+  if (error?.response?.status === 401) {
     console.log('401 error')
   }
   return Promise.reject(error);

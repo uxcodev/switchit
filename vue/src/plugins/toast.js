@@ -21,6 +21,7 @@ export default {
     app.config.globalProperties.$toast = {
       show(params) {
         params.message = t(params.message);
+        params.duration = params.duration || 4000;
         // toast.props = { ...toast.props, ...params };
         render(toast, container);
         if (!container.isConnected) {

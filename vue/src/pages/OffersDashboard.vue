@@ -52,7 +52,7 @@
             </div>
             <div class="table-row-actions">
               <div class="material-symbols-outlined" @click="saveAsCampaign(offer)">save</div>
-              <div class="material-symbols-outlined" @click="deleteOffer(offer._id)">delete</div>
+              <div class="material-symbols-outlined" @click="deleteOffer(offer.id)">delete</div>
             </div>
           </div>
         </div>
@@ -149,7 +149,7 @@ export default {
         // let response = await this.$api_node.getOffers({ limit: limit, skip: skip, filter: filters })
         console.log(page)
         let response = await this.$switchit.getOffers()
-        this.$toast_show('pagination not implemented yet')
+        this.$toast.show('pagination not implemented yet')
         this.offers = response?.offers
         // this.pg.pageCount = Math.ceil(response.count / limit)
       }
@@ -298,12 +298,15 @@ export default {
       this.loadCampaigns()
     },
     async deleteOffer(id) {
-      console.log('deleteOffer')
       console.log(id)
-      let response = await this.$api_node.deleteOffer(id)
-      console.log(response)
-      this.loadOffers()
-      this.loadCampaigns()
+      this.$toast.show({message: 'Deleting offers is not available yet'})
+
+      // console.log('deleteOffer')
+      // console.log(id)
+      // let response = await this.$api_node.deleteOffer(id)
+      // console.log(response)
+      // this.loadOffers()
+      // this.loadCampaigns()
     },
     async loadOffers() {
       // let response = await this.$api_node.getOffers()

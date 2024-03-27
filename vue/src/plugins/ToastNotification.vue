@@ -58,7 +58,7 @@ export default {
   gap: 10px;
   position: fixed;
   bottom: 20px;
-  left: 20px;
+  right: 20px;
   background-color: #444;
   color: white;
   padding: 10px 20px;

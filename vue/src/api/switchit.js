@@ -384,11 +384,20 @@ export default {
            "skip": 0,
            "filterData": {}
        } */
+
       // convert body parameter to a query string
-      let query = body ? Object.keys(body).map(key => key + '=' + body[key]).join('&') : null;
+      let query = body ? Object.keys(body).map(key => {
+        let value = body[key];
+        // Check if the value is an object and stringify it
+        if (typeof value === 'object' && value !== null) {
+          value = JSON.stringify(value);
+        }
+        return encodeURIComponent(key) + '=' + encodeURIComponent(value);
+      }).join('&') : '';
+
       let url = "/api/v1/leads";
-      const response = await _axios.get(url + '?' + query);
-      leads = response.data.model
+      const response = await _axios.get(`${url}?${query}`);
+      leads = response.data.model;
 
       for (let lead of leads) {
 

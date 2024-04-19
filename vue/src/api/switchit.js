@@ -385,6 +385,10 @@ export default {
            "filterData": {}
        } */
 
+      // if body.fileterData is empty, remove it
+      if (Object.keys(body.filterData).length === 0) {
+        delete body.filterData
+      }
       // convert body parameter to a query string
       let query = body ? Object.keys(body).map(key => {
         let value = body[key];

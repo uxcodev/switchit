@@ -379,47 +379,50 @@ export default {
   async getLeads(body) {
     let leads = []
     try {
-      /*    body = {
-           "take": ,
-           "skip": 0,
-           "filterData": {}
-       } */
+      console.log('getLeads body', body)
 
-      // if body.fileterData is empty, remove it
-      if (Object.keys(body.filterData).length === 0) {
-        delete body.filterData
-      }
-      // convert body parameter to a query string
-      let query = body ? Object.keys(body).map(key => {
-        let value = body[key];
-        // Check if the value is an object and stringify it
-        if (typeof value === 'object' && value !== null) {
-          value = JSON.stringify(value);
+      let query = ''
+      if (body) {
+
+        if (Object.keys(body.filterData).length === 0) {
+          delete body.filterData
         }
-        return encodeURIComponent(key) + '=' + encodeURIComponent(value);
-      }).join('&') : '';
+        query = body ? Object.keys(body).map(key => {
+          let value = body[key];
+          if (typeof value === 'object' && value !== null) {
+            value = JSON.stringify(value);
+          }
+          return encodeURIComponent(key) + '=' + encodeURIComponent(value);
+        }).join('&') : '';
+      }
 
       let url = "/api/v1/leads";
       const response = await _axios.get(`${url}?${query}`);
       leads = response.data.model;
 
+      console.log('leads response', leads)
       for (let lead of leads) {
 
-        let jsonString = lead.serviceFields
-        let cleanJsonString = jsonString
-          .replace(/\\n/g, '')
-          .replace(/\\/g, '')
-          .replace(/\s/g, '')
-          .replace(/[\u201C\u201D]/g, '"')
+        let validJson = {}
 
-        // if the entire string is enclosed in quotes, remove them
-        if (cleanJsonString[0] === '"' && cleanJsonString[cleanJsonString.length - 1] === '"') {
-          cleanJsonString = cleanJsonString.slice(1, -1)
+        if (lead.serviceFields) {
+
+          let jsonString = lead.serviceFields
+          let cleanJsonString = jsonString
+            .replace(/\\n/g, '')
+            .replace(/\\/g, '')
+            .replace(/\s/g, '')
+            .replace(/[\u201C\u201D]/g, '"')
+
+          // if the entire string is enclosed in quotes, remove them
+          if (cleanJsonString[0] === '"' && cleanJsonString[cleanJsonString.length - 1] === '"') {
+            cleanJsonString = cleanJsonString.slice(1, -1)
+          }
+
+          // console.log('cleanJsonString', cleanJsonString)
+          validJson = JSON.parse(cleanJsonString)
+          // console.log('validJson', validJson)
         }
-
-        // console.log('cleanJsonString', cleanJsonString)
-        let validJson = JSON.parse(cleanJsonString)
-        // console.log('validJson', validJson)
 
         lead.serviceFields = validJson
         lead.userId = lead.householdId // or should be lead.id ?

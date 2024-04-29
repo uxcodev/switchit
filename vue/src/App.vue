@@ -41,7 +41,7 @@ export default {
       let access_token = await this.$auth0.getAccessTokenSilently()
       localStorage.setItem('access_token', access_token)
       let isAdminEmail = this.auth0User.email.includes('@switchit.ai')
-      let permissions = (jwtDecode(access_token)).permissions;
+      let permissions = (jwtDecode(access_token)).permissions || [];
       if (permissions.includes('superadmin') || isAdminEmail) {
         this.$store.dispatch('isAdmin', true)
       }

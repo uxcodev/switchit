@@ -71,7 +71,12 @@ export default {
   },
   async mounted() {
     setTimeout(() => {
+      let domain = this.$auth0.user.value.email.split('@')[1]
+      if (domain === 'switchit.ai' && this.$route.query.isAdmin) {
+        this.$store.commit('setIsAdmin', true)
+      }
       this.isAdmin = this.$store.getters.isAdmin
+
       if (!this.isAdmin) {
       // this.$router.push({ path: '/dashboard' })
       this.$toast_error.show({ message: 'You are not authorized to view this page' })

@@ -64,5 +64,14 @@
 	"home_insurance": "Husforsikring",
 	"add_ons": "Tilvalg",
 	"alarm_discount": "Alarmrabat",
-	"broadband": "Bredbånd"
+	"broadband": "Bredbånd",
+
+  "saving_money_importance": "Vigtighed af at spare penge",
+  "quality_over_cost": "Kvalitet over pris?",
+  "eco_friendly_priority": "Miljøvenlighed prioritet",
+  "customer_service_value": "Værdi af kundeservice",
+  "need_for_plan_flexibility": "Behov for plan fleksibilitet",
+  "latest_tech_importance": "Vigtighed af nyeste teknologi",
+  "bundling_services_preference": "Pakkeløsninger præference",
+  "fixed_rate_preference": "Fast rente præference"
 }

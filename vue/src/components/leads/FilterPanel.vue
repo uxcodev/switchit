@@ -137,10 +137,10 @@ export default {
       // return services from store, but only where the category is active in categoryAccess
       const services = this.$store.getters.services;
       const filteredServices = {};
-
       for (const [key, value] of Object.entries(services)) {
         // if (this.categoryAccess[key]?.status === true) {  // use this line instead of the next to make tab filters affect available filters in the filters panel
-        if (this.categoryAccess[key]) {
+        // NOTE: 'general' is added on mount, so it will always be available
+          if (this.categoryAccess[key]) {
           filteredServices[key] = value;
         }
       }
@@ -330,6 +330,7 @@ export default {
     },
   },
   mounted() {
+    this.categoryAccess.general = {selected: false, status: true}
     this.getFiltersets()
   },
 };

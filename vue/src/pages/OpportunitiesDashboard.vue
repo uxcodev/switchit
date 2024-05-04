@@ -309,26 +309,16 @@ export default {
     }
 
     async function loadLeads() {
+    console.log("store.getters.filters")
+    console.log(store.getters.filters)
         let response = await switchit.getLeads({
-          take: 999999, 
+          take: pg.limit, 
           skip: 0,
           filterData: store.getters.filters || null,
         });
-        leadCount.value = response.length;
-        pg.pageCount = Math.ceil(response.length / pg.limit);
-        console.log('getLeads', response.length, pg.pageCount, pg.limit, response);
-
-        // NOTE: temporarily doing two api calls - one to count total leads, 
-        // and one to get the number of leads for this page. in the future,
-        // we should be able to get the total count from the first call by
-        // passing a flag to the api
-
-        response = await switchit.getLeads({
-          take: pg.limit,
-          skip: 0,
-          filterData: store.getters.filters || null,
-        });
-
+        leadCount.value = response.totalAmount;
+        pg.pageCount = Math.ceil(leadCount.value / pg.limit);
+        console.log('getLeads', leadCount.value, pg.pageCount, pg.limit, response);
         leads.value = response;
     }
 
@@ -430,7 +420,7 @@ export default {
         selected: selectedLeads.value.includes(lead.id),
       }));
 
-      leadCount.value = response.count;
+      leadCount.value = response.totalAmount;
       selectVisible.value = false
     });
 

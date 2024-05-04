@@ -4,15 +4,68 @@
 const service_data = {
   general: {
     identifying_data: {
-      first_name: { type: String, required: false, filter_type: "string" },
-      last_name: { type: String, required: false, filter_type: "string" },
-      address: { type: String, required: false, filter_type: "string" },
+      // first_name: { type: String, required: false, filter_type: "string" },
+      // last_name: { type: String, required: false, filter_type: "string" },
+      // address: { type: String, required: false, filter_type: "string" },
       postal_code: { type: String, required: false, filter_type: "string" },
       country: { type: String, required: false, filter_type: "string" },
       customer_number: { type: String, required: false, filter_type: "string" },
-      dob: { type: String, required: false, filter_type: "string" },
-      household_members: { type: Number, required: false, filter_type: "range_number" },
-      phone: { type: Number, required: false, filter_type: "identifier_number" },
+      dob: { type: String, required: false, filter_type: "date" },
+      household_members_adults: { type: Number, required: false, filter_type: "range_number" },
+      household_members_children: { type: Number, required: false, filter_type: "range_number" },
+      // phone: { type: Number, required: false, filter_type: "identifier_number" },
+    },
+    preference_data: {
+      /*  fields are:
+      - Saving money importance?
+      - Quality over cost?
+      - Eco-friendliness priority?
+      - Customer service value?
+      - Need for plan flexibility?
+      - Latest tech importance?
+      - Bundling services preference?
+      - Fixed rate preference?
+      */
+      saving_money_importance: {
+        label: "Saving money importance?",
+        filter_type: "range_slider",
+        range: [0, 10]
+      },
+      quality_over_cost: {
+        label: "Quality over cost?",
+        filter_type: "range_slider",
+        range: [0, 10]
+      },
+      eco_friendly_priority: {
+        label: "Eco-friendliness priority?",
+        filter_type: "range_slider",
+        range: [0, 10]
+      },
+      customer_service_value: {
+        label: "Customer service value?",
+        filter_type: "range_slider",
+        range: [0, 10]
+      },
+      need_for_plan_flexibility: {
+        label: "Need for plan flexibility?",
+        filter_type: "range_slider",
+        range: [0, 10]
+      },
+      latest_tech_importance: {
+        label: "Latest tech importance?",
+        filter_type: "range_slider",
+        range: [0, 10]
+      },
+      bundling_services_preference: {
+        label: "Bundling services preference?",
+        filter_type: "range_slider",
+        range: [0, 10]
+      },
+      fixed_rate_preference: {
+        label: "Fixed rate preference?",
+        filter_type: "range_slider",
+        range: [0, 10]
+      }
     }
   },
   mobile: {
@@ -199,6 +252,11 @@ const service_data = {
 
 // I'd like to not have to hard code this, but is there somewhere this could be stored in backend?
 const categories = {
+  // general: {
+  //   selected: false,
+  //   icon: "info",
+  //   code: 1
+  // },
   mobile: {
     selected: false,
     icon: "smartphone",

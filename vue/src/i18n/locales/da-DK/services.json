@@ -9,6 +9,8 @@
 	"customer_number": "Kundenummer",
 	"dob": "Fødselsdato",
 	"household_members": "Antal personer i husstanden",
+  "household_members_adults": "Antal voksne i husstanden",
+  "household_members_children": "Antal børn i husstanden",
 	"phone": "Telefon",
 	"mobile": "Mobiltelefon",
 	"interaction_data": "Interaktionsdata",

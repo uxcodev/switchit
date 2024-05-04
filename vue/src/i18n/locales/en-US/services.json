@@ -9,6 +9,8 @@
 	"customer_number": "Customer Number",
 	"dob": "Date of Birth",
 	"household_members": "Household Members",
+  "household_members_adults": "Adults in Household",
+  "household_members_children": "Children in Household",
 	"phone": "Phone",
 	"mobile": "Mobile",
 	"interaction_data": "Interaction Data",
@@ -62,5 +64,16 @@
 	"home_insurance": "Home Insurance",
 	"add_ons": "Add-Ons",
 	"alarm_discount": "Alarm Discount",
-	"broadband": "Broadband"
+	"broadband": "Broadband",
+  
+  "saving_money_importance": "Saving money importance",
+  "quality_over_cost": "Quality over cost?",
+  "eco_friendly_priority": "Eco-friendliness priority",
+  "customer_service_value": "Customer service value",
+  "need_for_plan_flexibility": "Need for plan flexibility",
+  "latest_tech_importance": "Latest tech importance",
+  "bundling_services_preference": "Bundling services preference",
+  "fixed_rate_preference": "Fixed rate preference"
+  
 }
+

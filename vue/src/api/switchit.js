@@ -399,6 +399,7 @@ export default {
       let url = "/api/v1/leads";
       const response = await _axios.get(`${url}?${query}`);
       leads = response.data.model;
+      leads.totalAmount = response.data.totalAmount
 
       console.log('leads response', leads)
       for (let lead of leads) {

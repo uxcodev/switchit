@@ -8,6 +8,7 @@ const service_data = {
       // last_name: { type: String, required: false, filter_type: "string" },
       // address: { type: String, required: false, filter_type: "string" },
       postal_code: { type: String, required: false, filter_type: "string" },
+      geo_location: { type: Number, required: false, filter_type: "range_number" },
       country: { type: String, required: false, filter_type: "string" },
       customer_number: { type: String, required: false, filter_type: "string" },
       dob: { type: String, required: false, filter_type: "date" },

@@ -16,6 +16,11 @@
     </div>
     <div class="tab-content mb10"> 
       
+      <div v-if="currentTab == 'google'">
+        <h3>Google Maps</h3>
+        <AddressAutocomplete :init_address="null" @updateAddress="updateAddress" />
+      </div>
+
       <form class="switchit-form sm" v-if="currentTab == 'edit' || currentTab == 'create'" @submit.prevent="submitBusinessPartner()">
         <div class="group" v-if="currentTab == 'edit'">
           <label for="name">id</label>
@@ -268,10 +273,12 @@ import api from '@/api/api';
 // components 
 import ModalWindow from '@/components/ui/ModalWindow.vue';
 import TagInput from '@/components/ui/TagInput.vue'
+import AddressAutocomplete from '@/components/ui/AddressAutocomplete.vue';
 // import bitwiseDecode from '@/helpers/bitwise'
 
 export default {
   components: {
+    AddressAutocomplete,
     ModalWindow,
     TagInput
   },
@@ -306,13 +313,14 @@ export default {
         serviceTypes: [1]
       },
       tabs: [
+        { id: 'google', label: 'google'},
         { id: 'get', label: 'getBusinessPartners'},
         { id: 'view', label: 'viewBusinessPartner'},
         { id: 'create', label: 'createBusinessPartner' },
         { id: 'edit', label: 'editBusinessPartner' },
         { id: 'other', label: 'other' },
       ],
-      currentTab: 'other',
+      currentTab: 'google',
       componentKey: 0
     };
   },
@@ -331,6 +339,9 @@ export default {
   },
   methods: {
   
+    async updateAddress(place) {
+      console.log('place: ', place)
+    },
     triggerEditBP(id) {
       this.businessPartnerId = id
       this.currentTab = 'edit'

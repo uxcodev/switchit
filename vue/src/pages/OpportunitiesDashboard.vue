@@ -110,6 +110,7 @@
             <div class="table-header-content-sm">Match</div>
             <div class="table-header-content-med">User ID</div>
             <div class="table-header-content-lg">Services</div>
+            <!-- <div class="table-header-content-sm">Documents</div> -->
             <div class="table-header-content-sm">Value</div>
             <div class="table-header-content-sm last"></div>
           </div>
@@ -135,6 +136,9 @@
               </div>
               <div class="access_icons table-row-content-lg">
                 <IconsCategoryAccess :access="lead.data"/>
+              </div>
+              <div class="table-row-content-sm">
+                <!-- <span v-if="lead.documents?.length" class="material-symbols-outlined table_icon">description</span> -->
               </div>
               <div class="table-row-content-sm">
                 {{ lead.value }} €
@@ -309,16 +313,13 @@ export default {
     }
 
     async function loadLeads() {
-    console.log("store.getters.filters")
-    console.log(store.getters.filters)
         let response = await switchit.getLeads({
           take: pg.limit, 
           skip: 0,
           filterData: store.getters.filters || null,
         });
-        leadCount.value = response.totalAmount;
+        leadCount.value = response?.totalAmount;
         pg.pageCount = Math.ceil(leadCount.value / pg.limit);
-        console.log('getLeads', leadCount.value, pg.pageCount, pg.limit, response);
         leads.value = response;
     }
 
@@ -420,7 +421,7 @@ export default {
         selected: selectedLeads.value.includes(lead.id),
       }));
 
-      leadCount.value = response.totalAmount;
+      leadCount.value = response?.totalAmount;
       selectVisible.value = false
     });
 

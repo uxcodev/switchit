@@ -15,12 +15,20 @@
           <button v-if="mode === 'Edit'" @click="updateOffer" :disabled="!changed">Update offer</button>
           <button v-else @click="createOffer" :disabled="!changed">Submit offer</button>
         </div>
+
         <div v-if='lead?.value' class="pageheader__boxes stats">
           <!-- <div v-for="i in 3" :key='i'><span :class='i'></span></div> -->
           <div class="card stats-rating">
             <div class="card-top">
               <div v-if='leads.length === 1' class="stats-title">
                 User ID: {{ lead.userId }}
+                <!-- show link to download documents -->
+                <div v-if="lead.documents.length" class="mt5">
+                  {{ lead.documents.length }} document{{ lead.documents.length > 1 ? 's' : '' }} available for download
+                  <li class="document" v-for="(document, key) in lead.documents" :key="key">
+                    <a :href="document.url" target="_blank"><span class="material-symbols-outlined">description</span>{{ document.type }}</a>
+                  </li>
+                </div>
               </div>
               <div v-else class="stats-title">
                 Users selected: {{ leads.length }}
@@ -134,14 +142,14 @@
               <!-- <button>Upload offer</button> -->
             </div>
             <div class="offer-group-item" v-for="(field, key) in offer_template.offer[category]" :key='key'>
-              
+
               <!-- left column -->
               <label>{{ $t(key) }}</label>
-              
+
               <!-- center column -->
               <!-- if lead exists, show value for that key in lead -->
               <div class="fixed current_offer_detail">
-                <div v-if="lead?.data[category]?.interaction_data[key]">{{ field.prefix }} {{lead.data[category].interaction_data[key]}} {{ field.suffix }}</div>
+                <div v-if="lead?.data[category]?.interaction_data[key]">{{ field.prefix }} {{ lead.data[category].interaction_data[key] }} {{ field.suffix }}</div>
                 <div v-else>N/A</div>
               </div>
 
@@ -261,6 +269,10 @@ export default {
           medical_insurance: {
             debit_amount: { value: null, type: 'Number', suffix: '€' },
           },
+
+          pension: {
+
+          },
         }
       },
 
@@ -363,16 +375,16 @@ export default {
         }, */
     async createOffer() {
 
-    /*      let body = {
-        "householdId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        "businessPartnerId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        "offerStatusType": 0,
-        "title": "string",
-        "comment": "string",
-        "startDate": "2024-03-07T16:50:29.532Z",
-        "endDate": "2024-03-07T16:50:29.532Z"
-      } 
-      */
+      /*      let body = {
+          "householdId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "businessPartnerId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "offerStatusType": 0,
+          "title": "string",
+          "comment": "string",
+          "startDate": "2024-03-07T16:50:29.532Z",
+          "endDate": "2024-03-07T16:50:29.532Z"
+        } 
+        */
       // let householdIs = this.leads.length ? this.leads.map(lead => lead.householdId) || [this.lead.householdId] : [this.lead.householdId]
       let body = {
         "householdIds": this.leads,
@@ -390,20 +402,20 @@ export default {
       let response = await this.$switchit.createOffer(body)
       console.log('response', response)
       if (response) {
-        let query = this.lead?.householdId ? {householdId: this.lead?.householdId} : null
-    
+        let query = this.lead?.householdId ? { householdId: this.lead?.householdId } : null
+
         if (this.lead?.householdId) {
           this.$router.push({ path: '/offers', query: query })
         } else {
           this.$router.push({ path: '/offers' })
         }
       }
-  /*     await this.trimOfferObj()
-      let leads = this.leads || [this.lead._id]
-      let response = await this.$switchit.createOffer(this.offer_obj, leads)
-      if (response) {
-        this.$router.push({ path: '/offers' })
-      } */
+      /*     await this.trimOfferObj()
+          let leads = this.leads || [this.lead._id]
+          let response = await this.$switchit.createOffer(this.offer_obj, leads)
+          if (response) {
+            this.$router.push({ path: '/offers' })
+          } */
     },
     async updateOffer() {
       await this.trimOfferObj()
@@ -473,17 +485,17 @@ export default {
       if (this.leads.length === 1) {
         leadId = this.leads[0]
       }
-    } 
-    
+    }
+
     if (leadId) {
       // NOTE: Currently, there is no 'getLead' method in the switchit api, 
       // so we have to get all leads and find the one we need
-      
+
       let all_leads = await this.$switchit.getLeads()
       this.lead = all_leads.find(lead => lead.id === leadId)
       this.leads = [leadId]
     }
-    if(!this.leads?.length) {
+    if (!this.leads?.length) {
       this.$toast_error.show({ message: 'No leads selected' })
       return
     }
@@ -513,6 +525,21 @@ export default {
 
 <style lang="sass" scoped>
 @import "/src/styles/styles.sass"
+
+.document
+  display: flex
+  // align-items: center
+  gap: 10px
+  padding: 10px 0
+  a
+    display: flex
+    align-items: center
+    gap: 6px
+    color: $dark
+    text-decoration: none
+    cursor: pointer
+    &:hover
+      color: $primary
 
 .container
   padding-bottom: 100px

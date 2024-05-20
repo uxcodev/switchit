@@ -2,6 +2,13 @@
 import axios from 'axios';
 import auth0 from '@/helpers/auth0.js';
 import jwtDecode from 'jwt-decode';
+
+// this allows use of global variables
+let toast_error = null;
+export function initialize(app) {
+  toast_error = app.config.globalProperties.$toast_error
+}
+
 // import fake_data from '@/api/fake_data.js'
 // import node_api from '@/api/api.js'
 
@@ -32,6 +39,7 @@ _axios.interceptors.request.use(async (config) => {
   config.headers.Authorization = `Bearer ${token}`;
   return config;
 }, (error) => {
+  toast_error.show({ message: "There was an error while trying to authorize your request" })
   return Promise.reject(error);
 });
 
@@ -41,6 +49,7 @@ _axios.interceptors.response.use((response) => {
   if (error?.response?.status === 401) {
     console.log('401 error')
   }
+  toast_error.show({ message: "There was an error processing your request" })
   return Promise.reject(error);
 });
 
@@ -161,7 +170,6 @@ export default {
     try {
       let url = "/api/v1/companies";
       const response = await _axios.post(url, body);
-      console.log('response', response)
       response.data.ok = response?.statusText === "OK"
 
       // if (response.status === 401) {
@@ -177,7 +185,6 @@ export default {
     try {
       let url = "/api/v1/companies/import";
       const response = await _axios.post(url, body);
-      console.log('response', response)
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
@@ -206,7 +213,6 @@ export default {
     try {
       let url = `/api/v1/companies/${id}`;
       const response = await _axios.delete(url);
-      console.log('deleteCompany response', response)
       response.data.ok = response?.statusText === "OK"
       return response.data;
     } catch (err) {
@@ -245,7 +251,6 @@ export default {
     try {
       let url = `/api/v1/companys/${id}`;
       let response = await _axios.get(url)
-      console.log(response)
       return response.data;
     } catch (err) {
       console.error(err);
@@ -264,7 +269,6 @@ export default {
       let url = `/api/v1/companys/${id}?includeCompanyDomains=${includeCompanyDomains}&includeCompanyCountrys=${includeCompanyCountrys}&includeCompanyIbans=${includeCompanyIbans}&includeCompanyServiceTypes=${includeCompanyServiceTypes}&includeCompanyPsd2Handles=${includeCompanyPsd2Handles}`;
 
       let response = await _axios.get(url)
-      console.log(response)
       return response.data;
     } catch (err) {
       console.error(err);
@@ -379,7 +383,6 @@ export default {
   async getLeads(body) {
     let leads = []
     try {
-      console.log('getLeads body', body)
 
       let query = ''
       if (body) {
@@ -401,7 +404,6 @@ export default {
       leads = response.data.model;
       leads.totalAmount = response.data.totalAmount
 
-      console.log('leads response', leads)
       for (let lead of leads) {
 
         let validJson = {}
@@ -432,9 +434,15 @@ export default {
         lead.data = lead.serviceFields
       }
 
+      // ****** TESTING!!! ******
+
+      // leads[0].documents = [{ type: 'invoice', url: 'https://drive.google.com/file/d/15uuKOH-W1l-8yqj9rHxr6rdZKTwiMcT3/view' }]
+      leads[0].documents = []
       return leads;
-    } catch (err) {
-      console.error(err);
+    }
+    catch (err) {
+      console.error('getLeads error:', err);
+      // return { error: err }
     }
   },
 
@@ -451,7 +459,6 @@ export default {
   async createLead(body) {
     try {
       body = JSON.stringify(body);
-      console.log('body', body)
       let url = "/api/v1/leads";
       const response = await _axios.post(url, body);
       return response.data;
@@ -467,7 +474,6 @@ export default {
       // body = JSON.stringify(body);
       let url = "/api/v1/offers";
       const response = await _axios.post(url, body);
-      console.log('createOffer response:  ', response)
       return response.status;
     } catch (err) {
       console.error(err);

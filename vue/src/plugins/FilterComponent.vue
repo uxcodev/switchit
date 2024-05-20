@@ -6,19 +6,33 @@
       <label>filterData: {{ filterData }}</label>
     <label>category: {{ category }}</label>
     <label>dataType: {{ dataType }}</label> -->
-  
-  
+
+
     <!-- String -->
-  
+
     <div v-if="type === 'string'">
       <div class="input_group">
         <input name="string" type="text" :class="filterValue ? '' : 'inactive'" placeholder="" v-model="filterValue" @input="onFilterChanged" />
         <div class="legend">includes</div>
       </div>
     </div>
-  
+
+
+    <!-- Address autocomplete - Coordinates -->
+    
+    <div v-if="type === 'coordinates'">
+      <div class="input_group">
+        <AddressAutocomplete :iid="'location'" :class="filterValue ? '' : 'autocomplete_inactive'" @updateAddress="updateAddress" />
+        <!-- add input box to set a distance  -->
+        <div v-if="filterValue" class="legend">{{ filterValue.lat }}, {{ filterValue.lng }}</div>
+        <div class="mt5  inline" >Within <input name="distance" type="number" :class="filterValue ? '' : 'inactive'" placeholder="0" v-model="radius" @input="onFilterChanged" /> kms</div>
+        <!-- <div v-if="filterValue" class="legend">Within 50 kms of {{ filterValue.lat }}, {{ filterValue.lng }}</div> -->
+        <!-- <div v-else class="legend">Within {{ radius }} kms</div> -->
+      </div>
+    </div>
+
     <!-- Numerical identifier (account number, phone, etc)-->
-  
+
     <div class="number" v-if="type === 'identifier_number'">
       <div class="input_group">
         <input name="from" type="number" :class="filterRange[0] ? '' : 'inactive'" placeholder="0" v-model="filterRange[0]" @input="onFilterChanged" />
@@ -29,9 +43,9 @@
         <div class="legend">to</div>
       </div>
     </div>
-  
+
     <!-- Range number -->
-  
+
     <div class="number" v-if="type === 'range_number'">
       <div class="input_group">
         <input name="from" type="number" :class="filterRange[0] ? '' : 'inactive'" placeholder="0" v-model="filterRange[0]" @input="onFilterChanged" />
@@ -42,9 +56,9 @@
         <div class="legend">to</div>
       </div>
     </div>
-  
+
     <!-- Range amount -->
-  
+
     <div class="number" v-if="type === 'range_amount'">
       <div class="input_group">
         <input name="from" type="number" :class="filterRange[0] ? '' : 'inactive'" placeholder="0" v-model="filterRange[0]" @input="onFilterChanged" />
@@ -55,7 +69,7 @@
         <div class="legend">to</div>
       </div>
     </div>
-  
+
     <!-- Range slider -->
     <div v-if="type === 'range_slider'" class="slider_container">
       <!-- <Slider class="slider" v-model="filterRange" :min="filterData.range[0]" :max="filterData.range[1]" showTooltip="drag" @change="onFilterChanged" tooltipPosition="bottom" /> -->
@@ -69,9 +83,9 @@
         </span>
       </div>
     </div>
-  
+
     <!-- Amount -->
-  
+
     <div class="number" v-if="type === 'amount'">
       <div class="input_group">
         <input name="from" type="number" :class="filterRange[0] ? '' : 'inactive'" placeholder="0" v-model="filterRange[0]" @input="onFilterChanged" />
@@ -82,24 +96,24 @@
         <div class="legend">to</div>
       </div>
     </div>
-  
+
     <!-- Date -->
-  
+
     <div class="date" v-else-if="type === 'date'">
       <div class="input_group">
         <input name="from" type="date" :class="filterRange[0] ? '' : 'inactive'" v-model="filterRange[0]" @input="onFilterChanged" />
         <div class="legend">from</div>
       </div>
       <div class="input_group">
-        <input  name="to" type="date" :class="filterRange[1] ? '' : 'inactive'" v-model="filterRange[1]" @input="onFilterChanged" />
+        <input name="to" type="date" :class="filterRange[1] ? '' : 'inactive'" v-model="filterRange[1]" @input="onFilterChanged" />
         <div class="legend">to</div>
       </div>
     </div>
-  
+
     <!-- Date range -->
-  
+
     <div class="range_date" v-if="type === 'range_date'">
-  
+
       Start date:
       <div class="date">
         <div class="input_group">
@@ -123,9 +137,9 @@
         </div>
       </div>
     </div>
-  
+
     <!-- Boolean -->
-  
+
     <div v-if="type === 'boolean'">
       <label class="checkbox-label">
         <input name="boolean" class="checkbox" type="checkbox" v-model="filterValue" @input="onFilterChanged" />
@@ -137,9 +151,11 @@
 
 <script>
 import Slider from '@vueform/slider'
+import AddressAutocomplete from '@/components/ui/AddressAutocomplete.vue';
 
 export default {
   components: {
+    AddressAutocomplete,
     Slider
   },
   props: ['filterData', 'dataType', 'filterKey', 'category', 'currentValue'],
@@ -149,6 +165,7 @@ export default {
       filterValue: null,
       filterRange: null,
       filterRangeEnd: null,
+      radius: 50,
       types_ranges: ['date', 'range_slider', 'range_number', 'identifier_number', 'range_amount'],
       timer: null,
       loaded: false
@@ -159,7 +176,7 @@ export default {
       return this.filterData?.filter_type || null;
     },
     value() {
-      console.log('filterData',this.filterData)
+      // console.log('filterData', this.filterData)
       return this.filterData?.value || this.filterData?.values || null;
     }
   },
@@ -181,7 +198,6 @@ export default {
   methods: {
     updateComponentState(overrideValue = null) {
       if (this.type === 'range_date') {
-        console.log('type is date. value: ', this.value)
         this.filterRange = overrideValue?.from || this.value?.from || [null, null];
         this.filterRangeEnd = overrideValue?.to || this.value?.to || [null, null];
       } else if (this.type === 'range_slider') {
@@ -204,19 +220,23 @@ export default {
         } else {
           value = this.filterValue;
         }
-        if (value !== null) {
-          this.$emit('filter-changed', {
-            category: this.category,
-            key: this.filterKey,
-            filterType: this.type,
-            dataType: this.dataType,
-            value: value
-          });
-        }
-        console.log('value: ', value)
+
+        const body = {
+          category: this.category,
+          key: this.filterKey,
+          filterType: this.type,
+          dataType: this.dataType,
+          value: value
+        };
+        this.$emit('filter-changed', body);
       }, 1000);
+    },
+    updateAddress(place) {
+      this.filterValue = place ? {...place.coordinates, radius: this.radius} : null
+      this.onFilterChanged();
     }
   },
+
   mounted() {
     // if (this.type === 'range_slider') {
     //   this.filterRange = [0, 10]
@@ -245,6 +265,14 @@ input
   &::placeholder
     color: #aaa
 
+.inline
+  display: flex
+  align-items: center
+  justify-content: flex-start
+  gap: 5px
+  input 
+    // prevent from stretching
+    flex: 0 0 70px
 .range_date
   display: flex
   flex-direction: column
@@ -252,4 +280,6 @@ input
 .inactive
   background: rgba(255, 255, 255, .5)
 
+.autocomplete_inactive
+  opacity: .5
 </style>

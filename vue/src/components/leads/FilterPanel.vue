@@ -159,27 +159,23 @@ export default {
       },
       deep: true,
     },
-    filterObj: {
-      handler(val) {
-        console.log('filtersObj watched: ', val)
-        console.log('filters from this.filters: ', this.filters)
-        console.log('filters from store getters', this.$store.getters.filters)
-        // this.loadFilters()
-      },
-      deep: true,
-    },
+    // filterObj: {
+    //   handler(val) {
+    //     console.log('filtersObj watched: ', val)
+    //     console.log('filters from this.filters: ', this.filters)
+    //     console.log('filters from store getters', this.$store.getters.filters)
+    //   },
+    //   deep: true,
+    // },
     filters: {
       handler(val) {
-        console.log('filters watched: ', val)
         this.filterObj = { ...val };
       },
       deep: true,
     },
     filtersChangedExternally: {
-      handler(val) {
-        console.log('filtersChangedExternally watched: ', val)
+      handler() {
         this.loadFilters(this.$store.getters.filters);
-
       },
       deep: true,
     },
@@ -187,7 +183,6 @@ export default {
   },
   methods: {
     showFiltersFrom(creator) {
-      console.log('showFiltersFrom called with creator: ', creator)
       if (creator === 'all') {
         this.getAllFiltersets()
       } else if (creator === 'company') {
@@ -258,7 +253,6 @@ export default {
 
     async getFiltersetsByUserEmail() {
       let email = this.$auth0.user._value.email
-      console.log('email: ', email)
       let businessPartnerId = this.$store.getters.activeBusinessPartner.id
       this.filtersets = await api.getFiltersetsByUserEmail(businessPartnerId, email)
     },
@@ -312,7 +306,6 @@ export default {
     },
     loadFilters(filters) {
       // if(filters || this.filters) {
-      console.log('loadFilters called with filters: ', filters)
       this.filterObj = filters ? { ...filters } : { ...this.filters };  // using spread operator for immutability
 
       // Update the selected categories based on keys of the filterObj

@@ -13,6 +13,7 @@ const t = (key) => {
 // Use the translate function
 // console.log(t("NOT_FOUND_OR_NOT_ALLOWED"));
 
+
 export default {
   install: (app, options) => {
     const container = document.createElement('div');

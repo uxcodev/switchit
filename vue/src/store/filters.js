@@ -7,13 +7,14 @@ const service_data = {
       // first_name: { type: String, required: false, filter_type: "string" },
       // last_name: { type: String, required: false, filter_type: "string" },
       // address: { type: String, required: false, filter_type: "string" },
-      postal_code: { type: String, required: false, filter_type: "string" },
-      geo_location: { type: Number, required: false, filter_type: "range_number" },
-      country: { type: String, required: false, filter_type: "string" },
+      // postal_code: { type: String, required: false, filter_type: "string" },
+      // geo_location: { type: Number, required: false, filter_type: "range_number" },
+      // country: { type: String, required: false, filter_type: "country" },
+      // date_of_birth: { type: String, required: false, filter_type: "date" },
+      geo_location: { type: String, required: false, filter_type: "coordinates" },
       customer_number: { type: String, required: false, filter_type: "string" },
-      dob: { type: String, required: false, filter_type: "date" },
-      household_members_adults: { type: Number, required: false, filter_type: "range_number" },
-      household_members_children: { type: Number, required: false, filter_type: "range_number" },
+      number_of_adults_in_household: { type: Number, required: false, filter_type: "range_number" },
+      number_of_children_in_household: { type: Number, required: false, filter_type: "range_number" },
       // phone: { type: Number, required: false, filter_type: "identifier_number" },
     },
     preference_data: {
@@ -293,6 +294,11 @@ const categories = {
     icon: "health_and_safety",
     code: 128
   },
+  pension: {
+    selected: false,
+    icon: "account_balance",
+    code: 256
+  },
   // banking: {
   //   selected: false,
   //   icon: "credit_card",
@@ -394,7 +400,6 @@ export default {
   },
   actions: {
     setFilters(context, filters) {
-      console.log('vue store setFilters', filters)
       context.commit('setFilters', filters);
     },
     setFilteredServices(context, filters) {

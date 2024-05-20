@@ -9,6 +9,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 const app = createApp(App);
 
+
 /* make api available throughout app */
 
 import api from "@/api/api";
@@ -43,6 +44,11 @@ app.component('filter-component', FilterComponent);
 import ToastPlugin from '@/plugins/toast';
 app.use(ToastPlugin);
 
+/* initialize switchit to allow use of global variables */
+import { initialize } from './api/switchit';
+initialize(app);
+
+
 import forms from '@/plugins/forms'
 app.use(forms)
 
@@ -75,6 +81,7 @@ app.use(auth0);
 
 import router from "./router";
 app.use(router)
+
 
 
 app.mount('#app')

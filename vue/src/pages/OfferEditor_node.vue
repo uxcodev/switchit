@@ -246,6 +246,10 @@ export default {
           medical_insurance: {
             debit_amount: { value: null, type: 'Number', suffix: '€' },
           },
+          pension: {
+            monthly_payment: { value: null, type: 'Number', suffix: '€' },
+            one_time_payment: { value: null, type: 'Number', suffix: '€' },
+          },
         }
       },
 

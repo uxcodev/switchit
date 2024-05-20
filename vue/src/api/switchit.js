@@ -437,7 +437,7 @@ export default {
       // ****** TESTING!!! ******
 
       // leads[0].documents = [{ type: 'invoice', url: 'https://drive.google.com/file/d/15uuKOH-W1l-8yqj9rHxr6rdZKTwiMcT3/view' }]
-      leads[0].documents = []
+      if (leads.length) { leads[0].documents = [] }
       return leads;
     }
     catch (err) {

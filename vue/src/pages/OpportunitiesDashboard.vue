@@ -298,6 +298,12 @@ export default {
     // ***** Leads *****
 
     onMounted(async () => {
+      // check for 'filterData' in the URL
+      if (router.currentRoute.value.query.filterData) {
+        console.log('filterData found in query',router.currentRoute.value.query.filterData)
+        store.dispatch('setFilters', JSON.parse(router.currentRoute.value.query.filterData));
+        store.dispatch('filtersChanged');
+      }
       await loadLeads();
     });
 

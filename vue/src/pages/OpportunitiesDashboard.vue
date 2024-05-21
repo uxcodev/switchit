@@ -303,8 +303,9 @@ export default {
         console.log('filterData found in query',router.currentRoute.value.query.filterData)
         store.dispatch('setFilters', JSON.parse(router.currentRoute.value.query.filterData));
         store.dispatch('filtersChanged');
+      } else {
+        await loadLeads();
       }
-      await loadLeads();
     });
 
     function openLead(id) {

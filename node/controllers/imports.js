@@ -5,6 +5,11 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
+exports.test = async (req, res, next) => {
+  // just send a response
+  res.status(200).json({ message: "Success" });
+}
+
 exports.getMapping = async (req, res, next) => {
   let table = req.body.table;
   const jsonString = JSON.stringify(table, null, 2);
@@ -35,7 +40,7 @@ exports.getMapping = async (req, res, next) => {
   Use the keys from the JSON object in place of json_key. Figure out which keys are most related to which database fields. Please return only the Python dictionary as a JSON object without any additional text or explanation:
   `
   const chatCompletion = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
+    model: "gpt-4o",
     messages: [
       { role: "system", content: "You are a helpful assistant." },
       { role: "user", content: prompt },

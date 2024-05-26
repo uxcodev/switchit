@@ -15,7 +15,8 @@
         <div class="hit-area" :class="{ 'drag-over': isDragOver }" @dragenter.prevent="dragEnter" @dragleave.prevent="dragLeave" @dragover.prevent @drop.prevent="handleDrop">
           {{ "Drag and drop your file here" }}
           <br><br>
-          {{ "All .csv, .xlsx, and .xls file types are supported" }}
+          <!-- {{ "All .csv, .xlsx, and .xls file types are supported" }} -->
+          {{ ".pdf file types are supported" }}
         </div>
       </div>
       <div v-if="jsonTable && !newTable" class="content table-container">
@@ -45,17 +46,17 @@
         <ImportedCompanies :table="newTable"></ImportedCompanies>
       </div>
     </div>
-    <div class="button-panel">
+    <!-- <div class="button-panel"> -->
       <!-- <div class="toggle-container">
         <label for="publish-toggle">Publish when done</label>
         <input type="checkbox" id="publish-toggle" />
       </div> -->
       <div class="buttons">
-        <button @click="cancel" class="cancel-btn">Cancel</button>
-        <button v-if="!newTable" :disabled="!jsonTable" @click="saveMap" class="save-btn">Import</button>
-        <button v-if="newTable" :disabled="!jsonTable" @click="doneImporting" class="save-btn">Done</button>
+        <button @click="cancel" class="button__secondary">Cancel</button>
+        <button v-if="!newTable" :disabled="!jsonTable" @click="saveMap" >Import</button>
+        <button v-if="newTable" :disabled="!jsonTable" @click="doneImporting" >Done</button>
       </div>
-    </div>
+    <!-- </div> -->
   </div>
 </template>
 
@@ -132,6 +133,14 @@ export default {
       return this.names
     },
     async handleDrop(event) {
+      
+      console.log('temporarily disabled')
+      
+      let block = true
+      if (block) {
+        this.$toast_warn.show('This feature is still under development' )
+        return
+      }
       this.isDragOver = false;
 
       const file = event.dataTransfer.files[0];
@@ -362,7 +371,12 @@ button
   color: #08f
 
 .buttons 
+  background: white
+  padding-top: 20px 
+  width: 100%
   display: flex
+  // flex-end
+  justify-content: flex-end
   gap: 20px
 
 

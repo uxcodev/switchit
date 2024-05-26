@@ -275,6 +275,16 @@ export default {
     }
   },
 
+  async getPensionUploads(householdId) {
+    try {
+      let url = `/api/v1/pension_uploads?householdId=${householdId}`;
+      const response = await _axios.get(url);
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
   async getServiceTypes() {
     try {
       return (await _axios.get("/api/v1/servicetypes")).data;

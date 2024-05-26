@@ -46,10 +46,10 @@
       </div>
     </div>
     <div class="button-panel">
-      <div class="toggle-container">
+      <!-- <div class="toggle-container">
         <label for="publish-toggle">Publish when done</label>
         <input type="checkbox" id="publish-toggle" />
-      </div>
+      </div> -->
       <div class="buttons">
         <button @click="cancel" class="cancel-btn">Cancel</button>
         <button v-if="!newTable" :disabled="!jsonTable" @click="saveMap" class="save-btn">Import</button>

@@ -448,6 +448,7 @@ export default {
 
   async createFilterset(fields) {
     try {
+      console.log('creating filterset:', fields)
       const body = {
         fields: fields,
       };

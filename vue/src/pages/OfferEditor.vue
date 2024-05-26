@@ -100,21 +100,23 @@
 
       </section>
 
-      <section v-for="(value, category) in categoryAccess" :key="category">
+      <section class="mt5"  v-for="(value, category) in filteredCategoryAccess" :key="category">
         <h1>{{ $t(category) }}</h1>
+        <div class="right form_actions">
+          <button @click="openModal('ImportOffer')" >Upload offer</button>
+        </div>
+
         <div class="cards lg switchit-form">
-          <!-- <div v-for="i in 2" :key='i'><span :class='i'></span></div> -->
-          <div class="card lg white offer-group" v-if="lead?.value">
+      
+          <!-- I don't remember why I made this section -->
+
+ <!--          <div class="card lg white offer-group" v-if="lead?.value">
             <div class="offer-group-header">
               <div class="offer-group-header-title">
                 User's current {{ $t(category) }} plan
               </div>
-              <!-- <button style="opacity:0">Upload offer</button> -->
-            </div>
-            <!-- <pre>category: {{ $t(category)}}</pre> -->
-            <!-- look for results in lead.data where key name matches 'category' -->
 
-            <!-- <pre>{{ lead.data[category].interaction_data}}</pre> -->
+            </div>
             <div v-for="(value, key) in lead.data[category]?.interaction_data" :key='key'>
               <div class="lead_data_obj" v-if="typeof value === 'object'">
                 <label>{{ $t(key) }}</label>
@@ -128,7 +130,7 @@
                 <div class="value">{{ value }}</div>
               </div>
             </div>
-          </div>
+          </div> -->
 
           <div class="card lg white offer-group">
             <div class="offer-group-item">
@@ -139,7 +141,6 @@
               <div class="fixed">
                 Your offer
               </div>
-              <!-- <button>Upload offer</button> -->
             </div>
             <div class="offer-group-item" v-for="(field, key) in offer_template.offer[category]" :key='key'>
 
@@ -184,12 +185,14 @@
 <script>
 
 import ModalWindow from '@/components/ui/ModalWindow.vue';
+import ImportOffer from '@/components/import/ImportOffer.vue';
 // import format_data from '@/helpers/format_data'
 // import FilterTabs from '@/components/ui/FilterTabs.vue';
 
 export default {
   components: {
     ModalWindow,
+    ImportOffer
     // FilterTabs
   },
 
@@ -333,12 +336,27 @@ export default {
       console.log('filtersChanged', this.$store.getters.filtersChanged)
       return this.$store.getters.filtersChanged
     },
+    filteredCategoryAccess() {
+      return Object.entries(this.categoryAccess)
+        .filter(([category]) => category !== 'general')
+        .reduce((obj, [key, value]) => {
+          obj[key] = value;
+          return obj;
+        }, {});
+    }
   },
   methods: {
     cancel() {
       this.$router.go(-1)
       this.$router.push({ path: '/offers' })
 
+    },
+    
+    openModal(component) {
+      this.modalComponent = component
+    },
+    closeModal() {
+      this.modalComponent = null
     },
     async applyFilterTabs(categories) {
       console.log('applyFilterTabs', categories)

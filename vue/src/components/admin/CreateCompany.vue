@@ -291,14 +291,7 @@ export default {
   width: 100%
   button
     padding: 4px 8px
-.button__cancel
-  width: 100%
-  display: flex
-  padding: 16px
-  justify-content: center
-  // disable text selection
-  user-select: none
-  -webkit-user-select: none
+
   
 .fullwidth
   width: 100%

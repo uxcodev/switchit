@@ -94,6 +94,7 @@
 
       <section v-for="(value, category) in categoryAccess" :key="category">
         <h1>{{ $t(category) }}</h1>
+        <button style="opacity:0">Upload offer</button>
         <div class="cards lg switchit-form">
           <!-- <div v-for="i in 2" :key='i'><span :class='i'></span></div> -->
           <div class="card lg white offer-group" v-if="lead.value">
@@ -101,7 +102,6 @@
               <div class="offer-group-header-title">
                 User's current {{ $t(category) }} plan
               </div>
-              <button style="opacity:0">Upload offer</button>
             </div>
             <!-- <pre>category: {{ $t(category)}}</pre> -->
             <!-- look for results in lead.data where key name matches 'category' -->

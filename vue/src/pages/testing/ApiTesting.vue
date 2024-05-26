@@ -186,6 +186,7 @@
       <button @click="getFullCompanies()">getFullCompanies</button>
       <button @click="getCompany('585c5dec-5df8-4894-9976-8bf36baf5967')">getCompany</button>
       <button @click="getFullCompany('585c5dec-5df8-4894-9976-8bf36baf5967')">getFullCompany</button>
+      <button @click="getPensionUploads('25bf9156-b5f0-4c16-8ec9-a776354bb6a6')">getPensionUploads</button>
     </div>
     <h3>Misc</h3>
     <div class="buttons">
@@ -569,6 +570,10 @@ export default {
     async getFullCompanies() {
       this.companies = (await this.$switchit.getFullCompanies()).model
       console.log('this.companies: ', this.companies)
+    },
+    async getPensionUploads(householdId) {
+      let response = await this.$switchit.getPensionUploads(householdId)
+      console.log('response: ', response)
     },
     async getCompany(id) {
       let company = (await this.$switchit.getCompany(id)).model

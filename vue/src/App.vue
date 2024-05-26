@@ -55,7 +55,7 @@ export default {
       this.$store.dispatch('setAccess', access)
 
       // find activeUser in our database with the email address from Auth0
-/* 
+
       let email = this.auth0User.email
       let activeUser = await this.$api_node.getActiveUser(email)
       
@@ -77,7 +77,7 @@ export default {
       if (!store_user) {
         this.$store.dispatch('setActiveUser', store_user)
         // console.log('activeUser stored in vuex:', activeUser)
-      } */
+      }
     }
   },
   watch: {

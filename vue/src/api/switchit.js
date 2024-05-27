@@ -39,7 +39,7 @@ _axios.interceptors.request.use(async (config) => {
   config.headers.Authorization = `Bearer ${token}`;
   return config;
 }, (error) => {
-  toast_error.show({ message: "There was an error while trying to authorize your request" })
+  // toast_error.show({ message: "There was an error while trying to authorize your request" })
   return Promise.reject(error);
 });
 

@@ -103,7 +103,8 @@
       <section class="mt5"  v-for="(value, category) in filteredCategoryAccess" :key="category">
         <h1>{{ $t(category) }}</h1>
         <div class="right form_actions">
-          <button @click="openModal('ImportOffer')" >Upload offer</button>
+          <!-- <button @click="openModal('ImportOffer')" >Upload offer</button> -->
+          <button @click="$toast_warn.show('This feature is still under development' )">Upload offer</button>
         </div>
 
         <div class="cards lg switchit-form">

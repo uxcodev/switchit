@@ -25,7 +25,7 @@
         <AddressAutocomplete :iid="'location'" :class="filterValue ? '' : 'autocomplete_inactive'" @updateAddress="updateAddress" />
         <!-- add input box to set a distance  -->
         <div v-if="filterValue" class="legend">{{ filterValue.lat }}, {{ filterValue.lng }}</div>
-        <div class="mt5  inline" >Within <input name="distance" type="number" :class="filterValue ? '' : 'inactive'" placeholder="0" v-model="radius" @input="onFilterChanged" /> kms</div>
+        <div class="mt5  inline" >Within <input name="distance" type="number" :class="filterValue ? '' : 'inactive'" placeholder="0" v-model="radius" @input="updateAddress()" /> kms</div>
         <!-- <div v-if="filterValue" class="legend">Within 50 kms of {{ filterValue.lat }}, {{ filterValue.lng }}</div> -->
         <!-- <div v-else class="legend">Within {{ radius }} kms</div> -->
       </div>
@@ -165,6 +165,7 @@ export default {
       filterValue: null,
       filterRange: null,
       filterRangeEnd: null,
+      place: null,
       radius: 50,
       types_ranges: ['date', 'range_slider', 'range_number', 'identifier_number', 'range_amount'],
       timer: null,
@@ -232,6 +233,17 @@ export default {
       }, 1000);
     },
     updateAddress(place) {
+      if (!place) {
+        if (!this.place) {
+          return;
+        } else {
+          place = this.place;
+        }
+      } 
+      console.log('place', place)
+      if (place) {this.place = place} else {
+        return;
+      }
       this.filterValue = place ? {...place.coordinates, radius: this.radius} : null
       this.onFilterChanged();
     }

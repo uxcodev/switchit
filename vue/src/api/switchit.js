@@ -285,6 +285,16 @@ export default {
     }
   },
 
+  async getUploadedFile(id) {
+    try {
+      let url = `/api/v1/uploads/${id}`;
+      const response = await _axios.get(url);
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
   async getServiceTypes() {
     try {
       return (await _axios.get("/api/v1/servicetypes")).data;

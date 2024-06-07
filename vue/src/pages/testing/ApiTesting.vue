@@ -187,6 +187,7 @@
       <button @click="getCompany('585c5dec-5df8-4894-9976-8bf36baf5967')">getCompany</button>
       <button @click="getFullCompany('585c5dec-5df8-4894-9976-8bf36baf5967')">getFullCompany</button>
       <button @click="getPensionUploads('25bf9156-b5f0-4c16-8ec9-a776354bb6a6')">getPensionUploads</button>
+      <button @click="getUploadedFile('301b65db-2d18-4531-883c-ed71f1f20952')">getUploadedFile</button>
     </div>
     <h3>Misc</h3>
     <div class="buttons">
@@ -573,6 +574,10 @@ export default {
     },
     async getPensionUploads(householdId) {
       let response = await this.$switchit.getPensionUploads(householdId)
+      console.log('response: ', response)
+    },
+    async getUploadedFile(id) {
+      let response = await this.$switchit.getUploadedFile(id)
       console.log('response: ', response)
     },
     async getCompany(id) {

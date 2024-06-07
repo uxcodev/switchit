@@ -135,7 +135,7 @@
                 {{ lead.userId }}
               </div>
               <div class="access_icons table-row-content-lg">
-                <IconsCategoryAccess :access="lead.data"/>
+                <IconsCategoryAccess :access="lead.data" />
               </div>
               <div class="table-row-content-sm">
                 <!-- <span v-if="lead.documents?.length" class="material-symbols-outlined table_icon">description</span> -->
@@ -152,7 +152,7 @@
       </div>
       <div class="pagination">
         <!-- {{ pg }} -->
-        <button :disabled="pg.pageCount<=1" class="pagination-back active" @click="pg_back">
+        <button :disabled="pg.pageCount <= 1" class="pagination-back active" @click="pg_back">
           <span class="material-symbols-outlined">chevron_left</span>
         </button>
         <button @click="gotoPage(1)" v-if="!displayedPages.includes(1)">1</button>
@@ -160,7 +160,7 @@
         <button v-for="page in displayedPages" :key="page" @click="gotoPage(page)" :class="page === pg.currentPage ? 'active' : ''">{{ page }}</button>
         <div class="disabled" v-if="!displayedPages.includes(pg.pageCount)">...</div>
         <button @click="pg_last" v-if="!displayedPages.includes(pg.pageCount)">{{ pg.pageCount }}</button>
-        <button :disabled="pg.pageCount<=1" class="pagination-forward active" @click="pg_forward">
+        <button :disabled="pg.pageCount <= 1" class="pagination-forward active" @click="pg_forward">
           <span class="material-symbols-outlined">chevron_right</span>
         </button>
       </div>
@@ -288,8 +288,27 @@ export default {
         };
       }
 
-      store.dispatch('setFilters', filterObj);
+      // console.log('filterObj', filterObj)
+      const filtered = {};
+      for (const key in filterObj) {
+        if (filterObj[key].status === true) {
+          filtered[key] = {};
+        } else {
+          // delete the key
+          if (filtered[key]) {
+            delete filtered[key];
+          }
+        }
+      }
+
+      console.log('filtered', filtered)
+      store.dispatch('setFilters', filtered);
+
+      // store.dispatch('setFilters', filterObj);
       store.dispatch('filtersChanged');
+  
+      // load leads
+      
     }
 
 
@@ -300,7 +319,7 @@ export default {
     onMounted(async () => {
       // check for 'filterData' in the URL
       if (router.currentRoute.value.query.filterData) {
-        console.log('filterData found in query',router.currentRoute.value.query.filterData)
+        console.log('filterData found in query', router.currentRoute.value.query.filterData)
         store.dispatch('setFilters', JSON.parse(router.currentRoute.value.query.filterData));
         store.dispatch('filtersChanged');
       } else {
@@ -320,14 +339,15 @@ export default {
     }
 
     async function loadLeads() {
-        let response = await switchit.getLeads({
-          take: pg.limit, 
-          skip: 0,
-          filterData: store.getters.filters || null,
-        });
-        leadCount.value = response?.totalAmount;
-        pg.pageCount = Math.ceil(leadCount.value / pg.limit);
-        leads.value = response;
+
+      let response = await switchit.getLeads({
+        take: pg.limit,
+        skip: 0,
+        filterData: store.getters.filters || null,
+      });
+      leadCount.value = response?.totalAmount;
+      pg.pageCount = Math.ceil(leadCount.value / pg.limit);
+      leads.value = response;
     }
 
     // Modal window

@@ -5,8 +5,8 @@
       {{ value }} - {{ key }}
     </div> -->
     <div class="filter" :class="all ? 'active' : ''" @click="changeFilters('all')"><span>All</span></div>
-    <div v-for="(cat, key) in categories" :key="key" @click="changeFilters(key)" class="filter" :class="cat.status ? 'active' : ''">
-      <span class="icon material-symbols-outlined"> {{ categories[key].icon }}</span>
+    <div v-for="(cat, key) in filteredCategories" :key="key" @click="changeFilters(key)" class="filter" :class="cat.status ? 'active' : ''">
+      <span class="icon material-symbols-outlined"> {{ filteredCategories[key].icon }}</span>
       <span class="text">{{ $t(key) }}</span>
     </div>
   </div>
@@ -24,6 +24,14 @@ export default {
       all: true,
       categories: this.$store.getters.categories
     };
+  },
+  // a computed property called filteredCategories that is a copy of categories but with 'general' property removed
+  computed: {
+    filteredCategories() {
+      const { ...filteredCategories } = this.categories;
+      delete filteredCategories.general;
+      return filteredCategories;
+    }
   },
   methods: {
     select(resource_id) {

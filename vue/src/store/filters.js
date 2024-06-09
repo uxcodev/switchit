@@ -372,14 +372,14 @@ const categories = {
     icon: "house",
     code: 16
   },
-  car_insurance: {
-    selected: false,
-    icon: "directions_car",
-    code: 32
-  },
   home_insurance: {
     selected: false,
     icon: "verified_user",
+    code: 32
+  },
+  car_insurance: {
+    selected: false,
+    icon: "directions_car",
     code: 64
   },
   medical_insurance: {

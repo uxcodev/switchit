@@ -78,8 +78,31 @@ export default {
       },
     };
 
+
+    app.config.globalProperties.$toast_success = {
+      show(message) {
+        // toast.props = { ...toast.props, ...params };
+        render(toast, container);
+        if (!container.isConnected) {
+          document.body.appendChild(container);
+        }
+        console.log('message', message)
+        toast.component.proxy.show(
+          {
+            message: t(message),
+            type: "success",
+            icon: "",
+            duration: 6000,
+            key: Date.now(),
+          }
+        );
+      },
+    };
+
+
     app.provide('toast', app.config.globalProperties.$toast);
     app.provide('toast_warn', app.config.globalProperties.$toast_warn);
     app.provide('toast_error', app.config.globalProperties.$toast_error);
+    app.provide('toast_success', app.config.globalProperties.$toast_success);
   },
 };

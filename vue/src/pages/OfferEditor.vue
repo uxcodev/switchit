@@ -105,7 +105,7 @@
       <section class="mt5"  v-for="(value, category) in filteredCategoryAccess" :key="category">
         <h1>{{ $t(category) }}</h1>
         <div class="right form_actions">
-          <button @click="openUploadModal('ImportOffer', 'mobile')" >Upload offer</button>
+  <button @click="openUploadModal('ImportOffer', 'mobile')" >Upload offer</button>
         </div>
 
         <div class="cards lg switchit-form">

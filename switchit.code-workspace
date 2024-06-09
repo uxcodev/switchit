@@ -1,11 +1,11 @@
 {
 	"folders": [
 		{
-			"path": "vue"
+			"path": "node"
 		},
 		{
-			"path": "node"
+			"path": "vue"
 		}
 	],
-	"settings": {}
+  "settings": {}
 }

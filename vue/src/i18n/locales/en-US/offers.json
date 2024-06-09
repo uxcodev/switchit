@@ -26,5 +26,5 @@
   "fire_protection": "Fire protection",
   "water_damage_protection": "Water damage protection",
   "storm_damage_protection": "Storm damage protection",
-  "debit_amount": "Debit amount"
+  "total_due": "Debit amount"
   }

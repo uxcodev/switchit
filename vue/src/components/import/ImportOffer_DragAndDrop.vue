@@ -79,6 +79,7 @@ const _axios = axios.create({
 
 export default {
   components: { FieldMap, ImportedCompanies, LoaderAni },
+  emits: ['handleFile'],
   data() {
     return {
       names: [],
@@ -135,7 +136,16 @@ export default {
     async handleDrop(event) {
       
       console.log('temporarily disabled')
+      const selectedFile = event.dataTransfer.files[0];
+      const formData = new FormData();
+      formData.append('file', selectedFile);
       
+      // emit 'handleFile'
+      this.$emit('handleFile', formData);
+      
+      // const response = this.$switchit.uploadOffer(formData);
+      // console.log('response', response)
+
       let block = true
       if (block) {
         this.$toast_warn.show('This feature is still under development' )
@@ -146,6 +156,9 @@ export default {
       const file = event.dataTransfer.files[0];
       
       let type = this.getFileType(file)
+      console.log('type', type)
+
+      
       if (type === "excel") {
         console.log('type is excel')
         await this.handleExcel(file)

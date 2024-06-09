@@ -49,7 +49,7 @@ export default {
       };
 
       const mobile = {
-        invoice_debit_amount: parseFloat(faker.finance.amount(50, 1000, 2)),
+        invoice_total_due: parseFloat(faker.finance.amount(50, 1000, 2)),
         invoice_debit_date: faker.date.past(),
         phone_number: faker.phone.number(),
         invoice_period: {
@@ -72,13 +72,13 @@ export default {
         mortgage_contribution: parseFloat(faker.finance.amount(1, 5, 1)),
         interest_paid: parseFloat(faker.finance.amount(50, 1000, 2)),
         installment_paid: parseFloat(faker.finance.amount(50, 1000, 2)),
-        debit_amount: parseFloat(faker.finance.amount(50, 1000, 2)),
+        total_due: parseFloat(faker.finance.amount(50, 1000, 2)),
         debit_date: faker.date.past(),
         terms_remaining: parseInt(faker.random.numeric(2)),
       };
 
       const energy = {
-        debit_amount: parseFloat(faker.finance.amount(50, 1000, 2)),
+        total_due: parseFloat(faker.finance.amount(50, 1000, 2)),
         debit_date: faker.date.past(),
         kwh_amount: getRandomNumber(100, 1000),
         fees_amount: parseFloat(faker.finance.amount(0, 1000, 2)),
@@ -87,7 +87,7 @@ export default {
         prepaid_amount: parseFloat(faker.finance.amount(0, 1000, 2)),
       };
       const car_insurance = {
-        debit_amount: parseFloat(faker.finance.amount(0, 1000, 2)),
+        total_due: parseFloat(faker.finance.amount(0, 1000, 2)),
         debit_date: faker.date.past(),
         valid_from: faker.date.past(),
         number_plate: faker.vehicle.vrm(),
@@ -106,14 +106,14 @@ export default {
       };
 
       const broadband = {
-        debit_amount: parseFloat(faker.finance.amount(0, 1000, 2)),
+        total_due: parseFloat(faker.finance.amount(0, 1000, 2)),
         debit_date: faker.date.past(),
         plan_data_speed: parseFloat(faker.random.numeric({ min: 50, max: 500 })),
         plan_data_gb: parseFloat(faker.random.numeric(2)),
       };
 
       const home_insurance = {
-        debit_amount: parseFloat(faker.finance.amount(0, 1000, 2)),
+        total_due: parseFloat(faker.finance.amount(0, 1000, 2)),
         debit_date: faker.date.past(),
         valid_from: faker.date.past(),
         address: faker.address.streetAddress(),
@@ -183,7 +183,7 @@ export default {
       };
 
       const mobile = {
-        invoice_debit_amount: parseFloat(faker.finance.amount(50, 1000, 2)),
+        invoice_total_due: parseFloat(faker.finance.amount(50, 1000, 2)),
         invoice_debit_date: faker.date.past(),
         phone_number: faker.phone.number(),
         invoice_period: {
@@ -206,13 +206,13 @@ export default {
         mortgage_contribution: parseFloat(faker.finance.amount(1, 5, 1)),
         interest_paid: parseFloat(faker.finance.amount(50, 1000, 2)),
         installment_paid: parseFloat(faker.finance.amount(50, 1000, 2)),
-        debit_amount: parseFloat(faker.finance.amount(50, 1000, 2)),
+        total_due: parseFloat(faker.finance.amount(50, 1000, 2)),
         debit_date: faker.date.past(),
         terms_remaining: parseInt(faker.random.numeric(2)),
       };
 
       const energy = {
-        debit_amount: parseFloat(faker.finance.amount(50, 1000, 2)),
+        total_due: parseFloat(faker.finance.amount(50, 1000, 2)),
         debit_date: faker.date.past(),
         kwh_amount: getRandomNumber(100, 1000),
         fees_amount: parseFloat(faker.finance.amount(0, 1000, 2)),
@@ -221,7 +221,7 @@ export default {
         prepaid_amount: parseFloat(faker.finance.amount(0, 1000, 2)),
       };
       const car_insurance = {
-        debit_amount: parseFloat(faker.finance.amount(0, 1000, 2)),
+        total_due: parseFloat(faker.finance.amount(0, 1000, 2)),
         debit_date: faker.date.past(),
         valid_from: faker.date.past(),
         number_plate: faker.vehicle.vrm(),
@@ -240,14 +240,14 @@ export default {
       };
 
       const broadband = {
-        debit_amount: parseFloat(faker.finance.amount(0, 1000, 2)),
+        total_due: parseFloat(faker.finance.amount(0, 1000, 2)),
         debit_date: faker.date.past(),
         plan_data_speed: parseFloat(faker.random.numeric({ min: 50, max: 500 })),
         plan_data_gb: parseFloat(faker.random.numeric(2)),
       };
 
       const home_insurance = {
-        debit_amount: parseFloat(faker.finance.amount(0, 1000, 2)),
+        total_due: parseFloat(faker.finance.amount(0, 1000, 2)),
         debit_date: faker.date.past(),
         valid_from: faker.date.past(),
         address: faker.address.streetAddress(),

@@ -1,5 +1,6 @@
 
 const bitwiseDecode = (num) => {
+  num--;
   let arr = [];
   let i = 0;
   while (num > 0) {

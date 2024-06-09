@@ -26,5 +26,5 @@
   "fire_protection": "Brandbeskyttelse",
   "water_damage_protection": "Vandskade beskyttelse",
   "storm_damage_protection": "Stormskade beskyttelse",
-  "debit_amount": "Debitbeløb"
+  "total_due": "Debitbeløb"
   }  

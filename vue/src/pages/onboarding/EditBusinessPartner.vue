@@ -258,7 +258,7 @@ export default {
     // this.form.businessPartner.serviceTypes = [1, 2]
 
     this.form.businessPartner = this.$store.getters.activeBusinessPartner
-    let serviceType = this.form.businessPartner.users[0].serviceType // TEMP
+    let serviceType = this.form.businessPartner.users[0]?.serviceType // TEMP
     this.form.businessPartner.serviceTypes = bitwiseDecode(serviceType)
     this.form.businessPartner.countriesOfOperation = this.form.businessPartner.countries.map(country => country.countryCode)
     console.log('this.form.businessPartner: ', this.form.businessPartner)

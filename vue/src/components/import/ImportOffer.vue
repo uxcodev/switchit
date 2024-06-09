@@ -5,7 +5,7 @@
     <h1>Upload Offer</h1>
     <div v-for="(tab, index) in tabs" :key="index" v-show="activeTab === index">
       <KeepAlive>
-        <component :is="tab.component" @cancel="cancel" @save="save" />
+        <component :is="tab.component" @cancel="cancel" @save="save" @handleFile="handleFile"/>
       </KeepAlive>
     </div>
   </div>
@@ -48,6 +48,10 @@ export default {
     cancel() {
       // Perform save operation here
       this.$emit('cancel');
+    },
+    handleFile(file) {
+      console.log('handleFile emitted to parent')
+      this.$emit('handleFile', file);
     },
   },
 };

@@ -36,7 +36,7 @@ const leadSchema = new mongoose.Schema({
         features: { type: Number, required: false },
       },
       interaction_data: {
-        invoice_debit_amount: { type: Number, required: false },
+        invoice_total_due: { type: Number, required: false },
         invoice_debit_date: { type: Date, required: false },
         phone_number: { type: String, required: false },
         invoice_period: {
@@ -66,7 +66,7 @@ const leadSchema = new mongoose.Schema({
         mortgage_contribution: { type: Number, required: false },
         interest_paid: { type: Number, required: false },
         installment_paid: { type: Number, required: false },
-        debit_amount: { type: Number, required: false },
+        total_due: { type: Number, required: false },
         debit_date: { type: Date, required: false },
         terms_remaining: { type: Number, required: false },
       },
@@ -79,7 +79,7 @@ const leadSchema = new mongoose.Schema({
         features: { type: Number, required: false },
       },
       interaction_data: {
-        debit_amount: { type: Number, required: false },
+        total_due: { type: Number, required: false },
         debit_date: { type: Date, required: false },
         kwh_amount: { type: Number, required: false },
         fees_amount: { type: Number, required: false },
@@ -96,7 +96,7 @@ const leadSchema = new mongoose.Schema({
         features: { type: Number, required: false },
       },
       interaction_data: {
-        debit_amount: { type: Number, required: false },
+        total_due: { type: Number, required: false },
         debit_date: { type: Date, required: false },
         valid_from: { type: Date, required: false },
         number_plate: { type: String, required: false },
@@ -120,7 +120,7 @@ const leadSchema = new mongoose.Schema({
         features: { type: Number, required: false },
       },
       interaction_data: {
-        debit_amount: { type: Number, required: false },
+        total_due: { type: Number, required: false },
         debit_date: { type: Date, required: false },
         valid_from: { type: Date, required: false },
         address: { type: String, required: false },
@@ -139,7 +139,7 @@ const leadSchema = new mongoose.Schema({
         features: { type: Number, required: false },
       },
       interaction_data: {
-        debit_amount: { type: Number, required: false },
+        total_due: { type: Number, required: false },
         debit_date: { type: Date, required: false },
         plan_data_speed: { type: Number, required: false },
         plan_data_gb: { type: Number, required: false },

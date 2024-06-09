@@ -223,7 +223,7 @@ export default {
         this.isEditing = true
         this.companyId = this.props?.companyId
         let company = (await this.$switchit.getFullCompany(this.companyId)).model
-        company.serviceTypes = bitwiseDecode(company.serviceType - 1)
+        company.serviceTypes = bitwiseDecode(company.serviceType)
         // company.domains = company.companyCompanyDomainsModels.map(item => item.domain).join(', ');
         company.domains = company.companyCompanyDomainsModels.map(item => item.domain)
         // company.countryCodes = company.companyCompanyCountrysModels.map(item => item.code)

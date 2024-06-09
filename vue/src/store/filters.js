@@ -12,10 +12,10 @@ const service_data = {
       // country: { type: String, required: false, filter_type: "country" },
       // date_of_birth: { type: String, required: false, filter_type: "date" },
       geo_location: { type: String, required: false, filter_type: "coordinates" },
-      customer_number: { type: String, required: false, filter_type: "string" },
+      // customer_number: { type: String, required: false, filter_type: "string" },
       number_of_adults_in_household: { type: Number, required: false, filter_type: "range_number" },
       number_of_children_in_household: { type: Number, required: false, filter_type: "range_number" },
-      // phone: { type: Number, required: false, filter_type: "identifier_number" },
+      // phone_number_masked: { type: Number, required: false, filter_type: "identifier_number" },
     },
     preference_data: {
       /*  fields are:
@@ -38,7 +38,7 @@ const service_data = {
         filter_type: "range_slider",
         range: [0, 10]
       },
-      eco_friendly_priority: {
+      eco_friendliness_priority: {
         label: "Eco-friendliness priority?",
         filter_type: "range_slider",
         range: [0, 10]
@@ -72,20 +72,31 @@ const service_data = {
   },
   mobile: {
     interaction_data: {
-      invoice_debit_amount: { type: Number, required: false, filter_type: "range_amount" },
-      invoice_debit_date: { type: String, required: false, filter_type: "date" },
-      // phone_number: { type: Number, required: false, filter_type: "identifier_number" },
-      phone_number: { type: String, required: false, filter_type: "string" },
-      invoice_period: {
-        from: { type: String, required: false, filter_type: "string" },
-        to: { type: String, required: false, filter_type: "string" }, filter_type: "range_date"
-      },
-      plan_talk_minutes: { type: Number, required: false, filter_type: "range_number" },
-      plan_data_speed: { type: Number, required: false, filter_type: "range_number" },
-      plan_data_gb: { type: Number, required: false, filter_type: "range_number" },
-      plan_teleservice: { type: String, required: false, filter_type: "string" },
-      phone_installment: { type: Number, required: false, filter_type: "range_number" },
-      equipment_installment: { type: Number, required: false, filter_type: "range_number" },
+      /*    invoice_total_due: { type: Number, required: false, filter_type: "range_amount" },
+         invoice_debit_date: { type: String, required: false, filter_type: "date" },
+         // phone_number: { type: Number, required: false, filter_type: "identifier_number" },
+         phone_number: { type: String, required: false, filter_type: "string" },
+         invoice_period: {
+           from: { type: String, required: false, filter_type: "string" },
+           to: { type: String, required: false, filter_type: "string" }, filter_type: "range_date"
+         },
+         plan_talk_minutes: { type: Number, required: false, filter_type: "range_number" },
+         plan_data_speed: { type: Number, required: false, filter_type: "range_number" },
+         plan_data_gb: { type: Number, required: false, filter_type: "range_number" },
+         plan_teleservice: { type: String, required: false, filter_type: "string" },
+         phone_installment: { type: Number, required: false, filter_type: "range_number" },
+         equipment_installment: { type: Number, required: false, filter_type: "range_number" }, */
+      total_due: { type: Number, required: false, filter_type: "range_amount" },
+      payment_date: { type: String, required: false, filter_type: "date" },
+      mobile_number: { type: String, required: false, filter_type: "string" },
+      call_minutes: { type: Number, required: false, filter_type: "range_number" },
+      internet_speed: { type: Number, required: false, filter_type: "range_number" },
+      data_limit: { type: Number, required: false, filter_type: "range_number" },
+      extra_services: { type: String, required: false, filter_type: "string" },
+      device_payment: { type: Number, required: false, filter_type: "range_number" },
+      accessory_payment: { type: Number, required: false, filter_type: "range_number" },
+      service_provider_name: { type: String, required: false, filter_type: "string" },
+
     },
     preference_data: {
       price: {
@@ -107,6 +118,7 @@ const service_data = {
   },
   mortgage: {
     interaction_data: {
+      /* 
       loan_number: { type: Number, required: false, filter_type: "identifier_number" },
       loan_details: { type: String, required: false, filter_type: "string" },
       principal_amount: { type: Number, required: false, filter_type: "range_amount" },
@@ -114,9 +126,22 @@ const service_data = {
       mortgage_contribution: { type: Number, required: false, filter_type: "range_amount" },
       interest_paid: { type: Number, required: false, filter_type: "range_amount" },
       installment_paid: { type: Number, required: false, filter_type: "range_amount" },
-      debit_amount: { type: Number, required: false, filter_type: "range_amount" },
+      total_due: { type: Number, required: false, filter_type: "range_amount" },
       debit_date: { type: String, required: false, filter_type: "date" },
       terms_remaining: { type: String, required: false, filter_type: "string", range: [0, 50] },
+        */
+      loan_id: { type: String, required: false, filter_type: "string" },
+      total_due: { type: Number, required: false, filter_type: "range_amount" },
+      due_date: { type: String, required: false, filter_type: "date" },
+      balance: { type: Number, required: false, filter_type: "range_number" },
+      interest_rate: { type: Number, required: false, filter_type: "range_number" },
+      term: { type: String, required: false, filter_type: "string" },
+      type: { type: String, required: false, filter_type: "string" },
+      escrow: { type: Number, required: false, filter_type: "range_number" },
+      contract_start_date: { type: String, required: false, filter_type: "date" },
+      payment_history: { type: String, required: false, filter_type: "string" },
+      contact_info: { type: String, required: false, filter_type: "string" },
+      service_provider_name: { type: String, required: false, filter_type: "string" },
     },
     preference_data: {
       price: {
@@ -138,13 +163,14 @@ const service_data = {
   },
   energy: {
     interaction_data: {
-      debit_amount: { type: Number, required: false, filter_type: "range_amount" },
-      debit_date: { type: String, required: false, filter_type: "date" },
-      kwh_amount: { type: Number, required: false, filter_type: "range_amount" },
-      fees_amount: { type: Number, required: false, filter_type: "range_amount" },
-      taxes_amount: { type: Number, required: false, filter_type: "range_amount" },
+      total_paid: { type: Number, required: false, filter_type: "range_amount" },
+      energy_usage_total: { type: Number, required: false, filter_type: "range_amount" },
+      current_kwh_rate: { type: Number, required: false, filter_type: "range_amount" },
+      taxes_fees: { type: Number, required: false, filter_type: "range_amount" },
+      discounts: { type: String, required: false, filter_type: "string" },
       additional_services: { type: String, required: false, filter_type: "string" },
-      prepaid_amount: { type: Number, required: false, filter_type: "range_amount" },
+      green_energy: { type: Boolean, required: false, filter_type: "boolean" },
+      contract_start: { type: String, required: false, filter_type: "date" },
     },
     preference_data: {
       price: {
@@ -166,18 +192,29 @@ const service_data = {
   },
   car_insurance: {
     interaction_data: {
-      debit_amount: { type: Number, required: false, filter_type: "range_amount" },
-      debit_date: { type: String, required: false, filter_type: "date" },
-      valid_from: { type: String, required: false, filter_type: "date" },
-      number_plate: { type: String, required: false, filter_type: "string" },
-      vehicle: {
-        make: { type: String, required: false, filter_type: "string" },
-        model: { type: String, required: false, filter_type: "string" },
-        fuel: { type: String, required: false, filter_type: "string" },
-        speedometer: { type: String, required: false, filter_type: "string" }
-      },
-      additional_services: { type: Object, required: false },
-      own_risk_amount: { type: Number, required: false, filter_type: "range_amount" },
+      /*       total_due: { type: Number, required: false, filter_type: "range_amount" },
+            debit_date: { type: String, required: false, filter_type: "date" },
+            valid_from: { type: String, required: false, filter_type: "date" },
+            number_plate: { type: String, required: false, filter_type: "string" },
+            vehicle: {
+              make: { type: String, required: false, filter_type: "string" },
+              model: { type: String, required: false, filter_type: "string" },
+              fuel: { type: String, required: false, filter_type: "string" },
+              speedometer: { type: String, required: false, filter_type: "string" }
+            },
+            additional_services: { type: Object, required: false },
+            own_risk_amount: { type: Number, required: false, filter_type: "range_amount" }, */
+      policy_number: { type: String, required: false, filter_type: "string" },
+      coverage_type: { type: String, required: false, filter_type: "string" },
+      monthly_premium: { type: Number, required: false, filter_type: "range_number" },
+      due_date: { type: String, required: false, filter_type: "date" },
+      policy_start_date: { type: String, required: false, filter_type: "date" },
+      policy_end_date: { type: String, required: false, filter_type: "date" },
+      deductible: { type: Number, required: false, filter_type: "range_number" },
+      covered_vehicles: { type: String, required: false, filter_type: "string" },
+      drivers_listed: { type: String, required: false, filter_type: "string" },
+      contact_info: { type: String, required: false, filter_type: "string" },
+      service_provider_name: { type: String, required: false, filter_type: "string" },
     },
     preference_data: {
       price: {
@@ -199,13 +236,24 @@ const service_data = {
   },
   home_insurance: {
     interaction_data: {
-      debit_amount: { type: Number, required: false, filter_type: "range_amount" },
-      debit_date: { type: String, required: false, filter_type: "date" },
-      valid_from: { type: String, required: false, filter_type: "string" },
-      address: { type: String, required: false, filter_type: "string" },
-      own_risk_amount: { type: Number, required: false, filter_type: "range_amount" },
-      add_ons: { type: Object, required: false, filter_type: "object" },
-      alarm_discount: { type: Boolean, required: false, filter_type: "boolean" },
+      /*       total_due: { type: Number, required: false, filter_type: "range_amount" },
+            debit_date: { type: String, required: false, filter_type: "date" },
+            valid_from: { type: String, required: false, filter_type: "string" },
+            address: { type: String, required: false, filter_type: "string" },
+            own_risk_amount: { type: Number, required: false, filter_type: "range_amount" },
+            add_ons: { type: Object, required: false, filter_type: "object" },
+            alarm_discount: { type: Boolean, required: false, filter_type: "boolean" }, */
+      policy_number: { type: String, required: false, filter_type: "string" },
+      insurance_type: { type: String, required: false, filter_type: "string" },
+      premium_due: { type: Number, required: false, filter_type: "range_number" },
+      next_payment_date: { type: String, required: false, filter_type: "date" },
+      coverage_start_date: { type: String, required: false, filter_type: "date" },
+      renewal_date: { type: String, required: false, filter_type: "date" },
+      coverage_amount: { type: Number, required: false, filter_type: "range_number" },
+      deductible: { type: Number, required: false, filter_type: "range_number" },
+      covered_perils: { type: String, required: false, filter_type: "string" },
+      contact_for_claims: { type: String, required: false, filter_type: "string" },
+      service_provider_name: { type: String, required: false, filter_type: "string" },
     },
     preference_data: {
       price: {
@@ -225,12 +273,52 @@ const service_data = {
       }
     }
   },
+  banking: {
+    interaction_data: {
+      invoice_number: { type: String, required: false, filter_type: "string" },
+      loan_number: { type: String, required: false, filter_type: "string" },
+      loan_details: { type: String, required: false, filter_type: "string" },
+      principal_amount: { type: Number, required: false, filter_type: "range_number" },
+      interest_rate: { type: Number, required: false, filter_type: "range_number" },
+      interest_paid: { type: Number, required: false, filter_type: "range_number" },
+      installment_paid: { type: Number, required: false, filter_type: "range_number" },
+      total_amount_debited: { type: Number, required: false, filter_type: "range_number" },
+      date_amount_debited: { type: String, required: false, filter_type: "date" },
+      remaining_terms: { type: String, required: false, filter_type: "string" },
+      deposit_account_number: { type: String, required: false, filter_type: "string" },
+      service_provider_name: { type: String, required: false, filter_type: "string" },
+    },
+    preference_data: {
+      price: {
+        label: "Importance of cheapest price",
+        filter_type: "range_slider",
+        range: [0, 10]
+      },
+      service: {
+        label: "Importance of best service",
+        filter_type: "range_slider",
+        range: [0, 10]
+      },
+      features: {
+        label: "Importance of lots of features",
+        filter_type: "range_slider",
+        range: [0, 10]
+      }
+    }
+  },
+
   broadband: {
     interaction_data: {
-      debit_amount: { type: Number, required: false, filter_type: "range_amount" },
-      debit_date: { type: String, required: false, filter_type: "date" },
-      plan_data_speed: { type: Number, required: false, filter_type: "range_number" },
-      plan_data_gb: { type: Number, required: false, filter_type: "range_number" },
+      bill_id: { type: String, required: false, filter_type: "string" },
+      total_due: { type: Number, required: false, filter_type: "range_amount" },
+      due_date: { type: String, required: false, filter_type: "date" },
+      service_period: { type: String, required: false, filter_type: "string" },
+      broadband_speed: { type: Number, required: false, filter_type: "range_number" },
+      data_cap: { type: Number, required: false, filter_type: "range_number" },
+      monthly_charge: { type: Number, required: false, filter_type: "range_number" },
+      equipment_rental: { type: Number, required: false, filter_type: "range_number" },
+      additional_fees: { type: Number, required: false, filter_type: "range_number" },
+      service_provider_name: { type: String, required: false, filter_type: "string" },
     },
     preference_data: {
       price: {
@@ -254,11 +342,16 @@ const service_data = {
 
 // I'd like to not have to hard code this, but is there somewhere this could be stored in backend?
 const categories = {
-  // general: {
-  //   selected: false,
-  //   icon: "info",
-  //   code: 1
-  // },
+  general: {
+    selected: false,
+    icon: "info",
+    // code: 1
+  },
+  unknown: {
+    selected: false,
+    icon: "question_mark",
+    code: 1
+  },
   mobile: {
     selected: false,
     icon: "smartphone",
@@ -435,7 +528,13 @@ export default {
     filtersChanged: state => state.filtersChanged,
     filtersChangedExternally: state => state.filtersChangedExternally,
     filteredServices: state => state.filteredServices,
-    categories: state => state.categories,
+    fullCategories: state => state.categories,
+    categories: state => {
+      let categoriesCopy = { ...state.categories };
+      delete categoriesCopy.unknown;
+      delete categoriesCopy.general;
+      return categoriesCopy;
+    },
     preferences: state => state.preferences,
     services: state => state.services,
   }

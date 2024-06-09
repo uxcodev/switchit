@@ -239,12 +239,12 @@ export default {
             storm_damage_protection: { value: null, type: 'Boolean' },
           },
           broadband: {
-            debit_amount: { value: null, type: 'Number', suffix: 'Mbps' },
+            total_due: { value: null, type: 'Number', suffix: 'Mbps' },
             plan_data_speed: { value: null, type: 'Number', suffix: 'Mbps' },
             plan_data_gb: { value: null, type: 'Number', suffix: 'GB' },
           },
           medical_insurance: {
-            debit_amount: { value: null, type: 'Number', suffix: '€' },
+            total_due: { value: null, type: 'Number', suffix: '€' },
           },
           pension: {
             monthly_payment: { value: null, type: 'Number', suffix: '€' },

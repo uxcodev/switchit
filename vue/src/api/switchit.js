@@ -2,7 +2,7 @@
 import axios from 'axios';
 import auth0 from '@/helpers/auth0.js';
 import jwtDecode from 'jwt-decode';
-
+import bitwiseDecode from '@/helpers/bitwise'
 // this allows use of global variables
 let toast_error = null;
 export function initialize(app) {
@@ -96,6 +96,10 @@ export default {
       bp.roles = bp.businessPartnerBusinessPartnerRolesModels
       bp.countries = bp.businessPartnerBusinessPartnerCountrysModels
       bp.users = bp.businessPartnerBusinessPartnerRoleBusinessPartnerUserCollectionModels
+      let serviceType = bp.users[0]?.serviceType
+      // console.log('serviceType', serviceType)
+      // console.log(bitwiseDecode(serviceType))
+      bp.serviceTypes = bitwiseDecode(serviceType)
       delete bp.businessPartnerBusinessPartnerCountrysModels
       delete bp.businessPartnerBusinessPartnerRolesModels
       delete bp.businessPartnerBusinessPartnerRoleBusinessPartnerUserCollectionModels
@@ -275,6 +279,16 @@ export default {
     }
   },
 
+  async uploadOffer(householdId, formData) {
+    try {
+      let url = `/api/v1/offers/${householdId}/upload`;
+      const response = await _axios.post(url, formData);
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
   async getPensionUploads(householdId) {
     try {
       let url = `/api/v1/pension_uploads?householdId=${householdId}`;
@@ -285,10 +299,30 @@ export default {
     }
   },
 
+  async getHouseholdUploads(householdId) {
+    try {
+      let url = `/api/v1/households/${householdId}/uploads`;
+      const response = await _axios.get(url);
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
+  async getUploads() {
+    try {
+      let url = "/api/v1/uploads";
+      const response = await _axios.get(url);
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
   async getUploadedFile(id) {
     try {
       let url = `/api/v1/uploads/${id}`;
-      const response = await _axios.get(url);
+      const response = await _axios.get(url, { responseType: 'blob' });
       return response.data;
     } catch (err) {
       console.error(err);
@@ -494,7 +528,7 @@ export default {
       // body = JSON.stringify(body);
       let url = "/api/v1/offers";
       const response = await _axios.post(url, body);
-      return response.status;
+      return response;
     } catch (err) {
       console.error(err);
     }

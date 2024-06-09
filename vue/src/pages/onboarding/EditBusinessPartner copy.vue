@@ -4,63 +4,49 @@
       <h2>Your company</h2>
       <div v-if="!loaded">
         <LoaderAni />
-      </div>
-      
-
-      <form v-else @submit.prevent="submitForm" class="switchit-form sm">
-        <!-- inputs for creating business partner -->
-        <div class="highlight disabled" >
-          <div class="checkbox-group">
-            <label class="checkbox-label">Company is approved
-              <input disabled type="checkbox" id="isApproved" name="isApproved" v-model="businessPartnerBody.isApproved">
-              <span class="checkmark"></span>
-            </label>
-          </div>
-        </div>
-        <div class="group">
-          <label for="company">Company name</label>
-          <input v-model="businessPartnerBody.name" placeholder="" type="text" id="company" class="input lg" />
-        </div>
-        <div class="group">
-          <label for="website">Company email</label>
-          <input v-model="businessPartnerBody.email" placeholder="" type="text" id="company_email" class="input lg" />
-        </div>
-        <div class="group">
-          <label for="website">Company VAT number</label>
-          <input v-model="businessPartnerBody.vatNumber" placeholder="" type="text" id="vat_number" class="input lg" />
-        </div>
-        <div class="group">
-          <label for="website">Company website</label>
-          <input v-model="businessPartnerBody.domain" placeholder="" type="text" id="domain" class="input lg" />
-        </div>
-        <div class="group">
-          <label for="website">Company address</label>
-          <input v-model="businessPartnerBody.address" placeholder="" type="text" id="address" class="input lg" />
-        </div>
-        <div class="group">
-          <label for="country">Company country</label>
-          <Multiselect v-model="businessPartnerBody.countryCode" mode="single" :searchable="true" :close-on-select="false" :options="country_options" />
-        </div>
-        <div class="group">
-          <label for="countries">Countries the company is active in</label>
-          <Multiselect v-model="businessPartnerBody.countriesOfOperation" mode="tags" @select="countrySelected" :searchable="true" :close-on-select="false" :options="country_options" />
-        </div>
-
-        <!-- {{ businessPartnerBody.serviceTypes }} -->
-
-        <div class="group">
-          <label for="markets">Markets the company serves</label>
-          <div class="checkbox-group">
-
-            <label v-for="(service, index) in serviceTypes" :key="index" :class="service.serviceType === 1 ? 'hide' : ''" class="checkbox-label">
-              <input class="checkbox" type="checkbox" :checked="isServiceSelected(service.serviceType)" :id="service.serviceTypeString" @change="toggleServiceSelection(service.serviceType)" />{{ $t(service.serviceTypeString) }}
-              <span class="checkmark"></span>
-
-            </label>
-          </div>
-        </div>
         
-        <button class="icon">Submit</button>
+      </div>
+     
+      <form v-else @submit.prevent="submitForm" class="switchit-form sm">
+          <!-- inputs for creating business partner -->
+          <div class="group">
+            <label for="company">Company name</label>
+            <input v-model="form.businessPartner.name" placeholder="" type="text" id="company" class="input lg" />
+          </div>
+          <div class="group">
+            <label for="website">Company email</label>
+            <input v-model="form.businessPartner.email" placeholder="" type="text" id="company_email" class="input lg" />
+          </div>
+          <div class="group">
+            <label for="website">Company VAT number</label>
+            <input v-model="form.businessPartner.vatNumber" placeholder="" type="text" id="vat_number" class="input lg" />
+          </div>
+          <div class="group">
+            <label for="website">Company website</label>
+            <input v-model="form.businessPartner.domain" placeholder="" type="text" id="domain" class="input lg" />
+          </div>
+          <div class="group">
+            <label for="website">Company address</label>
+            <input v-model="form.businessPartner.address" placeholder="" type="text" id="address" class="input lg" />
+          </div>
+          <div class="group">
+            <label for="country">Company country</label>
+            <Multiselect v-model="form.businessPartner.countryCode" mode="single" :searchable="true" :close-on-select="false" :options="country_options" />
+          </div>
+          <div class="group">
+            <label for="countries">Countries the company is active in</label>
+            <Multiselect v-model="form.businessPartner.countriesOfOperation" mode="tags" @select="countrySelected" :searchable="true" :close-on-select="false" :options="country_options" />  
+          </div>
+          <div class="group">
+            <label for="markets">Markets the company serves</label>
+            <div class="checkbox-group">
+              <label v-for="(category, key) in categories" :key="key" class="checkbox-label">
+                <input class="checkbox" type="checkbox" :checked="isCategorySelected(category.code)" :id="category.name" @change="toggleCategorySelection(category.code)" />{{ $t(key) }}
+                <span class="checkmark"></span>
+              </label>
+            </div>
+          </div>
+          <button class="icon">Submit</button>
 
         <div v-if="errors.length" class="msg_error">{{ errors[0] }}</div>
       </form>
@@ -120,27 +106,16 @@ export default {
       },
       form: {
 
-        businessPartner: {
-          name: ``,
-          domain: "",
-          vatNumber: "",
-          address: "",
-          email: "",
-          countryCode: "",
-          countriesOfOperation: [],
-          serviceTypes: []
-        },
-      },
-      businessPartnerBody: {
-        name: '',
-        domain: 't',
-        vatNumber: '',
-        address: '',
-        email: '',
+       businessPartner: {
+        name: ``,
+        domain: "",
+        vatNumber: "",
+        address: "",
+        email: "",
+        countryCode: "",
         countriesOfOperation: [],
-        isApproved: false,
-        countryCode: '',
-        serviceTypes: [] //[1]
+        serviceTypes: []
+      },
       },
       selectedAdmin: null,
       users: [],
@@ -157,23 +132,25 @@ export default {
     }
   },
   watch: {
-
+   
   },
   methods: {
     async countrySelected() {
       // TEMP for testing
       console.log('countrySelected', this.form.businessPartner.countriesOfOperation)
     },
-    isServiceSelected(code) {
-      return this.businessPartnerBody.serviceTypes.includes(code);
+    isCategorySelected(code) {
+      return this.form.businessPartner.serviceTypes.includes(code);
     },
-    toggleServiceSelection(code) {
-      if (this.isServiceSelected(code)) {
-        const index = this.businessPartnerBody.serviceTypes.indexOf(code);
-        this.businessPartnerBody.serviceTypes.splice(index, 1);
+
+    toggleCategorySelection(code) {
+      if (this.isCategorySelected(code)) {
+        const index = this.form.businessPartner.serviceTypes.indexOf(code);
+        this.form.businessPartner.serviceTypes.splice(index, 1);
       } else {
-        this.businessPartnerBody.serviceTypes.push(code);
+        this.form.businessPartner.serviceTypes.push(code);
       }
+      console.log('this.form.businessPartner.serviceTypes: ', this.form.businessPartner.serviceTypes)
     },
     validateForm() {
       this.errors = [];
@@ -198,22 +175,44 @@ export default {
     async submitForm() {
 
       try {
-
-
-        let id = this.fullBusinessPartner.id
-        let body = this.businessPartnerBody
+        // let body = this.form.company
+        // let response = await this.$switchit.createCompany(body)
+        let body = {
+        // name: this.businessPartnerBody.name,
+        // domain: this.businessPartnerBody.domain,
+        // vatNumber: this.businessPartnerBody.vatNumber,
+        // address: this.businessPartnerBody.address,
+        // email: this.businessPartnerBody.email,
+        // countryCode: this.businessPartnerBody.countryCode,
+        name: this.form.businessPartner.name,
+        domain: this.form.businessPartner.domain,
+        vatNumber: this.form.businessPartner.vatNumber,
+        address: this.form.businessPartner.address,
+        email: this.form.businessPartner.email,
+        countryCode: this.form.businessPartner.countryCode,
+        countriesOfOperation: this.form.businessPartner.countriesOfOperation,
+        serviceTypes: this.form.businessPartner.serviceTypes
+        }
+        // countriesOfOperation: this.businessPartnerBody.countriesOfOperation,
+        // serviceTypes: this.businessPartnerBody.serviceTypes
+        // countriesOfOperation: ['DK', 'NO'],
+        // serviceTypes: [1]
+      
+        // let body = this.form.businessPartner
+        let id = this.form.businessPartner.id
+        // let response = await this.$switchit.createBusinessPartner(body)
         console.log('id: ', id)
         console.log('body: ', body)
         let response = await this.$switchit.editBusinessPartner(id, body)
         console.log(response)
-        // if (response.ok) {
-        //   this.$router.push({ path: '/operations', query: { q: 'Companies' } })
-        // }
+          // if (response.ok) {
+          //   this.$router.push({ path: '/operations', query: { q: 'Companies' } })
+          // }
       } catch (error) {
         this.$toast_error.show(error)
       }
     },
-
+    
   },
   async created() {
     try {
@@ -232,7 +231,7 @@ export default {
 
       // populate the users and company differently depending on whether admin, and whether editing
 
-      /*       if (this.isAdmin) {
+      if (this.isAdmin) {
         this.users = this.isAdmin ? await this.$api_node.getUsers() : null
         let company = this.isEditing ? await this.$api_node.getCompanyById(this.id) : null
         this.form.company = company || this.form.company;
@@ -244,42 +243,6 @@ export default {
       }
     } catch (error) {
       console.log('error: ', error)
-      this.$toast_error.show(error)
-    } */
-
-
-      // console.log('edit triggered: ', id)
-      this.businessPartnerId = this.form.businessPartner.id
-      this.currentTab = 'edit'
-      // this.businessPartnerBody = this.businessPartners.find(bp => bp.id === id)
-      this.fullBusinessPartner = await this.$switchit.getBusinessPartner(this.businessPartnerId)
-      console.log('fullBusinessPartner: ', this.fullBusinessPartner)
-
-      this.businessPartnerBody.name = this.fullBusinessPartner.name
-      this.businessPartnerBody.domain = this.fullBusinessPartner.domain
-      this.businessPartnerBody.vatNumber = this.fullBusinessPartner.vatNumber
-      this.businessPartnerBody.address = this.fullBusinessPartner.address
-      this.businessPartnerBody.email = this.fullBusinessPartner.email
-      this.businessPartnerBody.countryCode = this.fullBusinessPartner.countryCode
-      let countries = this.fullBusinessPartner.countries
-      // for each country, get the 'countryCode' and push it to the countriesOfOperation array
-
-      this.businessPartnerBody.countriesOfOperation = countries.map(country => country.countryCode)
-      let serviceType = this.fullBusinessPartner.users[0]?.serviceType
-      console.log('serviceType: ', serviceType)
-      this.businessPartnerBody.serviceTypes = bitwiseDecode(serviceType)
-      console.log('this.businessPartnerBody.serviceTypes: ', this.businessPartnerBody.serviceTypes)
-      // this.businessPartnerBody.serviceTypes = this.fullBusinessPartner.users[0].serviceType
-      this.businessPartnerBody.isApproved = this.fullBusinessPartner.isApproved
-
-      console.log('businessPartnerBody: ', this.businessPartnerBody)
-
-      this.serviceTypes = await this.$switchit.getServiceTypes()
-      // remove any item in this.businessPartnerBody.serviceTypes that is larger than the greates value in this.serviceTypes
-      this.businessPartnerBody.serviceTypes = this.businessPartnerBody.serviceTypes.filter(item => item <= this.serviceTypes[this.serviceTypes.length - 1].serviceType)
-      console.log('removed values larger that greatest value in serviceType array: ', this.serviceTypes)
-      this.componentKey++
-    } catch (error) {
       this.$toast_error.show(error)
     }
   },
@@ -343,22 +306,6 @@ export default {
     input:not(.reset)
       max-width: none
 
-// highlight
-.highlight  
-  border: 1px solid rgba($ui-active, .2)
-  border-radius: 5px
-  background-color: rgba($ui-active, .05)
-  &.disabled 
-    background-color: #eee 
-    border: 1px solid #ddd
-    .checkmark::after 
-      background-color: #ccc !important
-
-  &:disabled
-    background-color: #ddd !important
-
-.hide
-  display: none !important
 
 .checkbox-group
   flex-direction: row

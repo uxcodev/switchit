@@ -5,17 +5,13 @@
   <div class="main">
     <h2>API Testing</h2>
     <h3>Business Partners</h3>
-      <div class="tabs">
-      <button 
-        v-for="tab in tabs" 
-        :key="tab.id" 
-        :class="{ active: currentTab === tab.id }"
-        @click="changeTab(tab.id)">
+    <div class="tabs">
+      <button v-for="tab in tabs" :key="tab.id" :class="{ active: currentTab === tab.id }" @click="changeTab(tab.id)">
         {{ tab.label }}
       </button>
     </div>
-    <div class="tab-content mb10"> 
-      
+    <div class="tab-content mb10">
+
       <div v-if="currentTab == 'google'">
         <h3>Google Maps</h3>
         <AddressAutocomplete :init_address="null" @updateAddress="updateAddress" />
@@ -47,22 +43,51 @@
           <input type="text" id="email" name="email" v-model="businessPartnerBody.email">
         </div>
         <div class="group">
-          <label for="countriesOfOperation">countriesOfOperation</label>
-          <!-- <input type="text" id="countriesOfOperation" name="countriesOfOperation" v-model="businessPartnerBody.countriesOfOperation">
-           -->
-           <div class="help">Separate by commas (DK, NO)</div>
-           <TagInput class="input fullwidth" v-model="businessPartnerBody.countriesOfOperation" :key="componentKey" />
-        </div>
-        <div class="group">
           <label for="countryCode">countryCode</label>
           <input type="text" id="countryCode" name="countryCode" v-model="businessPartnerBody.countryCode">
         </div>
+        <!-- <div class="group"> -->
+        <!-- <label for="countriesOfOperation">countriesOfOperation</label> -->
+        <!-- <input type="text" id="countriesOfOperation" name="countriesOfOperation" v-model="businessPartnerBody.countriesOfOperation">
+           -->
+        <!-- <div class="help">Separate by commas (DK, NO)</div> -->
+        <!-- <TagInput class="input fullwidth" v-model="businessPartnerBody.countriesOfOperation" :key="componentKey" /> -->
+        <!-- </div> -->
         <div class="group">
-          <label for="serviceTypes">serviceTypes</label>
-          <!-- <input type="text" id="serviceTypes" name="serviceTypes" v-model="businessPartnerBody.serviceTypes"> -->
-          <TagInput class="input fullwidth" v-model="businessPartnerBody.serviceTypes" :key="componentKey" />
+          <label for="countries">countriesOfOperation</label>
+          <Multiselect id="countries" v-model="businessPartnerBody.countriesOfOperation" mode="tags" :searchable="true" :close-on-select="false" :options="country_options" :key="componentKey" />
         </div>
-        
+        <!-- <div class="group">
+          <label for="serviceTypes">serviceTypes</label>
+          <TagInput :isNumber="true" class="input fullwidth" v-model="businessPartnerBody.serviceTypes" :key="componentKey" />
+        </div>-->
+        {{ businessPartnerBody.serviceTypes }}
+
+        <div class="group">
+          <label for="markets">serviceTypes</label>
+          <div class="checkbox-group">
+            <!-- <label v-for="(category, key) in categories" :key="key" class="checkbox-label">
+              <input class="checkbox" type="checkbox" :checked="isCategorySelected(category.code)" :id="category.name" @change="toggleCategorySelection(category.code)" />{{ $t(key) }}
+              <span class="checkmark"></span>
+            </label> -->
+            <label v-for="(service, index) in serviceTypes" :key="index" class="checkbox-label">
+              <input class="checkbox" type="checkbox" :checked="isServiceSelected(service.serviceType)" :id="service.serviceTypeString" @change="toggleServiceSelection(service.serviceType)" />{{ $t(service.serviceTypeString) }}
+              <span class="checkmark"></span>
+              <!-- <input class="checkbox" type="checkbox" />{{ $t(service.serviceTypeString) }}
+              <span class="checkmark"></span> -->
+              <!-- {{  service }} -->
+            </label>
+            <!-- {{ serviceTypes }} -->
+          </div>
+        </div>
+
+        <div class="checkbox-group">
+          <label class="checkbox-label">isApproved
+            <input type="checkbox" id="isApproved" name="isApproved" v-model="businessPartnerBody.isApproved">
+            <span class="checkmark"></span>
+          </label>
+        </div>
+
         <button>Submit</button>
       </form>
       <div v-if="currentTab == 'get'" class="table">
@@ -106,7 +131,7 @@
                   </span>
                 </div>
               </div>
-  
+
             </div>
             <div class='status_wrapper' :class="businessPartner.status">
               <select name="status" class="select status" v-model="businessPartner.isApproved" @change="changeStatus(businessPartner)">
@@ -124,40 +149,40 @@
         </div>
       </div>
       <div v-if="currentTab == 'view'" class="table">
-          <div class="item">
-            <!-- <div class="row"  @click="$router.push({ path: '/createbusinessPartner', query: { id: businessPartner._id } })"> -->
-            <div class="row">
-              <div class="field-group">
-                <div class="field b link" @click="viewBusinessPartner(businessPartner.id)">
-                  {{ businessPartner.name }}
-                </div>
-                <div class="field light xl">
-                  {{ businessPartner.id }}
-                </div>
-                <div class="field light xl">
-                  email:
-                  {{ businessPartner.email }}
-                </div>
-                <div class="field light">
-                  domain:
-                  {{ businessPartner.domain }}
-                </div>
-                <div class="field light">
-                  {{ businessPartner.contact_email }}
-                </div>
-                <div class="field light company">
-                  country:
-                  <span class="country">
-                    {{ businessPartner.countryCode }}
-                  </span>
-                </div>
-                <div class="field light company">
-                  serviceTypes:
-                  <span class="country">
-                    {{ businessPartner.serviceTypes }}
-                  </span>
-                </div>
-  
+        <div class="item">
+          <!-- <div class="row"  @click="$router.push({ path: '/createbusinessPartner', query: { id: businessPartner._id } })"> -->
+          <div class="row">
+            <div class="field-group">
+              <div class="field b link" @click="viewBusinessPartner(businessPartner.id)">
+                {{ businessPartner.name }}
+              </div>
+              <div class="field light xl">
+                {{ businessPartner.id }}
+              </div>
+              <div class="field light xl">
+                email:
+                {{ businessPartner.email }}
+              </div>
+              <div class="field light">
+                domain:
+                {{ businessPartner.domain }}
+              </div>
+              <div class="field light">
+                {{ businessPartner.contact_email }}
+              </div>
+              <div class="field light company">
+                country:
+                <span class="country">
+                  {{ businessPartner.countryCode }}
+                </span>
+              </div>
+              <div class="field light company">
+                serviceTypes:
+                <span class="country">
+                  {{ businessPartner.serviceTypes }}
+                </span>
+              </div>
+
             </div>
             <div class='status_wrapper' :class="businessPartner.status">
               <select name="status" class="select status" v-model="businessPartner.status" @change="changeStatus(businessPartner)">
@@ -176,90 +201,96 @@
           </div>
         </div>
       </div>
-    <div v-if="currentTab == 'other'">
-      <h3>Companies</h3>
-    <div class="buttons">
-      <button @click="createCompany()">createCompany</button>
-      <button @click="importCompanies()">importCompanies</button>
-      <button @click="editCompany('585c5dec-5df8-4894-9976-8bf36baf5967')">editCompany</button>
-      <button @click="getCompanies()">getCompanies</button>
-      <button @click="getFullCompanies()">getFullCompanies</button>
-      <button @click="getCompany('585c5dec-5df8-4894-9976-8bf36baf5967')">getCompany</button>
-      <button @click="getFullCompany('585c5dec-5df8-4894-9976-8bf36baf5967')">getFullCompany</button>
-      <button @click="getPensionUploads('25bf9156-b5f0-4c16-8ec9-a776354bb6a6')">getPensionUploads</button>
-      <button @click="getUploadedFile('301b65db-2d18-4531-883c-ed71f1f20952')">getUploadedFile</button>
-    </div>
-    <h3>Misc</h3>
-    <div class="buttons">
-      <button @click="getCountries()">Country Dial Codes</button>
-      <!-- <button @click="call('GET', 'countrydialcodes')">Country Dial Codes</button> -->
-      <button @click="getServiceTypes()">getServiceTypes</button>
-      <button @click="addServicesToCompany()">addServicesToCompany</button>
-      <button @click="getLeads()">getLeads</button>
-      <button @click="createLead()">createLead</button>
-      <button @click="addEmailToAllFiltersets()">addEmailToAllFiltersets</button>
+      <div v-if="currentTab == 'other'">
+        <h3>Companies</h3>
+        <div class="buttons">
+          <button @click="createCompany()">createCompany</button>
+          <button @click="importCompanies()">importCompanies</button>
+          <button @click="editCompany('585c5dec-5df8-4894-9976-8bf36baf5967')">editCompany</button>
+          <button @click="getCompanies()">getCompanies</button>
+          <button @click="getFullCompanies()">getFullCompanies</button>
+          <button @click="getCompany('585c5dec-5df8-4894-9976-8bf36baf5967')">getCompany</button>
+          <button @click="getFullCompany('585c5dec-5df8-4894-9976-8bf36baf5967')">getFullCompany</button>
+          <button @click="getUploads()">getUploads</button>
+          <!-- <button @click="getPensionUploads('25bf9156-b5f0-4c16-8ec9-a776354bb6a6')">getPensionUploads</button> -->
+          <!-- <button @click="getHouseholdUploads('25bf9156-b5f0-4c16-8ec9-a776354bb6a6')">getHouseholdUploads</button> -->
+          <button @click="getPensionUploads('25bf9156-b5f0-4c16-8ec9-a776354bb6a6')">getPensionUploads</button>
+          <!-- <button @click="getUploadedFile('84d7c5b9-fa6d-4431-a367-f4576bff9173')">getUploadedFile</button> -->
+        </div>
+        <h3>Misc</h3>
+        <div class="buttons">
+          <button @click="getCountries()">Country Dial Codes</button>
+          <!-- <button @click="call('GET', 'countrydialcodes')">Country Dial Codes</button> -->
+          <button @click="getServiceTypes()">getServiceTypes</button>
+          <button @click="addServicesToCompany()">addServicesToCompany</button>
+          <button @click="getLeads()">getLeads</button>
+          <button @click="createLead()">createLead</button>
+          <button @click="addEmailToAllFiltersets()">addEmailToAllFiltersets</button>
 
-    </div>
-    <pre>{{ result }}</pre>
-    <div v-for="(item, index) in countries" :key="index">
-      {{ item.name + ', ' + item.code }}
-    </div>
-    <!-- <pre>{{ countries }}</pre> -->
-    <div class="table">
-      <div v-for="(company, index) in companies" :key="index">
-        <div class="item">
-          <!-- <div class="row"  @click="$router.push({ path: '/createcompany', query: { id: company._id } })"> -->
-          <div class="row">
-            <div class="field-group">
-              <div class="field b">
-                {{ company.name }}
-              </div>
-              <div class="field light">
-                id:
-                {{ company.id }}
-              </div>
-              <div class="field light">
-                websites:
-                {{ company.website }}
-              </div>
-              <div class="field light">
-                {{ company.contact_email }}
-              </div>
-              <div class="field light" v>
-                admin:
-                <!-- <span class="role" v-for="role in company.roles" :key="role">
+        </div>
+        <pre>{{ result }}</pre>
+        <div v-for="(item, index) in countries" :key="index">
+          {{ item.name + ', ' + item.code }}
+        </div>
+        <div class="link" v-for="(item, index) in pensionUploads" :key="index">
+          <span class="link" @click="getUploadedFile(item.id)"> {{ item.filename }}</span> <span class="help"> {{ item.id }} </span>
+        </div>
+        <!-- <pre>{{ countries }}</pre> -->
+        <div class="table">
+          <div v-for="(company, index) in companies" :key="index">
+            <div class="item">
+              <!-- <div class="row"  @click="$router.push({ path: '/createcompany', query: { id: company._id } })"> -->
+              <div class="row">
+                <div class="field-group">
+                  <div class="field b">
+                    {{ company.name }}
+                  </div>
+                  <div class="field light">
+                    id:
+                    {{ company.id }}
+                  </div>
+                  <div class="field light">
+                    websites:
+                    {{ company.website }}
+                  </div>
+                  <div class="field light">
+                    {{ company.contact_email }}
+                  </div>
+                  <div class="field light" v>
+                    admin:
+                    <!-- <span class="role" v-for="role in company.roles" :key="role">
                   {{ role.user?.email }}
                 </span> -->
+                  </div>
+                  <div class="field light company">
+                    markets:
+                    <span class="country" v-for="country in company.countries" :key="country">
+                      {{ country?.name || country }}
+                    </span>
+                  </div>
+                </div>
+                <!-- <IconsCategoryAccess :access="company.access"/> -->
               </div>
-              <div class="field light company">
-                markets:
-                <span class="country" v-for="country in company.countries" :key="country">
-                  {{ country?.name || country }}
-                </span>
+              <div class='status_wrapper' :class="company.status">
+                <!-- <div :class="['dot', company.status]"></div> -->
+                <select name="status" class="select status" v-model="company.status" @change="changeStatus(company)">
+                  <option value="new">New</option>
+                  <option value="pending">Pending</option>
+                  <option value="active">Approved</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+              </div>
+              <div class="option" @click="deleteCompany(company.id)">
+                <span class="material-symbols-outlined">Delete</span>
               </div>
             </div>
-            <!-- <IconsCategoryAccess :access="company.access"/> -->
-          </div>
-          <div class='status_wrapper' :class="company.status">
-            <!-- <div :class="['dot', company.status]"></div> -->
-            <select name="status" class="select status" v-model="company.status" @change="changeStatus(company)">
-              <option value="new">New</option>
-              <option value="pending">Pending</option>
-              <option value="active">Approved</option>
-              <option value="rejected">Rejected</option>
-            </select>
-          </div>
-          <div class="option" @click="deleteCompany(company.id)">
-            <span class="material-symbols-outlined">Delete</span>
+            <pre>
+          {{ lead }}
+        </pre>
           </div>
         </div>
-        <pre>
-          {{  lead }}
-        </pre>
       </div>
     </div>
-    </div>
-  </div>
   </div>
 </template>
 
@@ -276,13 +307,15 @@ import api from '@/api/api';
 import ModalWindow from '@/components/ui/ModalWindow.vue';
 import TagInput from '@/components/ui/TagInput.vue'
 import AddressAutocomplete from '@/components/ui/AddressAutocomplete.vue';
-// import bitwiseDecode from '@/helpers/bitwise'
+import bitwiseDecode from '@/helpers/bitwise'
+import Multiselect from '@vueform/multiselect/src/Multiselect';
 
 export default {
   components: {
     AddressAutocomplete,
     ModalWindow,
-    TagInput
+    TagInput,
+    Multiselect
   },
   provide() {
     return {
@@ -293,17 +326,27 @@ export default {
     return {
       result: null,
       modalComponent: null,
+      categories: this.$store.getters.categories,
       companies: [],
       businessPartners: [],
       businessPartner: null,
       activeBusinessPartnersToggle: true,
       serviceTypes: [],
+      pensionUploads: [],
       leads: [],
       lead: null,
       newLead: null,
       user: this.$auth0.user,
       countries: [],
       businessPartnerId: "57eb0b57-31a4-47b2-ad37-27f57fb6fdb3",
+      fullBusinessPartner: null,
+      country_options: [
+        { label: "Denmark", value: "DK" },
+        { label: "Sweden", value: "SE" },
+        { label: "Norway", value: "NO" },
+        { label: "Germany", value: "DE" },
+        { label: "United States", value: "US" },
+      ],
       businessPartnerBody: {
         name: 'test4',
         domain: 'test4.com',
@@ -311,18 +354,19 @@ export default {
         address: '234523414 Main St',
         email: 'nto@switchit.ai',
         countriesOfOperation: ['DK', 'NO'],
+        isApproved: false,
         countryCode: 'DK',
-        serviceTypes: [1]
+        serviceTypes: [] //[1]
       },
       tabs: [
-        { id: 'google', label: 'google'},
-        { id: 'get', label: 'getBusinessPartners'},
-        { id: 'view', label: 'viewBusinessPartner'},
+        { id: 'google', label: 'google' },
+        { id: 'get', label: 'getBusinessPartners' },
+        { id: 'view', label: 'viewBusinessPartner' },
         { id: 'create', label: 'createBusinessPartner' },
         { id: 'edit', label: 'editBusinessPartner' },
         { id: 'other', label: 'other' },
       ],
-      currentTab: 'google',
+      currentTab: 'get',
       componentKey: 0
     };
   },
@@ -340,16 +384,63 @@ export default {
     }
   },
   methods: {
-  
+    isCategorySelected(code) {
+      return this.businessPartnerBody.serviceTypes.includes(code);
+    },
+    toggleCategorySelection(code) {
+      if (this.isCategorySelected(code)) {
+        const index = this.businessPartnerBody.serviceTypes.indexOf(code);
+        this.businessPartnerBody.serviceTypes.splice(index, 1);
+      } else {
+        this.businessPartnerBody.serviceTypes.push(code);
+      }
+    },
+    isServiceSelected(code) {
+      return this.businessPartnerBody.serviceTypes.includes(code);
+    },
+    toggleServiceSelection(code) {
+      if (this.isServiceSelected(code)) {
+        const index = this.businessPartnerBody.serviceTypes.indexOf(code);
+        this.businessPartnerBody.serviceTypes.splice(index, 1);
+      } else {
+        this.businessPartnerBody.serviceTypes.push(code);
+      }
+    },
     async updateAddress(place) {
       console.log('place: ', place)
     },
-    triggerEditBP(id) {
+    async triggerEditBP(id) {
+      // console.log('edit triggered: ', id)
       this.businessPartnerId = id
       this.currentTab = 'edit'
-      this.businessPartnerBody = this.businessPartners.find(bp => bp.id === id)
-      
-    },  
+      // this.businessPartnerBody = this.businessPartners.find(bp => bp.id === id)
+      this.fullBusinessPartner = await this.$switchit.getBusinessPartner(id)
+      this.businessPartnerBody.name = this.fullBusinessPartner.name
+      this.businessPartnerBody.domain = this.fullBusinessPartner.domain
+      this.businessPartnerBody.vatNumber = this.fullBusinessPartner.vatNumber
+      this.businessPartnerBody.address = this.fullBusinessPartner.address
+      this.businessPartnerBody.email = this.fullBusinessPartner.email
+      this.businessPartnerBody.countryCode = this.fullBusinessPartner.countryCode
+      let countries = this.fullBusinessPartner.countries
+      // for each country, get the 'countryCode' and push it to the countriesOfOperation array
+
+      this.businessPartnerBody.countriesOfOperation = countries.map(country => country.countryCode)
+      let serviceType = this.fullBusinessPartner.users[0]?.serviceType
+      console.log('serviceType: ', serviceType)
+      this.businessPartnerBody.serviceTypes = bitwiseDecode(serviceType)
+      console.log('this.businessPartnerBody.serviceTypes: ', this.businessPartnerBody.serviceTypes)
+      // this.businessPartnerBody.serviceTypes = this.fullBusinessPartner.users[0].serviceType
+      this.businessPartnerBody.isApproved = this.fullBusinessPartner.isApproved
+
+      console.log('fullBusinessPartner: ', this.fullBusinessPartner)
+      console.log('businessPartnerBody: ', this.businessPartnerBody)
+
+      this.serviceTypes = await this.$switchit.getServiceTypes()
+      // remove any item in this.businessPartnerBody.serviceTypes that is larger than the greates value in this.serviceTypes
+      this.businessPartnerBody.serviceTypes = this.businessPartnerBody.serviceTypes.filter(item => item <= this.serviceTypes[this.serviceTypes.length - 1].serviceType)
+      console.log('removed values larger that greatest value in serviceType array: ', this.serviceTypes)
+      this.componentKey++
+    },
     changeStatus(businessPartner) {
       console.log('businessPartner: ', businessPartner)
       this.$switchit.editBusinessPartner(businessPartner.id, businessPartner)
@@ -401,26 +492,15 @@ export default {
         email: this.businessPartnerBody.email,
         countryCode: this.businessPartnerBody.countryCode,
         countriesOfOperation: this.businessPartnerBody.countriesOfOperation,
-        serviceTypes: this.businessPartnerBody.serviceTypes
+        serviceTypes: this.businessPartnerBody.serviceTypes,
+        isApproved: this.businessPartnerBody.isApproved
       }
       let response = await this.$switchit.createBusinessPartner(body)
       console.log('response: ', response)
       this.changeTab('get')
     },
     async editBusinessPartner(id) {
-      let body = {
-        name: this.businessPartnerBody.name,
-        domain: this.businessPartnerBody.domain,
-        vatNumber: this.businessPartnerBody.vatNumber,
-        address: this.businessPartnerBody.address,
-        email: this.businessPartnerBody.email,
-        countryCode: this.businessPartnerBody.countryCode,
-        // countriesOfOperation: this.businessPartnerBody.countriesOfOperation,
-        // serviceTypes: this.businessPartnerBody.serviceTypes
-        countriesOfOperation: ['DK', 'NO'],
-        serviceTypes: [1]
-      }
-      let response = await this.$switchit.editBusinessPartner(id, body)
+      let response = await this.$switchit.editBusinessPartner(id, this.businessPartnerBody)
       console.log('response: ', response)
       this.changeTab('get')
     },
@@ -440,12 +520,12 @@ export default {
       console.log('this.leads: ', this.leads)
 
 
-    },  
+    },
     async getLead() {
       let household = await this.$switchit.getHouseholds()
       household = household.model[0]
       console.log('household: ', household)
-      
+
       this.lead = await api.getLead('645523adf94c6954738ddae9')
       let serviceFields = this.lead.data
       console.log('serviceFields: ', serviceFields)
@@ -454,18 +534,18 @@ export default {
       // serviceFields = JSON.stringify(serviceFields);
 
       let newLead = {
-          "householdId": household.id,
-          "householdPartialAddress": household.postalCode,
-          "serviceType": 1,
-          "amount": 0,
-          "currencyType": 1,
-          "serviceFields": {"key": "value"}
-        }
-        console.log('newLead: ', newLead)
-       this.newLead = newLead
-    },  
+        "householdId": household.id,
+        "householdPartialAddress": household.postalCode,
+        "serviceType": 1,
+        "amount": 0,
+        "currencyType": 1,
+        "serviceFields": { "key": "value" }
+      }
+      console.log('newLead: ', newLead)
+      this.newLead = newLead
+    },
     async createLead() {
-      if(!this.newLead) {
+      if (!this.newLead) {
         this.$toast_error.show('Hit "Get Lead" first to populate newLead object.')
         return
       }
@@ -473,7 +553,7 @@ export default {
       console.log('response: ', response)
     },
     submitBusinessPartner() {
-     if (this.currentTab === 'create') {
+      if (this.currentTab === 'create') {
         this.createBusinessPartner()
       } else if (this.currentTab === 'edit') {
         this.editBusinessPartner(this.businessPartnerId)
@@ -481,7 +561,7 @@ export default {
         this.deleteBusinessPartner(this.businessPartnerId)
       }
     },
-    
+
 
     async importCompanies() {
 
@@ -574,11 +654,26 @@ export default {
     },
     async getPensionUploads(householdId) {
       let response = await this.$switchit.getPensionUploads(householdId)
+      this.pensionUploads = response.model
+      console.log('response: ', response)
+    },
+    async getHouseholdUploads(householdId) {
+      let response = await this.$switchit.getHouseholdUploads(householdId)
+      this.pensionUploads = response.model
+      console.log('response: ', response)
+    },
+    async getUploads() {
+      let response = await this.$switchit.getUploads()
+      this.pensionUploads = response.model
       console.log('response: ', response)
     },
     async getUploadedFile(id) {
-      let response = await this.$switchit.getUploadedFile(id)
-      console.log('response: ', response)
+      // let response = await this.$switchit.getUploadedFile(id)
+      // console.log('response: ', response)
+
+      const fileBlob = await this.$switchit.getUploadedFile(id)
+      const fileURL = URL.createObjectURL(fileBlob);
+      window.open(fileURL);
     },
     async getCompany(id) {
       let company = (await this.$switchit.getCompany(id)).model
@@ -634,6 +729,10 @@ export default {
     }
   },
   async mounted() {
+    // get 'tab' from route query
+    if (this.$route.query.tab) {
+      this.currentTab = this.$route.query.tab
+    }
     this.getBusinessPartners()
     this.getLead()
   }

@@ -29,6 +29,30 @@ export default {
   computed: {
     filteredCategories() {
       const { ...filteredCategories } = this.categories;
+      let activeBusinessPartner = this.$store.getters.activeBusinessPartner;
+      console.log('activeBusinessPartner', activeBusinessPartner)
+      let serviceTypes = activeBusinessPartner.serviceTypes;
+      /*
+      serviceTypes is an array of numbers, e.g.
+       [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32
+]
+
+      only keep the properties in filteredCategories where the property 'code' is in the serviceTypes array
+      */
+      for (let cat in filteredCategories) {
+        if (!serviceTypes.includes(filteredCategories[cat].code)) {
+          delete filteredCategories[cat];
+        }
+      }
+
+      console.log('serviceTypes', serviceTypes)
+      console.log('filteredCategories', filteredCategories)
       delete filteredCategories.general;
       return filteredCategories;
     }

@@ -110,7 +110,7 @@
             <div class="table-header-content-sm">Match</div>
             <div class="table-header-content-med">User ID</div>
             <div class="table-header-content-lg">Services</div>
-            <!-- <div class="table-header-content-sm">Documents</div> -->
+            <div class="table-header-content-sm">Documents</div>
             <div class="table-header-content-sm">Value</div>
             <div class="table-header-content-sm last"></div>
           </div>
@@ -138,7 +138,7 @@
                 <IconsCategoryAccess :access="lead.data" />
               </div>
               <div class="table-row-content-sm">
-                <!-- <span v-if="lead.documents?.length" class="material-symbols-outlined table_icon">description</span> -->
+                <span v-if="lead.documents?.length" class="material-symbols-outlined table_icon">description</span>
               </div>
               <div class="table-row-content-sm">
                 {{ lead.value }} €
@@ -184,6 +184,7 @@ import { Doughnut } from "vue-chartjs";
 import { ref, computed, watch, onMounted, reactive, toRefs, getCurrentInstance } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+// import bitwiseDecode from '@/helpers/bitwise'
 
 // import fake_data from "@/api/fake_data.js"; // uncomment to create fake data
 
@@ -327,6 +328,11 @@ export default {
       }
     });
 
+  
+    // get active business partner from store
+    const businessPartner = store.getters.activeBusinessPartner
+    console.log('businessPartner', businessPartner)
+    
     function openLead(id) {
       store.dispatch("setSelectedLeads", [id]);
       $storeSessionValue('offer_selectedLeads', [id], 60);

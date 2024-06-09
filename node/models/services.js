@@ -17,7 +17,7 @@ const serviceSchema = new Schema({
       phone: { type: Number, required: false }
     },
     mobile: {
-      invoice_debit_amount: { type: Number, required: false },
+      invoice_total_due: { type: Number, required: false },
       invoice_debit_date: { type: String, required: false },
       phone_number: { type: String, required: false },
       invoice_period: {
@@ -39,12 +39,12 @@ const serviceSchema = new Schema({
       mortgage_contribution: { type: Number, required: false },
       interest_paid: { type: Number, required: false },
       installment_paid: { type: Number, required: false },
-      debit_amount: { type: Number, required: false },
+      total_due: { type: Number, required: false },
       debit_date: { type: String, required: false },
       terms_remaining: { type: String, required: false }
     },
     energy: {
-      debit_amount: { type: Number, required: false },
+      total_due: { type: Number, required: false },
       debit_date: { type: String, required: false },
       kwh_amount: { type: Number, required: false },
       fees_amount: { type: Number, required: false },
@@ -53,7 +53,7 @@ const serviceSchema = new Schema({
       prepaid_amount: { type: Number, required: false }
     },
     car_insurance: {
-      debit_amount: { type: Number, required: false },
+      total_due: { type: Number, required: false },
       debit_date: { type: String, required: false },
       valid_from: { type: String, required: false },
       number_plate: { type: String, required: false },
@@ -67,7 +67,7 @@ const serviceSchema = new Schema({
       own_risk_amount: { type: Number, required: false }
     },
     home_insurance: {
-      debit_amount: { type: Number, required: false },
+      total_due: { type: Number, required: false },
       debit_date: { type: String, required: false },
       valid_from: { type: String, required: false },
       address: { type: String, required: false },
@@ -76,7 +76,7 @@ const serviceSchema = new Schema({
       alarm_discount: { type: Boolean, required: false },
     },
     broadband: {
-      debit_amount: { type: Number, required: false },
+      total_due: { type: Number, required: false },
       debit_date: { type: String, required: false },
       plan_data_speed: { type: Number, required: false },
       plan_data_gb: { type: Number, required: false }

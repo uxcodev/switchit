@@ -1,8 +1,7 @@
 <template> 
     <div class="tags-input">
         <div class="tag" v-for="(tag, index) in tags" :key="index">
-          {{ tag }}
-          <span class="remove-btn material-symbols-outlined" @click="removeTag(index)">close</span>
+          {{ tag }}<span class="remove-btn material-symbols-outlined" @click="removeTag(index)">close</span>
           <!-- <button class="remove-btn" @click="removeTag(index)">x</button> -->
         </div>
         <input
@@ -20,6 +19,10 @@ import { ref, watch } from 'vue';
 
 export default {
   props: {
+    isNumber: {
+      type: Boolean,
+      required: false
+    },
     modelValue: {
       type: Array,
       required: false
@@ -40,6 +43,10 @@ export default {
       let tag = input.value.trim();
       tag = tag.replace(/,/g, '');
       if (tag !== '') {
+        // if props.number is set, convert to number
+        if (props.isNumber) {
+          tag = Number(tag);
+        }
         tags.value.push(tag);
         input.value = '';
       }
@@ -69,6 +76,7 @@ export default {
   display: flex
   flex-direction: row
   border: 1px solid #ccc
+  flex-wrap: wrap
   align-items: center
   padding: 0px 5px
   border-radius: $input-border-radius
@@ -77,6 +85,7 @@ export default {
 .tag
   white-space: nowrap
   display: flex
+  flex-direction: row
   flex-wrap: wrap
   align-items: center
   background-color: #2c3e50

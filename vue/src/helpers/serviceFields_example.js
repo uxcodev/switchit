@@ -20,7 +20,7 @@ serviceFields = {
       "features": 3
     },
     "interaction_data": {
-      "invoice_debit_amount": 889.44,
+      "invoice_total_due": 889.44,
       "invoice_debit_date": {
         "$date": "2022-05-19T18:54:29.179Z"
       },
@@ -56,7 +56,7 @@ serviceFields = {
       "mortgage_contribution": 3.6,
       "interest_paid": 784.41,
       "installment_paid": 742.56,
-      "debit_amount": 839.32,
+      "total_due": 839.32,
       "debit_date": {
         "$date": "2023-04-14T12:38:01.031Z"
       },
@@ -71,7 +71,7 @@ serviceFields = {
       "features": 3
     },
     "interaction_data": {
-      "debit_amount": 824.14,
+      "total_due": 824.14,
       "debit_date": {
         "$date": "2023-03-09T01:56:02.442Z"
       },
@@ -90,7 +90,7 @@ serviceFields = {
       "features": 1
     },
     "interaction_data": {
-      "debit_amount": 696.52,
+      "total_due": 696.52,
       "debit_date": {
         "$date": "2022-08-11T08:46:10.200Z"
       },
@@ -120,7 +120,7 @@ serviceFields = {
       "features": 8
     },
     "interaction_data": {
-      "debit_amount": 389.34,
+      "total_due": 389.34,
       "debit_date": {
         "$date": "2023-05-03T05:27:49.782Z"
       },
@@ -145,7 +145,7 @@ serviceFields = {
       "features": 2
     },
     "interaction_data": {
-      "debit_amount": 397.94,
+      "total_due": 397.94,
       "debit_date": {
         "$date": "2022-12-15T01:52:25.037Z"
       },

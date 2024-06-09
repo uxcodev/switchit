@@ -1,6 +1,6 @@
 <template>
   <ModalWindow v-if="modalComponent" :component="modalComponent" @closeModal="closeModal">
-    <component :is="modalComponent"></component>
+    <component :is="modalComponent" @handleFile="handleFile"></component>
   </ModalWindow>
   <div class="main" v-if="loaded">
     <div class="container">
@@ -21,7 +21,9 @@
           <div class="card stats-rating">
             <div class="card-top">
               <div v-if='leads.length === 1' class="stats-title">
-                User ID: {{ lead.userId }}
+                <div>Lead ID: {{ lead.userId }}</div>
+                <div>Location: {{ lead.householdPartialAddress }}</div>
+                <div>Postal Code: {{ lead.postalCode }}</div>
                 <!-- show link to download documents -->
                 <div v-if="lead.documents.length" class="mt5">
                   {{ lead.documents.length }} document{{ lead.documents.length > 1 ? 's' : '' }} available for download
@@ -103,8 +105,7 @@
       <section class="mt5"  v-for="(value, category) in filteredCategoryAccess" :key="category">
         <h1>{{ $t(category) }}</h1>
         <div class="right form_actions">
-          <!-- <button @click="openModal('ImportOffer')" >Upload offer</button> -->
-          <button @click="$toast_warn.show('This feature is still under development' )">Upload offer</button>
+  <button @click="openUploadModal('ImportOffer', 'mobile')" >Upload offer</button>
         </div>
 
         <div class="cards lg switchit-form">
@@ -203,10 +204,12 @@ export default {
       screen: 'UserTable',
       selectAll: false,
       categoryAccess: this.$store.getters.categories,
+      uploadingToService: null,
       leads: [],
       lead: null,
       changed: false,
       loaded: false,
+      uploadedOffers:[],
       editMode: false,
       mode: null,
       offerType: null,
@@ -266,12 +269,12 @@ export default {
             storm_damage_protection: { value: null, type: 'Boolean' },
           },
           broadband: {
-            debit_amount: { value: null, type: 'Number', suffix: 'Mbps' },
+            total_due: { value: null, type: 'Number', suffix: 'Mbps' },
             plan_data_speed: { value: null, type: 'Number', suffix: 'Mbps' },
             plan_data_gb: { value: null, type: 'Number', suffix: 'GB' },
           },
           medical_insurance: {
-            debit_amount: { value: null, type: 'Number', suffix: '€' },
+            total_due: { value: null, type: 'Number', suffix: '€' },
           },
 
           pension: {
@@ -353,8 +356,20 @@ export default {
 
     },
     
-    openModal(component) {
+    openUploadModal(component, service) {
       this.modalComponent = component
+      this.uploadingToService = service
+    },
+    handleFile(formData) {
+      console.log('handleFile emitted to root', formData)
+      // push {formData: formData; service: uploadingToService} to uploadedOffers array
+      this.uploadedOffers.push({formData: formData, service: this.uploadingToService})
+
+      console.log('this.uploadedOffers', this.uploadedOffers)
+
+      // console.log('this.lead.householdId', householdId)
+      // const response = this.$switchit.uploadOffer(householdId, formData);
+      // console.log('response', response)
     },
     closeModal() {
       this.modalComponent = null
@@ -405,6 +420,8 @@ export default {
         } 
         */
       // let householdIs = this.leads.length ? this.leads.map(lead => lead.householdId) || [this.lead.householdId] : [this.lead.householdId]
+
+
       let body = {
         "householdIds": this.leads,
         "businessPartnerId": this.$store.getters.activeBusinessPartner.id,
@@ -417,18 +434,21 @@ export default {
 
       console.log('body', body)
       console.log('this.offer_obj', this.offer_obj)
+      console.log('this.lead.id', this.lead.id)
 
       let response = await this.$switchit.createOffer(body)
       console.log('response', response)
       if (response) {
-        let query = this.lead?.householdId ? { householdId: this.lead?.householdId } : null
+        let query = this.lead?.id ? { householdId: this.lead?.id } : null
 
-        if (this.lead?.householdId) {
+        if (this.lead?.id) {
           this.$router.push({ path: '/offers', query: query })
         } else {
           this.$router.push({ path: '/offers' })
         }
       }
+
+
       /*     await this.trimOfferObj()
           let leads = this.leads || [this.lead._id]
           let response = await this.$switchit.createOffer(this.offer_obj, leads)

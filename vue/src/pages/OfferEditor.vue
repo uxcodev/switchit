@@ -457,8 +457,12 @@ export default {
           } */
     },
     async updateOffer() {
-      await this.trimOfferObj()
-      let response = await this.$api_node.updateOffer(this.offer_obj, this.leads)
+      // await this.trimOfferObj()
+      // let response = await this.$api_node.updateOffer(this.offer_obj, this.leads)
+      // if (response) {
+      //   this.$router.push({ path: '/offers' })
+      // }
+      let response = await this.$switchit.updateOffer(this.id, this.offer_obj)
       if (response) {
         this.$router.push({ path: '/offers' })
       }
@@ -493,11 +497,14 @@ export default {
     if (type === 'offer') {
       if (params.id) {
         // this.offer_obj = await this.$api_node.getOffer(params.id)
+        // let response = await this.$switchit.getOffer(params.id)
+        // console.log('getOffer response', response)
       }
     }
     if (type === 'campaign') {
       if (params.id) {
         // this.offer_obj = await this.$api_node.getCampaign(params.id)
+
       }
     }
     this.offer_obj.offer_details ??= {}
@@ -514,7 +521,36 @@ export default {
       }
     }
 
+       this.offer_obj.offer_details.start_date = this.$dayjs().format('YYYY-MM-DD')
+    this.offer_obj.offer_details.name = 'Test offer ' + new Date().toISOString().split('T')[0]
+    this.offer_obj.offer_details.expiry_date = this.$dayjs().add(30, 'day').format('YYYY-MM-DD')
+    this.offer_obj.offer_details.details = 'Details for ' + this.offer_obj.offer_details.name
+    this.offer_obj.offer_details.term = '12 months'
+    this.changed = false
+    this.loaded = true
+    console.log('this.offer_obj', this.offer_obj)
+
+
+    console.log('this.offer_obj', this.offer_obj)
+ 
+
+    // if there is an id param, it's a real offer, so populate with offer details
+
     let leadId = this.$route.query?.lead
+
+    if(params.id) {
+      let offer = (await this.$switchit.getOffer(params.id)).model
+      console.log('getOffer response', offer)
+      this.offer_obj.offer_details.name = offer.title
+      this.offer_obj.offer_details.start_date = this.$dayjs(offer.startDate).format('YYYY-MM-DD')
+      this.offer_obj.offer_details.expiry_date = this.$dayjs(offer.endDate).format('YYYY-MM-DD')
+      this.offer_obj.offer_details.details = offer.comment
+      this.offer_obj.offer_details.term = ''
+      leadId = offer.householdId
+    }
+
+
+
 
     // if a lead id is provided in the query, use that lead
     if (!leadId) {
@@ -550,14 +586,7 @@ export default {
     console.log('this.lead', this.lead)
     /* Auto populate with dummy data */
 
-    console.log('this.offer_obj', this.offer_obj)
-    this.offer_obj.offer_details.start_date = this.$dayjs().format('YYYY-MM-DD')
-    this.offer_obj.offer_details.name = 'Test offer ' + new Date().toISOString().split('T')[0]
-    this.offer_obj.offer_details.expiry_date = this.$dayjs().add(30, 'day').format('YYYY-MM-DD')
-    this.offer_obj.offer_details.details = 'Details for ' + this.offer_obj.offer_details.name
-    this.offer_obj.offer_details.term = '12 months'
-    this.changed = false
-    this.loaded = true
+    
   }
 }
 </script>

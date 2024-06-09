@@ -551,5 +551,31 @@ export default {
     } catch (err) {
       console.error(err);
     }
+  },
+
+  async getOffer(id) {
+    try {
+      let url = `/api/v1/offers/${id}?includeOfferuploads=true&includeOfferServices=true`;
+      const response = await _axios.get(url);
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
+  async updateOffer(id, body) {
+    try {
+      console.log(id, body)
+      // throw an error
+      throw new Error("NOT_IMPLEMENTED")
+
+
+      // let url = `/api/v1/offers/${id}/`;
+      // const response = await _axios.put(url, body);
+      // return response.data;
+    } catch (err) {
+      toast_error.show({ message: "Updating offers is not implemented yet" })
+      console.error(err);
+    }
   }
 }

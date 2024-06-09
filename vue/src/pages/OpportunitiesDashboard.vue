@@ -135,7 +135,8 @@
                 {{ lead.userId }}
               </div>
               <div class="access_icons table-row-content-lg">
-                <IconsCategoryAccess :access="lead.data" />
+                <!-- <IconsCategoryAccess :access="lead.data" /> -->
+                <IconsCategoryAccess :serviceType="lead.serviceType" />
               </div>
               <div class="table-row-content-sm">
                 <span v-if="lead.documents?.length" class="material-symbols-outlined table_icon">description</span>
@@ -354,8 +355,8 @@ export default {
       leadCount.value = response?.totalAmount;
       pg.pageCount = Math.ceil(leadCount.value / pg.limit);
       leads.value = response;
+      console.log('leads', leads.value)
     }
-
     // Modal window
 
     function closeModal() {

@@ -206,9 +206,10 @@ export default {
         console.log('body: ', body)
         let response = await this.$switchit.editBusinessPartner(id, body)
         console.log(response)
-        // if (response.ok) {
-        //   this.$router.push({ path: '/operations', query: { q: 'Companies' } })
-        // }
+        if (response) {
+          // this.$router.push({ path: '/operations', query: { q: 'Companies' } })
+        this.$toast_success.show('Saved successfully')
+        }
       } catch (error) {
         this.$toast_error.show(error)
       }

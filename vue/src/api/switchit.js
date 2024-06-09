@@ -551,5 +551,15 @@ export default {
     } catch (err) {
       console.error(err);
     }
+  },
+
+  async getOffer(id) {
+    try {
+      let url = `/api/v1/offers/${id}?includeOfferuploads=true&includeOfferServices=true`;
+      const response = await _axios.get(url);
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
   }
 }

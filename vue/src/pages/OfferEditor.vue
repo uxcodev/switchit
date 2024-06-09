@@ -493,11 +493,14 @@ export default {
     if (type === 'offer') {
       if (params.id) {
         // this.offer_obj = await this.$api_node.getOffer(params.id)
+        let response = await this.$switchit.getOffer(params.id)
+        console.log('getOffer response', response)
       }
     }
     if (type === 'campaign') {
       if (params.id) {
         // this.offer_obj = await this.$api_node.getCampaign(params.id)
+
       }
     }
     this.offer_obj.offer_details ??= {}
@@ -514,6 +517,7 @@ export default {
       }
     }
 
+    console.log('this.offer_obj', this.offer_obj)
     let leadId = this.$route.query?.lead
 
     // if a lead id is provided in the query, use that lead

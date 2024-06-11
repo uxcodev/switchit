@@ -323,7 +323,8 @@ export default {
     },
   },
   mounted() {
-    this.categoryAccess.general = {selected: false, status: true}
+    // this.categoryAccess.general = {selected: false, status: true}
+    this.categoryAccess.General = {selected: false, status: true}
     this.getFiltersets()
   },
 };

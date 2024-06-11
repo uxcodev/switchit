@@ -2,7 +2,7 @@
 
 // this will be replaced with data from the backend
 const service_data = {
-  general: {
+  General: {
     identifying_data: {
       // first_name: { type: String, required: false, filter_type: "string" },
       // last_name: { type: String, required: false, filter_type: "string" },
@@ -70,7 +70,7 @@ const service_data = {
       }
     }
   },
-  mobile: {
+  Mobile: {
     interaction_data: {
       /*    invoice_total_due: { type: Number, required: false, filter_type: "range_amount" },
          invoice_debit_date: { type: String, required: false, filter_type: "date" },
@@ -116,7 +116,7 @@ const service_data = {
       }
     }
   },
-  mortgage: {
+  Mortgage: {
     interaction_data: {
       /* 
       loan_number: { type: Number, required: false, filter_type: "identifier_number" },
@@ -161,7 +161,7 @@ const service_data = {
       }
     }
   },
-  energy: {
+  Electricity: {
     interaction_data: {
       total_paid: { type: Number, required: false, filter_type: "range_amount" },
       energy_usage_total: { type: Number, required: false, filter_type: "range_amount" },
@@ -190,7 +190,7 @@ const service_data = {
       }
     }
   },
-  car_insurance: {
+  CarInsurance: {
     interaction_data: {
       /*       total_due: { type: Number, required: false, filter_type: "range_amount" },
             debit_date: { type: String, required: false, filter_type: "date" },
@@ -234,7 +234,7 @@ const service_data = {
       }
     }
   },
-  home_insurance: {
+  HomeInsurance: {
     interaction_data: {
       /*       total_due: { type: Number, required: false, filter_type: "range_amount" },
             debit_date: { type: String, required: false, filter_type: "date" },
@@ -273,7 +273,7 @@ const service_data = {
       }
     }
   },
-  banking: {
+  Banking: {
     interaction_data: {
       invoice_number: { type: String, required: false, filter_type: "string" },
       loan_number: { type: String, required: false, filter_type: "string" },
@@ -307,7 +307,7 @@ const service_data = {
     }
   },
 
-  broadband: {
+  Broadband: {
     interaction_data: {
       bill_id: { type: String, required: false, filter_type: "string" },
       total_due: { type: Number, required: false, filter_type: "range_amount" },
@@ -342,52 +342,53 @@ const service_data = {
 
 // I'd like to not have to hard code this, but is there somewhere this could be stored in backend?
 const categories = {
-  general: {
+
+  General: {
     selected: false,
     icon: "info",
     // code: 1
   },
-  unknown: {
+  Unknown: {
     selected: false,
     icon: "question_mark",
     code: 1
   },
-  mobile: {
+  Mobile: {
     selected: false,
     icon: "smartphone",
     code: 2
   },
-  broadband: {
+  Broadband: {
     selected: false,
     icon: "language",
     code: 4
   },
-  energy: {
+  Electricity: {
     selected: false,
     icon: "lightbulb",
     code: 8
   },
-  mortgage: {
+  Mortgage: {
     selected: false,
     icon: "house",
     code: 16
   },
-  home_insurance: {
+  HomeInsurance: {
     selected: false,
     icon: "verified_user",
     code: 32
   },
-  car_insurance: {
+  CarInsurance: {
     selected: false,
     icon: "directions_car",
     code: 64
   },
-  medical_insurance: {
+  MedicalInsurance: {
     selected: false,
     icon: "health_and_safety",
     code: 128
   },
-  pension: {
+  Pension: {
     selected: false,
     icon: "account_balance",
     code: 256
@@ -531,8 +532,8 @@ export default {
     fullCategories: state => state.categories,
     categories: state => {
       let categoriesCopy = { ...state.categories };
-      delete categoriesCopy.unknown;
-      delete categoriesCopy.general;
+      delete categoriesCopy.Unknown;
+      delete categoriesCopy.General;
       return categoriesCopy;
     },
     preferences: state => state.preferences,

@@ -2,7 +2,7 @@
 import axios from 'axios';
 import auth0 from '@/helpers/auth0.js';
 import jwtDecode from 'jwt-decode';
-import bitwiseDecode from '@/helpers/bitwise'
+
 // this allows use of global variables
 let toast_error = null;
 export function initialize(app) {
@@ -96,10 +96,9 @@ export default {
       bp.roles = bp.businessPartnerBusinessPartnerRolesModels
       bp.countries = bp.businessPartnerBusinessPartnerCountrysModels
       bp.users = bp.businessPartnerBusinessPartnerRoleBusinessPartnerUserCollectionModels
-      let serviceType = bp.users[0]?.serviceType
+
       // console.log('serviceType', serviceType)
-      // console.log(bitwiseDecode(serviceType))
-      bp.serviceTypes = bitwiseDecode(serviceType)
+      // console.log(bitwiseDecode(serviceType))      bp.serviceTypes = bitwiseDecode(serviceType)
       delete bp.businessPartnerBusinessPartnerCountrysModels
       delete bp.businessPartnerBusinessPartnerRolesModels
       delete bp.businessPartnerBusinessPartnerRoleBusinessPartnerUserCollectionModels

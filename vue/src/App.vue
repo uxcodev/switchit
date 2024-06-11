@@ -1,6 +1,6 @@
 <template>
   <MainNav />
-  <FilterPanel v-if="!loading && activeBusinessPartner" />
+  <FilterPanel v-if="!loading && activeBusinessPartner && serviceTypes" />
   <div class="mt-10" id="app">
     <LoaderAniOverlay v-if="loading" />
     <router-view v-if="!loading"></router-view>
@@ -34,6 +34,9 @@ export default {
     activeBusinessPartner() {
       return this.activeUser ? this.$store.getters.activeBusinessPartner : null
     },
+    serviceTypes() {
+      return this.$store.getters.serviceTypes
+    }
   },
   methods: {
     async initUser() {

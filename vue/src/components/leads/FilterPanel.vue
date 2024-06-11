@@ -8,10 +8,10 @@
         <div class="inline_center button mb3" @click="toggleFilterOptions">
           <span class="material-symbols-outlined">page_info</span> Filter presets
         </div>
-        
+
         <div v-if="showFiltersetOptions" class="pl7">
           <form @submit.prevent="createFilterset" class="switchit-form sm">
-            <div v-if="Object.keys(filterObj).length"  class="group">
+            <div v-if="Object.keys(filterObj).length" class="group">
               <label for="filtersetName">Save this set of filters</label>
               <div class="inline_center input_button">
                 <input v-model="filtersetName" placeholder="Name" type="text" id="filtersetName" class="input lg mr3" />
@@ -20,22 +20,22 @@
                 </button>
               </div>
             </div>
-            
+
           </form>
-  
+
           <div v-if="filtersets?.length" class="mt3">
             <div v-if="isAdmin" class="inline_center mb4">
-          <span>Show filters from: </span>
-          <span class="link" @click="showFiltersFrom('all')">
-            All
-          </span>
-          <span class="link" @click="showFiltersFrom('company')">
-            Company
-          </span>
-          <span class="link" @click="showFiltersFrom('me')">
-            Me
-          </span>
-        </div>
+              <span>Show filters from: </span>
+              <span class="link" @click="showFiltersFrom('all')">
+                All
+              </span>
+              <span class="link" @click="showFiltersFrom('company')">
+                Company
+              </span>
+              <span class="link" @click="showFiltersFrom('me')">
+                Me
+              </span>
+            </div>
 
             <div v-for="(filterset, index) in filtersets" :key="index" class="filterset">
               <div class="filterset-list_item">
@@ -47,8 +47,8 @@
           </div>
         </div>
       </div>
-      
-      
+
+
       <section>
         <div>
           <h1>{{ $t('filter_opportunities') }}</h1>
@@ -124,6 +124,9 @@ export default {
     }
   },
   computed: {
+    serviceTypes() {
+        return this.$store.getters.serviceTypes
+    },
     filters() {
       return this.$store.getters.filters
     },
@@ -135,16 +138,58 @@ export default {
     },
     services() {
       // return services from store, but only where the category is active in categoryAccess
+
+      console.log('computed services')
       const services = this.$store.getters.services;
+      let serviceTypes = this.$store.getters.serviceTypes
+      console.log('serviceTypes: ', serviceTypes)
       const filteredServices = {};
-      for (const [key, value] of Object.entries(services)) {
-        // if (this.categoryAccess[key]?.status === true) {  // use this line instead of the next to make tab filters affect available filters in the filters panel
-        // NOTE: 'general' is added on mount, so it will always be available
-          if (this.categoryAccess[key]) {
-          filteredServices[key] = value;
+
+      // loop through serviceTypes array. serviceTypes is an arra of objects with keys for each category, and a boolean value for 'access'
+      // if the value is true, add the category to filteredServices
+      for (let service of serviceTypes) {
+        console.log('service: ', service)
+        console.log('services', services)
+        if (service.access) {
+          console.log('service.serviceTypeString: ', service.serviceTypeString)
+          let key = service.serviceTypeString
+          console.log('key: ', key)
+          if (services[key]) {
+            filteredServices[key] = services[key]
+          }
+          filteredServices.General = services.General
+          // filteredServices[key] = services['Broadband']
         }
       }
 
+      /* 
+      for (const [key, value] of Object.entries(services)) {
+        // if (this.categoryAccess[key]?.status === true) {  // use this line instead of the next to make tab filters affect available filters in the filters panel
+        // NOTE: 'general' is added on mount, so it will always be available
+
+        if (this.categoryAccess[key]) {
+          filteredServices[key] = value;
+        }
+
+        if (serviceTypes[key]?.access) {
+          // filteredServices[key] = value;
+          console.log('key: ', key)
+        }
+      } 
+      */
+
+      // // reduce serviceTypes to only those where 'access' is true
+      // serviceTypes = Object.keys(this.categoryAccess).filter((category) => this.categoryAccess[category].status);
+      // console.log('serviceTypes: ', serviceTypes)
+      // // for each service in serviceTypes, find a matching service in services, and add it to filteredServices
+      // for (const [key, value] of Object.entries(serviceTypes)) {
+      //   console.log('serviceType loop: ', key, value)
+      // }
+
+
+      console.log('filteredServices: ', filteredServices)
+      console.log('this.categoryAccess: ', this.categoryAccess)
+      console.log('serviceTypes: ', serviceTypes)
       return filteredServices;
     },
 
@@ -323,8 +368,9 @@ export default {
     },
   },
   mounted() {
+    console.log('this.serviceTypes mounted: ', this.serviceTypes)
     // this.categoryAccess.general = {selected: false, status: true}
-    this.categoryAccess.General = {selected: false, status: true}
+    this.categoryAccess.General = { selected: false, status: true }
     this.getFiltersets()
   },
 };
@@ -373,4 +419,3 @@ export default {
       &:hover
         color: #ff0000
 </style>
-

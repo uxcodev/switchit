@@ -49,7 +49,6 @@ export default {
   methods: {
   },
   mounted() {
-    console.log('relevantServices', this.relevantServices)
   },
 };
 </script>

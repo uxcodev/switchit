@@ -18,16 +18,7 @@ const service_data = {
       // phone_number_masked: { type: Number, required: false, filter_type: "identifier_number" },
     },
     preference_data: {
-      /*  fields are:
-      - Saving money importance?
-      - Quality over cost?
-      - Eco-friendliness priority?
-      - Customer service value?
-      - Need for plan flexibility?
-      - Latest tech importance?
-      - Bundling services preference?
-      - Fixed rate preference?
-      */
+
       saving_money_importance: {
         label: "Saving money importance?",
         filter_type: "range_slider",
@@ -72,20 +63,6 @@ const service_data = {
   },
   Mobile: {
     interaction_data: {
-      /*    invoice_total_due: { type: Number, required: false, filter_type: "range_amount" },
-         invoice_debit_date: { type: String, required: false, filter_type: "date" },
-         // phone_number: { type: Number, required: false, filter_type: "identifier_number" },
-         phone_number: { type: String, required: false, filter_type: "string" },
-         invoice_period: {
-           from: { type: String, required: false, filter_type: "string" },
-           to: { type: String, required: false, filter_type: "string" }, filter_type: "range_date"
-         },
-         plan_talk_minutes: { type: Number, required: false, filter_type: "range_number" },
-         plan_data_speed: { type: Number, required: false, filter_type: "range_number" },
-         plan_data_gb: { type: Number, required: false, filter_type: "range_number" },
-         plan_teleservice: { type: String, required: false, filter_type: "string" },
-         phone_installment: { type: Number, required: false, filter_type: "range_number" },
-         equipment_installment: { type: Number, required: false, filter_type: "range_number" }, */
       total_due: { type: Number, required: false, filter_type: "range_amount" },
       payment_date: { type: String, required: false, filter_type: "date" },
       mobile_number: { type: String, required: false, filter_type: "string" },
@@ -118,18 +95,6 @@ const service_data = {
   },
   Mortgage: {
     interaction_data: {
-      /* 
-      loan_number: { type: Number, required: false, filter_type: "identifier_number" },
-      loan_details: { type: String, required: false, filter_type: "string" },
-      principal_amount: { type: Number, required: false, filter_type: "range_amount" },
-      interest_rate: { type: Number, required: false, filter_type: "range_amount", range: [0, 10] },
-      mortgage_contribution: { type: Number, required: false, filter_type: "range_amount" },
-      interest_paid: { type: Number, required: false, filter_type: "range_amount" },
-      installment_paid: { type: Number, required: false, filter_type: "range_amount" },
-      total_due: { type: Number, required: false, filter_type: "range_amount" },
-      debit_date: { type: String, required: false, filter_type: "date" },
-      terms_remaining: { type: String, required: false, filter_type: "string", range: [0, 50] },
-        */
       loan_id: { type: String, required: false, filter_type: "string" },
       total_due: { type: Number, required: false, filter_type: "range_amount" },
       due_date: { type: String, required: false, filter_type: "date" },
@@ -192,18 +157,6 @@ const service_data = {
   },
   CarInsurance: {
     interaction_data: {
-      /*       total_due: { type: Number, required: false, filter_type: "range_amount" },
-            debit_date: { type: String, required: false, filter_type: "date" },
-            valid_from: { type: String, required: false, filter_type: "date" },
-            number_plate: { type: String, required: false, filter_type: "string" },
-            vehicle: {
-              make: { type: String, required: false, filter_type: "string" },
-              model: { type: String, required: false, filter_type: "string" },
-              fuel: { type: String, required: false, filter_type: "string" },
-              speedometer: { type: String, required: false, filter_type: "string" }
-            },
-            additional_services: { type: Object, required: false },
-            own_risk_amount: { type: Number, required: false, filter_type: "range_amount" }, */
       policy_number: { type: String, required: false, filter_type: "string" },
       coverage_type: { type: String, required: false, filter_type: "string" },
       monthly_premium: { type: Number, required: false, filter_type: "range_number" },
@@ -236,13 +189,38 @@ const service_data = {
   },
   HomeInsurance: {
     interaction_data: {
-      /*       total_due: { type: Number, required: false, filter_type: "range_amount" },
-            debit_date: { type: String, required: false, filter_type: "date" },
-            valid_from: { type: String, required: false, filter_type: "string" },
-            address: { type: String, required: false, filter_type: "string" },
-            own_risk_amount: { type: Number, required: false, filter_type: "range_amount" },
-            add_ons: { type: Object, required: false, filter_type: "object" },
-            alarm_discount: { type: Boolean, required: false, filter_type: "boolean" }, */
+      policy_number: { type: String, required: false, filter_type: "string" },
+      insurance_type: { type: String, required: false, filter_type: "string" },
+      premium_due: { type: Number, required: false, filter_type: "range_number" },
+      next_payment_date: { type: String, required: false, filter_type: "date" },
+      coverage_start_date: { type: String, required: false, filter_type: "date" },
+      renewal_date: { type: String, required: false, filter_type: "date" },
+      coverage_amount: { type: Number, required: false, filter_type: "range_number" },
+      deductible: { type: Number, required: false, filter_type: "range_number" },
+      covered_perils: { type: String, required: false, filter_type: "string" },
+      contact_for_claims: { type: String, required: false, filter_type: "string" },
+      service_provider_name: { type: String, required: false, filter_type: "string" },
+    },
+    preference_data: {
+      price: {
+        label: "Importance of cheapest price",
+        filter_type: "range_slider",
+        range: [0, 10]
+      },
+      service: {
+        label: "Importance of best service",
+        filter_type: "range_slider",
+        range: [0, 10]
+      },
+      features: {
+        label: "Importance of lots of features",
+        filter_type: "range_slider",
+        range: [0, 10]
+      }
+    }
+  },
+  MedicalInsurance: {
+    interaction_data: {
       policy_number: { type: String, required: false, filter_type: "string" },
       insurance_type: { type: String, required: false, filter_type: "string" },
       premium_due: { type: Number, required: false, filter_type: "range_number" },
@@ -399,58 +377,10 @@ const categories = {
   // },
 }
 
-/*  
 
-// Here's how these look in the database (as of June 1):
 
-const serviceTypes = [
-  {
-    "serviceType": 1,
-    "serviceTypeString": "Unknown"
-  },
-  {
-    "serviceType": 2,
-    "serviceTypeString": "Mobile"
-  },
-  {
-    "serviceType": 4,
-    "serviceTypeString": "Broadband"
-  },
-  {
-    "serviceType": 8,
-    "serviceTypeString": "Electricity"
-  },
-  {
-    "serviceType": 16,
-    "serviceTypeString": "Mortgage"
-  },
-  {
-    "serviceType": 32,
-    "serviceTypeString": "HomeInsurance"
-  },
-  {
-    "serviceType": 64,
-    "serviceTypeString": "CarInsurance"
-  },
-  {
-    "serviceType": 128,
-    "serviceTypeString": "MedicalInsurance"
-  },
-  {
-    "serviceType": 256,
-    "serviceTypeString": "TravelInsurance"
-  },
-  {
-    "serviceType": 512,
-    "serviceTypeString": "PetInsurance"
-  }
-] 
-*/
 
 /*
-
-
-
 HOW THIS WORKS (needs updating)
  
 1. Services get loaded from api in App.vue, and saved in store as 'services' (temporarily 'service_data' variable)

@@ -111,13 +111,16 @@ export default {
       body.serviceTypes.forEach(service => {
 
         // add icon
-
         const serviceType = service.serviceTypeString.toLowerCase();
         service.icon = iconMapping[serviceType] || 'info';
 
         // add 'selected' property to each serviceType object
         service.selected = false;
       });
+
+      // remove 'MedicalInsurance' as this is not available now
+      body.serviceTypes = body.serviceTypes.filter(service => service.serviceTypeString !== 'MedicalInsurance');
+
       context.commit('setServiceTypes', body.serviceTypes);
     },
     setServiceTypeSelection(context, serviceType, selected) {

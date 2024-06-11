@@ -5,14 +5,24 @@
       {{ value }} - {{ key }}
     </div> -->
     <div class="filter" :class="all ? 'active' : ''" @click="changeFilters('all')"><span>All</span></div>
-    <div v-for="(cat, key) in filteredCategories" :key="key" @click="changeFilters(key)" class="filter" :class="cat.status ? 'active' : ''">
+    <!-- <div v-for="(cat, key) in filteredCategories" :key="key" @click="changeFilters(key)" class="filter" :class="cat.status ? 'active' : ''">
       <span class="icon material-symbols-outlined"> {{ filteredCategories[key].icon }}</span>
       <span class="text">{{ $t(key) }}</span>
-    </div>
+    </div> -->
+
+    <!-- <div v-for="(service, index) in serviceTypes" :key="index" class="filter" @click="changeFilters(service.code)" :class="categories[service.code]?.status ? 'active' : ''">
+      <span class="icon material-symbols-outlined"> {{ categories[service.code].icon }}</span>
+      <span class="text">{{ $t(service.code) }}</span>
+      </div> -->
+      <div v-for="(service, index) in filteredServiceTypes" :key="index" class="filter" @click="changeFilters(service.serviceTypeString)" :class="categories[service.serviceTypeString]?.status ? 'active' : ''">
+        <span class="icon material-symbols-outlined"> {{ categories[service.serviceTypeString].icon }}</span>
+        <span class="text">{{ $t(service.serviceTypeString) }}</span>
+        </div>  
   </div>
 </template>
 
 <script>
+
 
 export default {
   props: {
@@ -22,16 +32,21 @@ export default {
   data() {
     return {
       all: true,
-      categories: this.$store.getters.categories
+      categories: this.$store.getters.categories,
+      serviceTypes: this.$store.getters.serviceTypes
     };
   },
   // a computed property called filteredCategories that is a copy of categories but with 'general' property removed
   computed: {
+    filteredServiceTypes() {
+      return this.serviceTypes.filter(service => service.access)
+    },
     filteredCategories() {
       const { ...filteredCategories } = this.categories;
       let activeBusinessPartner = this.$store.getters.activeBusinessPartner;
       console.log('activeBusinessPartner', activeBusinessPartner)
       let serviceTypes = activeBusinessPartner.serviceTypes;
+      console.log('filteredCategories serviceTypes', serviceTypes)
       /*
       serviceTypes is an array of numbers, e.g.
        [
@@ -46,12 +61,13 @@ export default {
       only keep the properties in filteredCategories where the property 'code' is in the serviceTypes array
       */
       for (let cat in filteredCategories) {
-        if (!serviceTypes.includes(filteredCategories[cat].code)) {
+        if (!serviceTypes?.includes(filteredCategories[cat].code)) {
           delete filteredCategories[cat];
         }
       }
 
-      delete filteredCategories.general;
+
+      delete filteredCategories.General;
       return filteredCategories;
     }
   },
@@ -61,6 +77,7 @@ export default {
       // // console.log(resource_id);
     },
     changeFilters(category) {
+      console.log('changeFilters', category, this.categories)
       this.all = true
       if (category === 'all') {
         for (let cat in this.categories) {

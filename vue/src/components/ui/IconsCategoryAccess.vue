@@ -51,6 +51,8 @@ export default {
   methods: {
   },
   mounted() {
+    console.log('iconsCategoryAccess serviceTypes', this.serviceType, this.serviceTypes)
+    console.log('categories', this.categories)
   },
 };
 </script>

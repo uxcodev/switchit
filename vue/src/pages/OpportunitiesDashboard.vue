@@ -136,7 +136,7 @@
               </div>
               <div class="access_icons table-row-content-lg">
                 <!-- <IconsCategoryAccess :access="lead.data" /> -->
-                <IconsCategoryAccess :serviceType="lead.serviceType" />
+                <IconsCategoryAccess :serviceType="lead.serviceType" :relevantServices="lead.relevantServices"/>
               </div>
               <div class="table-row-content-sm">
                 <span v-if="lead.documents?.length" class="material-symbols-outlined table_icon">description</span>

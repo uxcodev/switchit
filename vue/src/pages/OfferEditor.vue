@@ -521,10 +521,6 @@ export default {
 
     this.changed = false
     this.loaded = true
-    console.log('this.offer_obj', this.offer_obj)
-
-
-    console.log('this.offer_obj', this.offer_obj)
 
 
     // if there is an id param, it's a real offer, so populate with offer details
@@ -584,15 +580,23 @@ export default {
     }
 
     if (leadId) {
+
+      console.log('there is a lead id')
       // NOTE: Currently, there is no 'getLead' method in the switchit api, 
       // so we have to get all leads and find the one we need
 
-      let all_leads = await this.$switchit.getLeads()
+      let all_leads = await this.$switchit.getLeads({
+        take: 999, 
+        skip: 0,
+        filterData: ''
+      })
       this.lead = all_leads.find(lead => lead.id === leadId)
       this.leads = [leadId]
-
-      this.lead.documents = (await this.$switchit.getPensionUploads(leadId)).model
-      console.log('documents', this.lead.documents)
+     
+      if(this.lead) {
+        this.lead.documents = (await this.$switchit.getPensionUploads(leadId)).model || []
+        console.log('documents', this.lead.documents)
+      }
     }
     if (!this.leads?.length) {
       this.$toast_error.show({ message: 'No leads selected' })
@@ -606,8 +610,6 @@ export default {
       }
     }
 
-    console.log('this.leads', this.leads)
-    console.log('this.lead', this.lead)
     /* Auto populate with dummy data */
 
     // check for documents

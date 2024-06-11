@@ -1,21 +1,9 @@
 <template>
  
   <div class="filter-group">
-    <!-- <div v-for="(value, key, index ) in user.access" :key="index">
-      {{ value }} - {{ key }}
-    </div> -->
     <div class="filter" :class="all ? 'active' : ''" @click="changeFilters('all')"><span>All</span></div>
-    <!-- <div v-for="(cat, key) in filteredCategories" :key="key" @click="changeFilters(key)" class="filter" :class="cat.status ? 'active' : ''">
-      <span class="icon material-symbols-outlined"> {{ filteredCategories[key].icon }}</span>
-      <span class="text">{{ $t(key) }}</span>
-    </div> -->
-
-    <!-- <div v-for="(service, index) in serviceTypes" :key="index" class="filter" @click="changeFilters(service.code)" :class="categories[service.code]?.status ? 'active' : ''">
-      <span class="icon material-symbols-outlined"> {{ categories[service.code].icon }}</span>
-      <span class="text">{{ $t(service.code) }}</span>
-      </div> -->
       <div v-for="(service, index) in filteredServiceTypes" :key="index" class="filter" @click="changeFilters(service.serviceTypeString)" :class="categories[service.serviceTypeString]?.status ? 'active' : ''">
-        <span class="icon material-symbols-outlined"> {{ categories[service.serviceTypeString].icon }}</span>
+        <span class="icon material-symbols-outlined"> {{ service.icon }}</span>
         <span class="text">{{ $t(service.serviceTypeString) }}</span>
         </div>  
   </div>
@@ -39,7 +27,7 @@ export default {
   // a computed property called filteredCategories that is a copy of categories but with 'general' property removed
   computed: {
     filteredServiceTypes() {
-      return this.serviceTypes.filter(service => service.access)
+      return this.serviceTypes.filter(service => service.access && service.serviceTypeString !== 'General' && service.serviceTypeString !== 'Unknown')
     },
     filteredCategories() {
       const { ...filteredCategories } = this.categories;

@@ -510,19 +510,6 @@ export default {
     setCategories(context, categories) {
       context.commit('setCategories', categories);
     },
-    setAccess(context, access) {
-
-      let categories = context.getters.categories;
-      const filteredCategories = Object.assign({}, categories);
-
-      access.forEach(category => {
-        filteredCategories[category] = {
-          ...categories[category],
-          selected: true
-        };
-      })
-      context.commit('setCategories', filteredCategories);
-    },
   },
   getters: {
     filters: state => state.filters,

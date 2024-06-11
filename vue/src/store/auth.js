@@ -9,7 +9,6 @@ export default {
       activeUser: null,
       activeBusinessPartner: null,
       selectedLeads: null,
-      activeCompany: null,
       serviceAccessCode: null
     };
   },
@@ -22,9 +21,6 @@ export default {
     },
     setSelectedLeads(state, payload) {
       state.selectedLeads = payload.val
-    },
-    setActiveCompany(state, payload) {
-      state.activeCompany = payload.val
     },
     setActiveBusinessPartner(state, payload) {
       state.activeBusinessPartner = payload.val
@@ -42,9 +38,8 @@ export default {
     },
     async setActiveUser(context, activeUser) {
       context.commit('setActiveUser', { val: activeUser });
-      if (activeUser.roles.length === 0 || !activeUser.roles) return
-      let company = await api.getCompanyById(activeUser.roles[0].company)
-      context.commit('setActiveCompany', { val: company });
+      await context.dispatch('fetchAndSetActiveBusinessPartner');
+      return
     },
     setSelectedLeads(context, selectedLeads) {
       context.commit('setSelectedLeads', { val: selectedLeads });
@@ -66,24 +61,20 @@ export default {
 
 
           // get logged in user in list of business partner users
-          console.log('state.activeUser', state.activeUser)
           let email = state.activeUser?.email;
           let user = activeBusinessPartner.users.find(user => user.email === email);
           activeBusinessPartner.activeUser = user;
-          console.log('user', user)
 
           // set serviceAccessCode based on user's serviceType code
 
           let serviceTypes = state.serviceTypes
           let access = user?.serviceType;
-          console.log('access', access)
 
           if (!serviceTypes?.length) {
             serviceTypes = await switchit.getServiceTypes()
           }
           dispatch('setServiceTypes', { serviceTypes: serviceTypes, access: access })
           commit('setserviceAccessCode', { val: access });
-
           commit('setActiveBusinessPartner', { val: activeBusinessPartner });
         } else {
           commit('setActiveBusinessPartner', { val: null });
@@ -95,19 +86,48 @@ export default {
       }
     },
     setServiceTypes(context, body) {
-      console.log('setServiceTypes', body.serviceTypes, body.access)
+
+      // add 'access' property to each serviceType object
+
       if (body.access) {
         let access = bitwiseDecode(body.access)
-
-        // for each item in the serviceTypes array, if the value of 'serviceType' exists in the access array, set the 'access' property to true, otherwise set it to false
         body.serviceTypes.forEach(service => {
           service.access = access.includes(service.serviceType)
         })
-        console.log('modified serviceTypes', body.serviceTypes)
-        console.log('access', access)
       }
+
+      // add 'icon' property to each serviceType object
+      const iconMapping = {
+        'mobile': 'smartphone',
+        'broadband': 'language',
+        'electricity': 'lightbulb',
+        'mortgage': 'house',
+        'homeinsurance': 'verified_user',
+        'carinsurance': 'directions_car',
+        'medicalinsurance': 'health_and_safety',
+        'pension': 'account_balance'
+      };
+
+      body.serviceTypes.forEach(service => {
+
+        // add icon
+
+        const serviceType = service.serviceTypeString.toLowerCase();
+        service.icon = iconMapping[serviceType] || 'info';
+
+        // add 'selected' property to each serviceType object
+        service.selected = false;
+      });
       context.commit('setServiceTypes', body.serviceTypes);
     },
+    setServiceTypeSelection(context, serviceType, selected) {
+      const serviceTypes = context.state.serviceTypes;
+      const service = serviceTypes.find(service => service.serviceType === serviceType);
+      if (service) {
+        service.selected = selected;
+      }
+    }
+
   },
   getters: {
     isAdmin(state) {
@@ -119,9 +139,6 @@ export default {
     selectedLeads(state) {
       return state.selectedLeads;
     },
-    activeCompany(state) {
-      return state.activeCompany;
-    },
     activeBusinessPartner(state) {
       return state.activeBusinessPartner;
     },
@@ -130,12 +147,10 @@ export default {
     },
     serviceTypes: state => state.serviceTypes,
     serviceTypeName: (state) => (id) => {
-      console.log('getters.serviceTypeName', id, state.serviceTypes)
       const service = state.serviceTypes.find((service) => service.serviceType === id);
       return service ? service.serviceTypeString : 'Unknown';
     },
     serviceTypeCode: (state) => (name) => {
-      console.log('getters.serviceCode', name, state.serviceTypes)
       const service = state.serviceTypes.find((service) => service.serviceTypeString.toLowerCase() === name.toLowerCase());
       return service ? service.serviceType : 1;
     },

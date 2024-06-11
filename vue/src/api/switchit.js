@@ -456,6 +456,15 @@ export default {
 
         if (Object.keys(body.filterData).length === 0) {
           delete body.filterData
+        } else {
+          // TEMP: create a copy of each key in filterData, but with a lowercase version of the key
+          // this is because the API expects lowercase keys
+          // let filterData = {}
+          // for (let key in body.filterData) {
+          //   filterData[key.toLowerCase()] = body.filterData[key]
+          // }
+          // body.filterData = filterData
+
         }
         query = body ? Object.keys(body).map(key => {
           let value = body[key];
@@ -489,22 +498,30 @@ export default {
             cleanJsonString = cleanJsonString.slice(1, -1)
           }
 
-          // console.log('cleanJsonString', cleanJsonString)
           validJson = JSON.parse(cleanJsonString)
-          // console.log('validJson', validJson)
+
+        }
+        lead.relevantServices = {
+          Mobile: lead.isMobileRelevant,
+          Broadband: lead.isBroadbandRelevant,
+          Electricity: lead.isElectricityRelevant,
+          Mortgage: lead.isMortgageRelevant,
+          CarInsurance: lead.isCarInsuranceRelevant,
+          HomeInsurance: lead.isHomeInsuranceRelevant
         }
 
         lead.serviceFields = validJson
         lead.userId = lead.householdId // or should be lead.id ?
         lead.value = lead.amount
-        lead.match = '80'
+        // random number between 30 and 100
+        lead.match = Math.floor(Math.random() * 70) + 30
         lead.data = lead.serviceFields
       }
 
       // ****** TESTING!!! ******
 
-      // leads[0].documents = [{ type: 'invoice', url: 'https://drive.google.com/file/d/15uuKOH-W1l-8yqj9rHxr6rdZKTwiMcT3/view' }]
-      if (leads.length) { leads[0].documents = [] }
+      // // leads[0].documents = [{ type: 'invoice', url: 'https://drive.google.com/file/d/15uuKOH-W1l-8yqj9rHxr6rdZKTwiMcT3/view' }]
+      // if (leads.length) { leads[0].documents = [] }
       return leads;
     }
     catch (err) {

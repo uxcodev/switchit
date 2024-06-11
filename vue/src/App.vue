@@ -46,25 +46,14 @@ export default {
         this.$store.dispatch('isAdmin', true)
       }
 
-      
-      let access = []
-      await permissions.forEach(item => {
-        if (item.includes('lm_')) access.push(item.replace('lm_', ''))
-      })
-
-      this.$store.dispatch('setAccess', access)
-
-      // set serviceTypes
-      let serviceTypes = await this.$switchit.getServiceTypes()
-      this.$store.dispatch('setServiceTypes', serviceTypes)
-
       // find activeUser in our database with the email address from Auth0
+      // check Node for active user (used for saving filters and settings)
 
       let email = this.auth0User.email
       let activeUser = await this.$api_node.getActiveUser(email)
       
       // if there is no activeUser, create one
-
+      
       if (!activeUser) {
         let fields = {
           email: this.auth0User.email,
@@ -72,17 +61,11 @@ export default {
           last_name: this.auth0User.family_name,
           auth0_id: this.auth0User.sub
         }
-        // console.log('TEMP: creating new activeUser: ', fields)
         activeUser = await this.$api_node.createUser(fields)
       }
 
-      // get active activeUser from vuex
-      let store_user = this.$store.getters.activeUser
-      if (!store_user) {
-        this.$store.dispatch('setActiveUser', store_user)
-        // console.log('activeUser stored in vuex:', activeUser)
-      }
-
+      // always set activeUser in vuex to catch changes
+      this.$store.dispatch('setActiveUser', activeUser)
 
     }
   },

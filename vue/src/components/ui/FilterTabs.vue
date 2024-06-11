@@ -51,8 +51,6 @@ export default {
         }
       }
 
-      console.log('serviceTypes', serviceTypes)
-      console.log('filteredCategories', filteredCategories)
       delete filteredCategories.general;
       return filteredCategories;
     }

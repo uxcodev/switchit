@@ -3,7 +3,7 @@
   <FilterPanel v-if="!loading && activeBusinessPartner" />
   <div class="mt-10" id="app">
     <LoaderAniOverlay v-if="loading" />
-    <router-view></router-view>
+    <router-view v-if="!loading"></router-view>
   </div>
 </template>
 
@@ -32,7 +32,7 @@ export default {
       return this.$store.getters.activeUser
     },
     activeBusinessPartner() {
-      return this.$store.getters.activeBusinessPartner || null
+      return this.activeUser ? this.$store.getters.activeBusinessPartner : null
     },
   },
   methods: {
@@ -53,6 +53,10 @@ export default {
       })
 
       this.$store.dispatch('setAccess', access)
+
+      // set serviceTypes
+      let serviceTypes = await this.$switchit.getServiceTypes()
+      this.$store.dispatch('setServiceTypes', serviceTypes)
 
       // find activeUser in our database with the email address from Auth0
 
@@ -78,6 +82,8 @@ export default {
         this.$store.dispatch('setActiveUser', store_user)
         // console.log('activeUser stored in vuex:', activeUser)
       }
+
+
     }
   },
   watch: {

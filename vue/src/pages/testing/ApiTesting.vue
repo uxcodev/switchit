@@ -202,6 +202,7 @@
         </div>
       </div>
       <div v-if="currentTab == 'other'">
+        <input v-model="input"/>
         <h3>Companies</h3>
         <div class="buttons">
           <button @click="createCompany()">createCompany</button>
@@ -324,6 +325,7 @@ export default {
   },
   data() {
     return {
+      input: '25bf9156-b5f0-4c16-8ec9-a776354bb6a6',
       result: null,
       modalComponent: null,
       categories: this.$store.getters.categories,

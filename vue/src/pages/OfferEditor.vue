@@ -2,6 +2,7 @@
   <ModalWindow v-if="modalComponent" :component="modalComponent" @closeModal="closeModal">
     <component :is="modalComponent" @handleFile="handleFile"></component>
   </ModalWindow>
+
   <div class="main" v-if="loaded">
     <div class="container">
       <section v-if="offerType === 'offer'">
@@ -15,7 +16,21 @@
           <button v-if="mode === 'Edit'" @click="updateOffer" :disabled="!changed">Update offer</button>
           <button v-else @click="createOffer" :disabled="!changed">Submit offer</button>
         </div>
-
+        <div v-if="uploadedOffers.length || offer_obj.uploads" class="highlight mb5">
+          The document{{ uploadedOffers.length > 1 ? 's' : '' }} you uploaded will be visible to the selected lead{{ leads.length > 1 ? 's' : '' }}.
+          <div class="file_list" v-for="offer in uploadedOffers" :key="offer.service">
+            <span class="material-symbols-outlined icon">description</span>
+            <span>{{ offer.file.name }}</span>
+            <!-- delete button with trash icon -->
+            <span class="material-symbols-outlined icon_delete button" @click="uploadedOffers.splice(uploadedOffers.indexOf(offer), 1)">close</span>
+          </div>
+          <div class="file_list" v-for="upload in offer_obj.uploads" :key="upload.id">
+            <span class="material-symbols-outlined icon">description</span>
+            <span>{{ upload.originalFileName }}</span>
+            <!-- delete button with trash icon -->
+            <span class="material-symbols-outlined icon_delete button" @click="$toast_warn.show('Updating offers is not supported yet')">close</span>
+          </div>
+        </div>
         <div v-if='lead?.value' class="pageheader__boxes stats">
           <!-- <div v-for="i in 3" :key='i'><span :class='i'></span></div> -->
           <div class="card stats-rating">
@@ -25,11 +40,11 @@
                 <div>Location: {{ lead.householdPartialAddress }}</div>
                 <div>Postal Code: {{ lead.postalCode }}</div>
                 <!-- show link to download documents -->
-                <div v-if="lead.documents.length" class="mt5">
-                  {{ lead.documents.length }} document{{ lead.documents.length > 1 ? 's' : '' }} available for download
-                  <li class="document" v-for="(document, key) in lead.documents" :key="key">
-                    <a :href="document.url" target="_blank"><span class="material-symbols-outlined">description</span>{{ document.type }}</a>
-                  </li>
+                <div v-if="lead.documents?.length" class="mt5">
+                  {{ lead.documents?.length }} document{{ lead.documents?.length > 1 ? 's' : '' }} available for download
+                  <div class="document" v-for="(document, key) in lead.documents" :key="key">
+                    <div class="button" @click="downloadDocument(document.id)" target="_blank"><span class="material-symbols-outlined">description</span>{{ document.filename }}</div>
+                  </div>
                 </div>
               </div>
               <div v-else class="stats-title">
@@ -40,11 +55,6 @@
               <!-- Read reviews → -->
             </div>
           </div>
-          <!-- <div class="card stats-deals-won">
-            <div class="stats-title">
-              Average spending
-            </div>
-          </div> -->
           <div class="card stats-deal-size">
             <div class="stats-title">
               <div>
@@ -102,37 +112,14 @@
 
       </section>
 
-      <section class="mt5"  v-for="(value, category) in filteredCategoryAccess" :key="category">
-        <h1>{{ $t(category) }}</h1>
+
+        <section class="mt5" v-for="(value, service) in serviceAccess" :key="service">
+
+        <h1>{{ $t(service) }}</h1>
         <div class="right form_actions">
-  <button @click="openUploadModal('ImportOffer', 'mobile')" >Upload offer</button>
+          <button @click="openUploadModal('ImportOffer', service)">Upload offer</button>
         </div>
-
         <div class="cards lg switchit-form">
-      
-          <!-- I don't remember why I made this section -->
-
- <!--          <div class="card lg white offer-group" v-if="lead?.value">
-            <div class="offer-group-header">
-              <div class="offer-group-header-title">
-                User's current {{ $t(category) }} plan
-              </div>
-
-            </div>
-            <div v-for="(value, key) in lead.data[category]?.interaction_data" :key='key'>
-              <div class="lead_data_obj" v-if="typeof value === 'object'">
-                <label>{{ $t(key) }}</label>
-                <div class="lead_data ml4" v-for="(value2, key2) in value" :key='key2'>
-                  <label>{{ $t(key2) }}</label>
-                  <div class="value">{{ value2 }}</div>
-                </div>
-              </div>
-              <div class="lead_data" v-else>
-                <label>{{ $t(key) }}</label>
-                <div class="value">{{ value }}</div>
-              </div>
-            </div>
-          </div> -->
 
           <div class="card lg white offer-group">
             <div class="offer-group-item">
@@ -144,36 +131,30 @@
                 Your offer
               </div>
             </div>
-            <div class="offer-group-item" v-for="(field, key) in offer_template.offer[category]" :key='key'>
+            {{ service.serviceTypeString }}
+            <div class="offer-group-item" v-for="(field, key) in offer_template.offer[service]" :key='key'>
 
               <!-- left column -->
               <label>{{ $t(key) }}</label>
 
               <!-- center column -->
-              <!-- if lead exists, show value for that key in lead -->
               <div class="fixed current_offer_detail">
-                <div v-if="lead?.data[category]?.interaction_data[key]">{{ field.prefix }} {{ lead.data[category].interaction_data[key] }} {{ field.suffix }}</div>
+                <div v-if="lead?.data[service]?.interaction_data[key]">{{ field.prefix }} {{ lead.data[service].interaction_data[key] }} {{ field.suffix }}</div>
                 <div v-else>N/A</div>
               </div>
 
               <!-- right column -->
               <div class="offer-group-input_group fixed">
                 <div v-if="field.prefix" class="symbol">{{ field.prefix }}</div>
-                <select v-if="field.type === 'dropdown'" v-model="offer_obj.offer[category][key]" class="select">
+                <select v-if="field.type === 'dropdown'" v-model="offer_obj.offer[service][key]" class="select">
                   <option v-for="(option, key) in field.options" :key="key">{{ option.label }}</option>
                 </select>
-                <!-- add checkbox if field.type is Boolean -->
-                <!-- <input  class="checkbox" type="checkbox" v-model="field.value" id="select_all" /> -->
                 <label v-else-if="field.type === 'Boolean'" class="checkbox-label">
-                  <input class="checkbox" type="checkbox" v-model="offer_obj.offer[category][key]" :id="key" />Included
+                  <input class="checkbox" type="checkbox" v-model="offer_obj.offer[service][key]" :id="key" />Included
                   <span class="checkmark transparent"></span>
                 </label>
-                <!-- <select v-else-if="field.type === 'Boolean'" v-model="field.value" class="select">
-                  <option :value="null">select</option>
-                  <option :value="true">True</option>
-                  <option :value="false">False</option>
-                </select> -->
-                <input v-else v-model="offer_obj.offer[category][key]" class="input" />
+   
+                <input v-else v-model="offer_obj.offer[service][key]" class="input" />
                 <div class="symbol">{{ field.suffix }}</div>
               </div>
 
@@ -188,8 +169,6 @@
 
 import ModalWindow from '@/components/ui/ModalWindow.vue';
 import ImportOffer from '@/components/import/ImportOffer.vue';
-// import format_data from '@/helpers/format_data'
-// import FilterTabs from '@/components/ui/FilterTabs.vue';
 
 export default {
   components: {
@@ -204,12 +183,15 @@ export default {
       screen: 'UserTable',
       selectAll: false,
       categoryAccess: this.$store.getters.categories,
+      serviceAccessCode: this.$store.getters.serviceAccessCode,
+      serviceAccess: {},
+      serviceTypes: this.$store.getters.serviceTypes,
       uploadingToService: null,
       leads: [],
       lead: null,
       changed: false,
       loaded: false,
-      uploadedOffers:[],
+      uploadedOffers: [],
       editMode: false,
       mode: null,
       offerType: null,
@@ -226,14 +208,16 @@ export default {
         },
         // filters: this.$store.getters.filters,
         offer: {
-          mobile: {
-            plan_talk_minutes: { value: null, type: 'Number', suffix: 'mins' },
-            plan_data_gb: { value: null, type: 'Number', suffix: 'GB' },
-            plan_data_speed: { value: null, type: 'Number', suffix: 'Mbps' },
-            phone_installment: { value: null, type: 'Number', suffix: '€' },
-            equipment_installment: { value: null, type: 'Number', suffix: '€' },
+          Mobile: {
+            call_minutes: { value: null, type: 'Number', suffix: 'mins' },
+            data_limit: { value: null, type: 'Number', suffix: 'GB' },
+            internet_speed: { value: null, type: 'Number', suffix: 'Mbps' },
+            extra_services: { value: null, type: 'String' },
+            total_due: { value: null, type: 'Number', suffix: '€' },
+            device_payment: { value: null, type: 'Number', suffix: '€' },
+            accessory_payment: { value: null, type: 'Number', suffix: '€' },
           },
-          mortgage: {
+          Mortgage: {
             rate: { value: null, type: 'Number', suffix: '%' },
             rate_type: {
               value: null, type: 'dropdown', options: [
@@ -246,10 +230,10 @@ export default {
             monthly_cost: { value: null, type: 'Number', suffix: '€' },
             downpayment: { value: null, type: 'Number', suffix: '€' },
           },
-          energy: {
+          Electricity: {
             kwh_rate: { value: null, type: 'Number', suffix: '€' },
           },
-          car_insurance: {
+          CarInsurance: {
             premium: { value: null, type: 'Number', suffix: '€' },
             injury_liability: { value: null, type: 'Number', suffix: '€' },
             property_liability: { value: null, type: 'Number', suffix: '€' },
@@ -259,7 +243,7 @@ export default {
             theft_protection: { value: null, type: 'Boolean' },
             roadside_assistance: { value: null, type: 'Boolean' },
           },
-          home_insurance: {
+          HomeInsurance: {
             premium: { value: null, type: 'Number', suffix: '€' },
             injury_liability: { value: null, type: 'Number', suffix: '€' },
             property_liability: { value: null, type: 'Number', suffix: '€' },
@@ -268,16 +252,16 @@ export default {
             water_damage_protection: { value: null, type: 'Boolean' },
             storm_damage_protection: { value: null, type: 'Boolean' },
           },
-          broadband: {
+          Broadband: {
             total_due: { value: null, type: 'Number', suffix: 'Mbps' },
             plan_data_speed: { value: null, type: 'Number', suffix: 'Mbps' },
             plan_data_gb: { value: null, type: 'Number', suffix: 'GB' },
           },
-          medical_insurance: {
+          MedicalInsurance: {
             total_due: { value: null, type: 'Number', suffix: '€' },
           },
 
-          pension: {
+          Pension: {
 
           },
         }
@@ -355,21 +339,15 @@ export default {
       this.$router.push({ path: '/offers' })
 
     },
-    
+
     openUploadModal(component, service) {
       this.modalComponent = component
       this.uploadingToService = service
     },
-    handleFile(formData) {
-      console.log('handleFile emitted to root', formData)
-      // push {formData: formData; service: uploadingToService} to uploadedOffers array
-      this.uploadedOffers.push({formData: formData, service: this.uploadingToService})
+    handleFile(file) {
+      this.modalComponent = null
+      this.uploadedOffers.push({ file: file, formData: file.formData, service: this.uploadingToService })
 
-      console.log('this.uploadedOffers', this.uploadedOffers)
-
-      // console.log('this.lead.householdId', householdId)
-      // const response = this.$switchit.uploadOffer(householdId, formData);
-      // console.log('response', response)
     },
     closeModal() {
       this.modalComponent = null
@@ -394,34 +372,12 @@ export default {
           }
         }
       }
-      // this.offer_obj.companyId = this.$store.getters.activeCompany._id,
       this.offer_obj.businessPartnerId = this.$store.getters.activeBusinessPartner.id
       this.offer_obj.createdBy = this.$store.getters.activeUser._id
       this.offer_obj.creator = this.$auth0.user._value.email
     },
-    /*     async createOffer() {
-          await this.trimOfferObj()
-          let leads = this.leads || [this.lead._id]
-          let response = await this.$api_node.createOffer(this.offer_obj, leads)
-          if (response) {
-            this.$router.push({ path: '/offers' })
-          }
-        }, */
+
     async createOffer() {
-
-      /*      let body = {
-          "householdId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-          "businessPartnerId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-          "offerStatusType": 0,
-          "title": "string",
-          "comment": "string",
-          "startDate": "2024-03-07T16:50:29.532Z",
-          "endDate": "2024-03-07T16:50:29.532Z"
-        } 
-        */
-      // let householdIs = this.leads.length ? this.leads.map(lead => lead.householdId) || [this.lead.householdId] : [this.lead.householdId]
-
-
       let body = {
         "householdIds": this.leads,
         "businessPartnerId": this.$store.getters.activeBusinessPartner.id,
@@ -432,36 +388,63 @@ export default {
         "endDate": this.offer_obj.offer_details.expiry_date
       }
 
-      console.log('body', body)
-      console.log('this.offer_obj', this.offer_obj)
-      console.log('this.lead.id', this.lead.id)
-
       let response = await this.$switchit.createOffer(body)
-      console.log('response', response)
-      if (response) {
-        let query = this.lead?.id ? { householdId: this.lead?.id } : null
 
-        if (this.lead?.id) {
-          this.$router.push({ path: '/offers', query: query })
-        } else {
-          this.$router.push({ path: '/offers' })
-        }
+      if (!response) {
+        return
       }
+  
+
+      let lastOfferIds = response.ids
+
+      for (let lastOfferId of lastOfferIds) {
+
+        if (this.uploadedOffers.length) {
+          for (let offer of this.uploadedOffers) {
+            console.log('uploading offer', offer.formData, lastOfferId)
+            await this.$switchit.uploadOffer(lastOfferId, offer.formData)
+          }
+        }
 
 
-      /*     await this.trimOfferObj()
-          let leads = this.leads || [this.lead._id]
-          let response = await this.$switchit.createOffer(this.offer_obj, leads)
-          if (response) {
-            this.$router.push({ path: '/offers' })
-          } */
+        for (let service in this.offer_obj.offer) {
+          let serviceHasValue
+          for (let key in this.offer_obj.offer[service]) {
+            if (this.offer_obj.offer[service][key]) {
+              serviceHasValue = true
+            }
+          }
+          if (serviceHasValue) {
+            let serviceType = this.$store.getters.serviceTypeCode(service)
+  
+            let filteredServiceFields = {}
+            for (let key in this.offer_obj.offer[service]) {
+              if (this.offer_obj.offer[service][key]) {
+                filteredServiceFields[key] = this.offer_obj.offer[service][key]
+              }
+            }
+
+            let body = {
+              "enrollmentDate": this.offer_obj.offer_details.start_date,
+              "bindingPeriodEnd": this.offer_obj.offer_details.expiry_date,
+              "amount": this.offer_obj.offer[service].amount,
+              "currencyType": 1,
+              "serviceType": serviceType,
+              "serviceFields": JSON.stringify(filteredServiceFields),
+              "comment": "string",
+              "offerId": lastOfferId
+            }
+            body = JSON.stringify(body)
+            console.log('body', body)
+            console.log('UNCOMMENT NEXT LINE')
+            let response = await this.$switchit.createOfferService(body)
+            console.log('createOfferService ' + service + ' response', response)
+          }
+        }
+        this.$router.push({ path: '/offers' })
+      }
     },
     async updateOffer() {
-      // await this.trimOfferObj()
-      // let response = await this.$api_node.updateOffer(this.offer_obj, this.leads)
-      // if (response) {
-      //   this.$router.push({ path: '/offers' })
-      // }
       let response = await this.$switchit.updateOffer(this.id, this.offer_obj)
       if (response) {
         this.$router.push({ path: '/offers' })
@@ -481,11 +464,33 @@ export default {
         this.$router.push({ path: '/offers' })
       }
     },
+    async downloadDocument(id) {
+      const fileBlob = await this.$switchit.getUploadedFile(id)
+      const fileURL = URL.createObjectURL(fileBlob);
+      window.open(fileURL);
+    },
   },
   async mounted() {
 
-    // autopopulate offer_obj with name, start date, end date, and details. end date is 30 days from start date
+    // console.log('OfferEditor mounted')
+    // console.log('categoryAccess', this.categoryAccess)
+    // console.log('serviceAccessCode', this.serviceAccessCode)
+    // console.log('serviceTypes', this.serviceTypes)
 
+    this.serviceAccess = this.serviceTypes.reduce((obj, service) => {
+      if (service.access) {
+        obj[service.serviceTypeString] = service
+      }
+      return obj
+    }, {})
+
+    console.log('serviceAccess', this.serviceAccess)
+    for (let category in this.offer_template.offer) {
+      let serviceType = this.serviceTypes.find(service => service.serviceTypeString === category)
+      if (!serviceType?.access) {
+        delete this.offer_template.offer[category]
+      }
+    }
 
     let path = this.$route.path
     let params = this.$route.params
@@ -494,22 +499,9 @@ export default {
     this.offerType = type
     this.id = params.id
 
-    if (type === 'offer') {
-      if (params.id) {
-        // this.offer_obj = await this.$api_node.getOffer(params.id)
-        // let response = await this.$switchit.getOffer(params.id)
-        // console.log('getOffer response', response)
-      }
-    }
-    if (type === 'campaign') {
-      if (params.id) {
-        // this.offer_obj = await this.$api_node.getCampaign(params.id)
-
-      }
-    }
     this.offer_obj.offer_details ??= {}
     this.offer_obj.filters ??= this.$store.getters.filters
-    // for each item in offer_template.details, if it doesn't exist in offer_obj.details, add it
+    
     for (let key in this.offer_template.offer_details) {
       this.offer_obj.offer_details[key] ??= this.offer_template.offer_details[key].value
     }
@@ -521,24 +513,25 @@ export default {
       }
     }
 
-       this.offer_obj.offer_details.start_date = this.$dayjs().format('YYYY-MM-DD')
+    this.offer_obj.offer_details.start_date = this.$dayjs().format('YYYY-MM-DD')
     this.offer_obj.offer_details.name = 'Test offer ' + new Date().toISOString().split('T')[0]
     this.offer_obj.offer_details.expiry_date = this.$dayjs().add(30, 'day').format('YYYY-MM-DD')
     this.offer_obj.offer_details.details = 'Details for ' + this.offer_obj.offer_details.name
     this.offer_obj.offer_details.term = '12 months'
+
     this.changed = false
     this.loaded = true
     console.log('this.offer_obj', this.offer_obj)
 
 
     console.log('this.offer_obj', this.offer_obj)
- 
+
 
     // if there is an id param, it's a real offer, so populate with offer details
 
     let leadId = this.$route.query?.lead
 
-    if(params.id) {
+    if (params.id) {
       let offer = (await this.$switchit.getOffer(params.id)).model
       console.log('getOffer response', offer)
       this.offer_obj.offer_details.name = offer.title
@@ -546,11 +539,39 @@ export default {
       this.offer_obj.offer_details.expiry_date = this.$dayjs(offer.endDate).format('YYYY-MM-DD')
       this.offer_obj.offer_details.details = offer.comment
       this.offer_obj.offer_details.term = ''
+      this.offer_obj.uploads = offer.offerOfferuploadsModels
+      
+      for (let service of offer.offerOfferServicesModels) {
+
+        let serviceType = service.serviceType
+        let serviceTypeName = this.$store.getters.serviceTypeName(serviceType)
+        let serviceFields = JSON.parse(service.serviceFields)
+
+        for (let serviceField in serviceFields) {
+          this.offer_obj.offer[serviceTypeName][serviceField] = serviceFields[serviceField]
+        }
+
+
+        console.log('serviceTypeName', serviceTypeName)
+      }
+
       leadId = offer.householdId
+      this.leads = [leadId]
+      console.log('leadId', leadId)
+
+      let offerServices = offer.offerOfferServicesModels
+      console.log('offerServices', offerServices)
+      for (let offerService of offerServices) {
+        let serviceType = offerService.serviceType
+        let serviceFields = JSON.parse(offerService.serviceFields)
+        console.log('serviceType', serviceType)
+        console.log('serviceFields', serviceFields)
+        this.offer_obj.offer[serviceType] = serviceFields
+        let serviceTypeName = this.$store.getters.serviceTypeName(serviceType)
+
+        console.log('serviceTypeName', serviceTypeName)
+      }
     }
-
-
-
 
     // if a lead id is provided in the query, use that lead
     if (!leadId) {
@@ -569,6 +590,9 @@ export default {
       let all_leads = await this.$switchit.getLeads()
       this.lead = all_leads.find(lead => lead.id === leadId)
       this.leads = [leadId]
+
+      this.lead.documents = (await this.$switchit.getPensionUploads(leadId)).model
+      console.log('documents', this.lead.documents)
     }
     if (!this.leads?.length) {
       this.$toast_error.show({ message: 'No leads selected' })
@@ -586,20 +610,44 @@ export default {
     console.log('this.lead', this.lead)
     /* Auto populate with dummy data */
 
-    
+    // check for documents
+
   }
 }
 </script>
 
 <style lang="sass" scoped>
 @import "/src/styles/styles.sass"
+@import "/src/styles/variables.sass"
 
+.highlight
+  display: flex
+  flex-direction: column
+  border: 1px solid rgba($ui-active, .2)
+  border-radius: 5px
+  background-color: rgba($ui-active, .05)
+  padding: 10px  
+  gap: 10px
+
+.file_list
+  display: flex
+  align-items: center
+  gap: 10px
+  .icon_delete
+    font-size: 1em
+    cursor: pointer
+    color: white
+    background-color: $dark
+    border-radius: 50%
+    padding: 2px
+    &:hover
+      background-color: $red
 .document
   display: flex
   // align-items: center
-  gap: 10px
+  gap: 0px
   padding: 10px 0
-  a
+  div
     display: flex
     align-items: center
     gap: 6px

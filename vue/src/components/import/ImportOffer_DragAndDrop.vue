@@ -47,34 +47,30 @@
       </div>
     </div>
     <!-- <div class="button-panel"> -->
-      <!-- <div class="toggle-container">
+    <!-- <div class="toggle-container">
         <label for="publish-toggle">Publish when done</label>
         <input type="checkbox" id="publish-toggle" />
       </div> -->
-      <div class="buttons">
-        <button @click="cancel" class="button__secondary">Cancel</button>
-        <button v-if="!newTable" :disabled="!jsonTable" @click="saveMap" >Import</button>
-        <button v-if="newTable" :disabled="!jsonTable" @click="doneImporting" >Done</button>
+
+    <div class="file_list">
+      <div v-for="file in files" :key="file.name">
+        {{ file.name }}<span class="material-symbols-outlined check">check</span>
       </div>
+      <!-- <div>sample_doc.pdf</div> -->
+    </div>
+    <div class="buttons">
+      <button @click="cancel" class="button__secondary">Cancel</button>
+      <button :disabled="!files.length" @click="importFile">Import</button>
+    </div>
     <!-- </div> -->
   </div>
 </template>
 
 <script>
 
-import Papa from 'papaparse';
-import * as XLSX from 'xlsx'; // docs.sheetjs.com  
-import axios from 'axios';
 import FieldMap from './ImportCompanies_Import_Map.vue'
 import ImportedCompanies from './ImportCompanies_Import_Results.vue';
 import LoaderAni from '@/components/ui/LoaderAni.vue'
-
-const _axios = axios.create({
-  baseURL: process.env.VUE_APP_NODE_URL,
-  headers: {
-    accept: "application/json",
-  },
-});
 
 
 export default {
@@ -93,6 +89,7 @@ export default {
       toggleTags: false,
       tagsLimit: 8,
       additionalTags: 0,
+      files: [],
     };
   },
   computed: {
@@ -133,168 +130,42 @@ export default {
       this.tags = this.names
       return this.names
     },
+    importFile() {
+      this.$emit('handleFile', this.files[0]);
+    },
     async handleDrop(event) {
-      
-      console.log('temporarily disabled')
+
+      // console.log('temporarily disabled')
       const selectedFile = event.dataTransfer.files[0];
       const formData = new FormData();
-      formData.append('file', selectedFile);
-      
+      formData.append('offerFile', selectedFile);
+
+      // get name and extension
+      const fileName = selectedFile.name;
+      const fileExtension = fileName.split('.').pop();
+
+
       // emit 'handleFile'
-      this.$emit('handleFile', formData);
-      
-      // const response = this.$switchit.uploadOffer(formData);
-      // console.log('response', response)
-
-      let block = true
-      if (block) {
-        this.$toast_warn.show('This feature is still under development' )
-        return
-      }
-      this.isDragOver = false;
-
-      const file = event.dataTransfer.files[0];
-      
-      let type = this.getFileType(file)
-      console.log('type', type)
-
-      
-      if (type === "excel") {
-        console.log('type is excel')
-        await this.handleExcel(file)
-        return
-      } else if (type === "csv") {
-        console.log('type is csv')
-        await Papa.parse(file, {
-          header: true,
-          dynamicTyping: true,
-          skipEmptyLines: true,
-          transformHeader: function (h) {
-            return h.trim();
-          },
-          complete: async (results) => {
-            this.spreadsheetFields = results.meta.fields;
-            this.jsonTablePreview = results.data.slice(0, 3);
-            this.jsonTable = results.data;
-            this.mappingDictionary = await this.getMappingFields(this.spreadsheetFields);
-          },
-          error: (error) => {
-            console.error("Error parsing CSV:", error);
-          },
-        });
-      }
-    },
-    getFileType(file) {
-    const fileName = file.name;
-    const fileExtension = fileName.split('.').pop().toLowerCase();
-
-    if (['xls', 'xlsx'].includes(fileExtension)) {
-      return 'excel';
-    } else if (fileExtension === 'csv') {
-      return 'csv';
-    } else {
-      return 'unsupported';
-    }
-  },
-
-  async handleExcel(file) {
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const data = e.target.result;
-        const workbook = XLSX.read(data, { type: 'binary' });
-
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-
-        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-
-        // Populate spreadsheetFields
-        this.spreadsheetFields = jsonData.shift();
-
-        // Populate jsonTablePreview and jsonTable
-        this.jsonTablePreview = jsonData.slice(0, 3);
-        this.jsonTable = jsonData;
-
-        // Convert array data to objects using spreadsheetFields as keys
-        const formattedJsonData = jsonData.map((row) =>
-          row.reduce((acc, value, index) => {
-            acc[this.spreadsheetFields[index]] = value;
-            return acc;
-          }, {})
-        );
-
-        this.jsonTablePreview = formattedJsonData.slice(0, 3);
-        this.jsonTable = formattedJsonData;
-
-        // Populate mappingDictionary
-        this.mappingDictionary = await this.getMappingFields(this.spreadsheetFields);
-      };
-
-      reader.onerror = (error) => {
-        console.error('Error reading Excel file:', error);
-      };
-
-      reader.readAsBinaryString(file);
-    },
-
-    transformData(data, mapping) {
-      let result = data.map((item) => {
-        const newItem = {};
-        for (const key in mapping) {
-          if (key === "phone") {
-            newItem[key] = item[mapping[key][0]]?.toString().trim();
-          } else if (mapping[key][0] in item) {
-            newItem[key] = item[mapping[key][0]].trim();
-          }
+      if (fileExtension === 'pdf') {
+        let file = {
+          formData: formData,
+          name: fileName,
+          extension: fileExtension
         }
-        return newItem;
-      });
-      return result;
-    },
-
-    async getMappingFields(fields) {
-      // try calling the ai
-      try {
-
-        let url = "http://localhost:3000/imports/get-mapping-fields"
-        let body = { fields: fields }
-        let response = await _axios.post(url, body);
-        let json = JSON.parse(response.data)
-        return json
-      } catch (err) {
-        console.error(err);
+        // this.$emit('handleFile', file);
+        this.files[0] = file;
       }
-
+      else {
+        this.$toast_error.show({ message: 'Invalid file type. Please upload a .pdf file' });
+      }
     },
-
-    async saveMap() {
-      this.newTable = await this.transformData(this.jsonTable, this.mappingDictionary)
-      
-      // split full names into first and last
-      this.newTable.forEach(person => {
-        if (person.full_name && !person.first_name && !person.last_name) {
-          const nameParts = person.full_name.split(' ');
-          person.first_name = nameParts.shift();
-          person.last_name = nameParts.join(' ');
-        }
-      });
-      this.showTable = true
-    },
-
-    doneImporting() {
-      this.names = this.newTable.map(person => `${person.first_name} ${person.last_name}`);
-      this.spreadsheetFields = null
-      this.jsonTable = null
-      this.mappingDictionary = null
-      this.newTable = null
-    }
 
   },
 };
 </script>
 
 <style lang="sass" scoped>
-
+@import "/src/styles/variables.sass"
 h3
   text-align: left
   font-weight: bold
@@ -392,6 +263,20 @@ button
   justify-content: flex-end
   gap: 20px
 
+.file_list
+  display: flex
+  gap: 5px
+  flex-wrap: wrap
+  margin-top: 0px
+  padding: 10px 10px
+  div 
+    display: flex
+    align-items: center
+    gap: 4px
+
+  .check
+    color: $green
+    font-size: 1.1rem
 
 .cancel-btn,
 .save-btn 

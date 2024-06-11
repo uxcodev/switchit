@@ -279,10 +279,24 @@ export default {
     }
   },
 
-  async uploadOffer(householdId, formData) {
+  async uploadOffer(offerId, formData) {
     try {
-      let url = `/api/v1/offers/${householdId}/upload`;
-      const response = await _axios.post(url, formData);
+      let url = `/api/v1/offers/${offerId}/uploadfile`;
+      const response = await _axios.post(url, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
+  async createOfferService(body) {
+    try {
+      let url = "/api/v1/offerservices";
+      const response = await _axios.post(url, body);
       return response.data;
     } catch (err) {
       console.error(err);
@@ -528,7 +542,7 @@ export default {
       // body = JSON.stringify(body);
       let url = "/api/v1/offers";
       const response = await _axios.post(url, body);
-      return response;
+      return response?.data?.model;
     } catch (err) {
       console.error(err);
     }
@@ -574,7 +588,7 @@ export default {
       // const response = await _axios.put(url, body);
       // return response.data;
     } catch (err) {
-      toast_error.show({ message: "Updating offers is not implemented yet" })
+      toast_error.show({ message: "Updating offers is not supported yet" })
       console.error(err);
     }
   }

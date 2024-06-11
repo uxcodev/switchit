@@ -46,6 +46,36 @@ export default {
       let company = await api.getCompanyById(activeUser.roles[0].company)
       context.commit('setActiveCompany', { val: company });
     },
+
+    // async setActiveUser({ commit, dispatch, state }, activeUser) {
+    //   activeUser = activeUser || state.activeUser;
+    //   console.log('setActiveUser', activeUser)
+
+    //   if (!state.activeBusinessPartner) {
+    //     await dispatch('fetchAndSetActiveBusinessPartner')
+    //   }
+    //   // set access
+
+    //   let email = activeUser?.email;
+    //   let user = state.activeBusinessPartner.users.find(user => user.email === email);
+    //   state.activeBusinessPartner.activeUser = user;
+
+    //   console.log('email', email)
+    //   console.log('user', user)
+    //   // set serviceAccessCode based on user's serviceType code
+
+    //   let serviceTypes = state.serviceTypes
+    //   let access = user?.serviceType;
+
+    //   if (!serviceTypes.length) {
+    //     serviceTypes = await switchit.getServiceTypes()
+    //   }
+    //   dispatch('setServiceTypes', serviceTypes, access)
+    //   commit('setserviceAccessCode', { val: access });
+
+    //   console.log('activeBusinessPartner', state.activeBusinessPartner, state.activeCompany, state.serviceAccessCode)
+    //   commit('setActiveUser', { val: activeUser });
+    // },
     setSelectedLeads(context, selectedLeads) {
       context.commit('setSelectedLeads', { val: selectedLeads });
     },
@@ -67,21 +97,19 @@ export default {
 
           // get logged in user in list of business partner users
           console.log('state.activeUser', state.activeUser)
-          let email = state.activeUser?.email;
+          let email = state.activeUser.email;
           let user = activeBusinessPartner.users.find(user => user.email === email);
           activeBusinessPartner.activeUser = user;
-          console.log('user', user)
 
           // set serviceAccessCode based on user's serviceType code
 
           let serviceTypes = state.serviceTypes
           let access = user?.serviceType;
-          console.log('access', access)
 
-          if (!serviceTypes?.length) {
+          if (!serviceTypes.length) {
             serviceTypes = await switchit.getServiceTypes()
           }
-          dispatch('setServiceTypes', { serviceTypes: serviceTypes, access: access })
+          dispatch('setServiceTypes', serviceTypes, access)
           commit('setserviceAccessCode', { val: access });
 
           commit('setActiveBusinessPartner', { val: activeBusinessPartner });
@@ -94,19 +122,17 @@ export default {
         commit('setActiveBusinessPartner', { val: null });
       }
     },
-    setServiceTypes(context, body) {
-      console.log('setServiceTypes', body.serviceTypes, body.access)
-      if (body.access) {
-        let access = bitwiseDecode(body.access)
-
+    setServiceTypes(context, serviceTypes, serviceTypeAccess) {
+      console.log('setServiceTypes', serviceTypes, serviceTypeAccess)
+      if (serviceTypeAccess) {
+        let access = bitwiseDecode(serviceTypeAccess)
         // for each item in the serviceTypes array, if the value of 'serviceType' exists in the access array, set the 'access' property to true, otherwise set it to false
-        body.serviceTypes.forEach(service => {
+        serviceTypes.forEach(service => {
           service.access = access.includes(service.serviceType)
         })
-        console.log('modified serviceTypes', body.serviceTypes)
         console.log('access', access)
       }
-      context.commit('setServiceTypes', body.serviceTypes);
+      context.commit('setServiceTypes', serviceTypes);
     },
   },
   getters: {

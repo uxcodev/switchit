@@ -51,10 +51,6 @@ export default {
   methods: {
   },
   mounted() {
-    // console.log('categories', this.categories)
-    // console.log('access', this.access)
-    // console.log('serviceType', this.serviceType)
-    console.log('serviceTypes', this.serviceTypes)
   },
 };
 </script>

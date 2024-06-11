@@ -37,6 +37,7 @@
             <div @click="openOffer(offer.id)" class="table-row-content">
               <div class="table-row-content-med bold">
                 {{ offer.title}}
+                <span class='help'>{{ offer.id }}</span>
               </div>
               <div class="table-row-content-med">
                 {{ $dayjs(offer.startDate).format('YY/MM/DD') }} - {{ $dayjs(offer.endDate).format('YY/MM/DD') }}

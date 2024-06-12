@@ -1,15 +1,15 @@
 <template>
   <div class="main">
     <div class="container white">
-      <h2>Your company</h2>
+      <h2>{{ $route.query.id ? businessPartnerBody.name : 'Your company' }}</h2>
       <div v-if="!loaded">
         <LoaderAni />
       </div>
-      
+
 
       <form v-else @submit.prevent="submitForm" class="switchit-form sm">
         <!-- inputs for creating business partner -->
-        <div class="highlight disabled" >
+        <div class="highlight disabled">
           <div class="checkbox-group">
             <label class="checkbox-label">Company is approved
               <input disabled type="checkbox" id="isApproved" name="isApproved" v-model="businessPartnerBody.isApproved">
@@ -119,22 +119,10 @@ export default {
         access: {},
         _id: null
       },
-      form: {
 
-        businessPartner: {
-          name: ``,
-          domain: "",
-          vatNumber: "",
-          address: "",
-          email: "",
-          countryCode: "",
-          countriesOfOperation: [],
-          serviceTypes: []
-        },
-      },
       businessPartnerBody: {
         name: '',
-        domain: 't',
+        domain: '',
         vatNumber: '',
         address: '',
         email: '',
@@ -163,7 +151,7 @@ export default {
   methods: {
     async countrySelected() {
       // TEMP for testing
-      console.log('countrySelected', this.form.businessPartner.countriesOfOperation)
+      // console.log('countrySelected', this.form.businessPartner.countriesOfOperation)
     },
     isServiceSelected(code) {
       return this.businessPartnerBody.serviceTypes.includes(code);
@@ -199,17 +187,18 @@ export default {
     async submitForm() {
 
       try {
-
-
         let id = this.fullBusinessPartner.id
         let body = this.businessPartnerBody
         console.log('id: ', id)
         console.log('body: ', body)
+        if (!body.serviceTypes.includes(1)) {
+          body.serviceTypes.push(1)
+        }
         let response = await this.$switchit.editBusinessPartner(id, body)
         console.log(response)
         if (response) {
           // this.$router.push({ path: '/operations', query: { q: 'Companies' } })
-        this.$toast_success.show('Saved successfully')
+          this.$toast_success.show('Saved successfully')
         }
       } catch (error) {
         this.$toast_error.show(error)
@@ -218,73 +207,63 @@ export default {
 
   },
   async created() {
-  try {
-    // Check if editing
-    this.businessPartnerId = this.$route.query.id || this.form.businessPartner.id;
-    this.isEditing = !!this.businessPartnerId;
+    try {
+      // the url looks like this: http://localhost:44393/businesspartner/a5ae8b6a-418e-47f2-b7e1-a729a48e37cb?id=a5ae8b6a-418e-47f2-b7e1-a729a48e37cb
+      // 'id' is everything after businesspartner/. Save this'
 
-    // Populate the countries dropdown
-    const countryCodes = await this.$switchit.getCountries();
-    this.country_options = countryCodes.map(country => ({
-      label: country.name,
-      value: country.code
-    }));
+      if (this.$route.params.id) {
+        // if id provided, look it up
+        this.fullBusinessPartner = await this.$switchit.getBusinessPartner(this.$route.params.id);
+      } else {
+        // otherwise, it's the user's own profile
+        this.fullBusinessPartner = this.$store.getters.activeBusinessPartner;
+      }
 
-    if (this.isEditing) {
-      console.log('this.businessPartnerId: ', this.businessPartnerId);
-      this.currentTab = 'edit';
-      
-      // Fetch full business partner details
-      this.fullBusinessPartner = await this.$switchit.getBusinessPartner(this.businessPartnerId);
-      console.log('fullBusinessPartner: ', this.fullBusinessPartner);
-      
-      // Populate businessPartnerBody with fetched details
-      this.businessPartnerBody = {
-        name: this.fullBusinessPartner.name,
-        domain: this.fullBusinessPartner.domain,
-        vatNumber: this.fullBusinessPartner.vatNumber,
-        address: this.fullBusinessPartner.address,
-        email: this.fullBusinessPartner.email,
-        countryCode: this.fullBusinessPartner.countryCode,
-        countriesOfOperation: this.fullBusinessPartner.countries.map(country => country.countryCode),
-        serviceTypes: bitwiseDecode(this.fullBusinessPartner.users[0]?.serviceType),
-        isApproved: this.fullBusinessPartner.isApproved
-      };
+      // if editing, populate the form
+      if (this.fullBusinessPartner) {
+        this.businessPartnerBody = {
+          name: this.fullBusinessPartner.name,
+          domain: this.fullBusinessPartner.domain,
+          vatNumber: this.fullBusinessPartner.vatNumber,
+          address: this.fullBusinessPartner.address,
+          email: this.fullBusinessPartner.email,
+          countryCode: this.fullBusinessPartner.countryCode,
+          countriesOfOperation: this.fullBusinessPartner.countries.map(country => country.countryCode),
+          serviceTypes: bitwiseDecode(this.fullBusinessPartner.users[0]?.serviceType),
+          isApproved: this.fullBusinessPartner.isApproved
+        };
 
-      console.log('businessPartnerBody: ', this.businessPartnerBody);
+        // Fetch service types and filter them
+        this.serviceTypes = await this.$switchit.getServiceTypes();
+        this.businessPartnerBody.serviceTypes = this.businessPartnerBody.serviceTypes.filter(
+          item => item <= this.serviceTypes[this.serviceTypes.length - 1].serviceType
+        );
+        console.log('Filtered serviceTypes: ', this.businessPartnerBody.serviceTypes);
+      }
 
-      // Fetch service types and filter them
-      this.serviceTypes = await this.$switchit.getServiceTypes();
-      this.businessPartnerBody.serviceTypes = this.businessPartnerBody.serviceTypes.filter(
-        item => item <= this.serviceTypes[this.serviceTypes.length - 1].serviceType
-      );
-      console.log('Filtered serviceTypes: ', this.businessPartnerBody.serviceTypes);
+      // Populate the countries dropdown
+      const countryCodes = await this.$switchit.getCountries();
+      this.country_options = countryCodes.map(country => ({
+        label: country.name,
+        value: country.code
+      }));
+
+      this.componentKey++;
+    } catch (error) {
+      this.$toast_error.show(error);
     }
-    
-    this.componentKey++;
-  } catch (error) {
-    this.$toast_error.show(error);
-  }
-},
+  },
 
-async mounted() {
-  try {
-    // Fetch the active business partner from the store
-    this.form.businessPartner = this.$store.getters.activeBusinessPartner;
-    
-    if (this.form.businessPartner) {
-      const serviceType = this.form.businessPartner.users[0]?.serviceType;
-      this.form.businessPartner.serviceTypes = bitwiseDecode(serviceType);
-      this.form.businessPartner.countriesOfOperation = this.form.businessPartner.countries.map(country => country.countryCode);
-      
-      console.log('this.form.businessPartner: ', this.form.businessPartner);
+  async mounted() {
+    try {
+      // Fetch the active business partner from the store
+
+
+      this.loaded = true;
+    } catch (error) {
+      this.$toast_error.show(error);
     }
-
-    this.loaded = true;
-  } catch (error) {
-    this.$toast_error.show(error);
   }
-}
 }
 </script>
 

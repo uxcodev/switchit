@@ -59,14 +59,14 @@ const routes = [
   },
 
   {
-    path: '/company',
-    name: "company",
+    path: '/businesspartner',
+    name: "businesspartner",
     beforeEnter: authGuard,
     component: () => import('@/pages/onboarding/EditBusinessPartner.vue')
   },
   {
     path: '/businesspartner/:id',
-    name: "edit_company",
+    name: "edit_businesspartner",
     beforeEnter: authGuard,
     component: () => import('@/pages/onboarding/EditBusinessPartner.vue')
   },

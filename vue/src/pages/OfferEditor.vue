@@ -16,7 +16,7 @@
           <button v-if="mode === 'Edit'" @click="updateOffer" :disabled="!changed">Update offer</button>
           <button v-else @click="createOffer" :disabled="!changed">Submit offer</button>
         </div>
-        <div v-if="uploadedOffers.length || offer_obj.uploads" class="highlight mb5">
+        <div v-if="uploadedOffers.length || offer_obj.uploads?.length" class="highlight mb5">
           The document{{ uploadedOffers.length > 1 ? 's' : '' }} you uploaded will be visible to the selected lead{{ leads.length > 1 ? 's' : '' }}.
           <div class="file_list" v-for="offer in uploadedOffers" :key="offer.service">
             <span class="material-symbols-outlined icon">description</span>
@@ -113,7 +113,7 @@
       </section>
 
 
-        <section class="mt5" v-for="(value, service) in serviceAccess" :key="service">
+      <section class="mt5" v-for="(value, service) in serviceAccess" :key="service">
 
         <h1>{{ $t(service) }}</h1>
         <div class="right form_actions">
@@ -153,7 +153,7 @@
                   <input class="checkbox" type="checkbox" v-model="offer_obj.offer[service][key]" :id="key" />Included
                   <span class="checkmark transparent"></span>
                 </label>
-   
+
                 <input v-else v-model="offer_obj.offer[service][key]" class="input" />
                 <div class="symbol">{{ field.suffix }}</div>
               </div>
@@ -187,6 +187,7 @@ export default {
       serviceAccess: {},
       serviceTypes: this.$store.getters.serviceTypes,
       uploadingToService: null,
+      relevantServices: [],
       leads: [],
       lead: null,
       changed: false,
@@ -398,7 +399,7 @@ export default {
       if (!response) {
         return
       }
-  
+
 
       let lastOfferIds = response.ids
 
@@ -421,7 +422,7 @@ export default {
           }
           if (serviceHasValue) {
             let serviceType = this.$store.getters.serviceTypeCode(service)
-  
+
             let filteredServiceFields = {}
             for (let key in this.offer_obj.offer[service]) {
               if (this.offer_obj.offer[service][key]) {
@@ -506,7 +507,7 @@ export default {
 
     this.offer_obj.offer_details ??= {}
     this.offer_obj.filters ??= this.$store.getters.filters
-    
+
     for (let key in this.offer_template.offer_details) {
       this.offer_obj.offer_details[key] ??= this.offer_template.offer_details[key].value
     }
@@ -541,7 +542,7 @@ export default {
       this.offer_obj.offer_details.details = offer.comment
       this.offer_obj.offer_details.term = ''
       this.offer_obj.uploads = offer.offerOfferuploadsModels
-      
+
       for (let service of offer.offerOfferServicesModels) {
 
         let serviceType = service.serviceType
@@ -552,25 +553,20 @@ export default {
           this.offer_obj.offer[serviceTypeName][serviceField] = serviceFields[serviceField]
         }
 
-
-        console.log('serviceTypeName', serviceTypeName)
       }
 
       leadId = offer.householdId
       this.leads = [leadId]
-      console.log('leadId', leadId)
 
       let offerServices = offer.offerOfferServicesModels
-      console.log('offerServices', offerServices)
+
       for (let offerService of offerServices) {
         let serviceType = offerService.serviceType
         let serviceFields = JSON.parse(offerService.serviceFields)
-        console.log('serviceType', serviceType)
-        console.log('serviceFields', serviceFields)
-        this.offer_obj.offer[serviceType] = serviceFields
-        let serviceTypeName = this.$store.getters.serviceTypeName(serviceType)
 
-        console.log('serviceTypeName', serviceTypeName)
+        this.offer_obj.offer[serviceType] = serviceFields
+        // let serviceTypeName = this.$store.getters.serviceTypeName(serviceType)
+
       }
     }
 
@@ -586,21 +582,33 @@ export default {
 
     if (leadId) {
 
-      console.log('there is a lead id')
       // NOTE: Currently, there is no 'getLead' method in the switchit api, 
       // so we have to get all leads and find the one we need
 
       let all_leads = await this.$switchit.getLeads({
-        take: 999, 
+        take: 999,
         skip: 0,
         filterData: ''
       })
       this.lead = all_leads.find(lead => lead.id === leadId)
       this.leads = [leadId]
-     
-      if(this.lead) {
+
+      if (this.lead) {
+        // get docs uploaded by lead
         this.lead.documents = (await this.$switchit.getPensionUploads(leadId)).model || []
-        console.log('documents', this.lead.documents)
+
+        // see what services the lead has consented to
+        let relevantServices = this.lead.relevantServices
+        console.log('relevant services', relevantServices)
+        // remove services that are not relevant to the lead
+        for (let category in relevantServices) {
+          console.log('category', category)
+          if (relevantServices[category] == false ) {
+            delete this.serviceAccess[category]
+          }
+        }
+
+
       }
     }
     if (!this.leads?.length) {

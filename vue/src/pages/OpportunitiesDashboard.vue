@@ -19,7 +19,7 @@
                 Your rating
               </div>
               <div class="rating">
-                4.3
+                <span class=''>N/A</span> 
                 <div class="stars">
                   <span class="icon-filled material-symbols-rounded">star</span>
                   <span class="icon-filled material-symbols-rounded">star</span>
@@ -37,6 +37,7 @@
             <div class="stats-title">
               Deals won
             </div>
+            
             <ChartDealsWon_temp />
           </div>
           <div class="card stats-deal-size">
@@ -46,7 +47,7 @@
               </div>
             </div>
             <div class="stats-deal-size-number">
-              1,292€
+              <span class=''>0</span> 
             </div>
           </div>
         </div>
@@ -62,7 +63,7 @@
           <div class="card lg-content">
             <div class="card lg-content-left">
               <div>Open offers:</div>
-              <div class="mt4 large">141</div>
+              <div class="mt4 large">0</div>
             </div>
             <div class="card lg-content-right">
               <span class="material-symbols-outlined">keyboard_arrow_right</span>
@@ -78,7 +79,7 @@
           <div class="card lg-content">
             <div class="card lg-content-left">
               <div>Value of open offers:</div>
-              <div class="mt4"><span class="large">210,543€</span> / mth</div>
+              <div class="mt4"><span class="large">0€</span> / mth</div>
             </div>
             <div class="card lg-content-right">
               <span class="material-symbols-outlined">keyboard_arrow_right</span>
@@ -621,7 +622,7 @@ section
         .stars
           display: flex
           align-items: center
-          color: #00C6C6
+          color: #eee // #00C6C6
           span
             width:20px
             heith:20px

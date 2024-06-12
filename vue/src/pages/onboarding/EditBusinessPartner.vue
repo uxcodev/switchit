@@ -53,7 +53,7 @@
           <div class="checkbox-group">
 
             <label v-for="(service, index) in serviceTypes" :key="index" :class="service.serviceType === 1 ? 'hide' : ''" class="checkbox-label">
-              <input class="checkbox" type="checkbox" @click="console.log(businessPartnerBody.serviceTypes)" :checked="isServiceSelected(service.serviceType)" :id="service.serviceTypeString" @change="toggleServiceSelection(service.serviceType)" />{{ $t(service.serviceTypeString) }}
+              <input :disabled="!isAdmin" class="checkbox" type="checkbox" @click="console.log(businessPartnerBody.serviceTypes)" :checked="isServiceSelected(service.serviceType)" :id="service.serviceTypeString" @change="toggleServiceSelection(service.serviceType)" />{{ $t(service.serviceTypeString) }}
               <span class="checkmark"></span>
 
             </label>
@@ -312,9 +312,22 @@ export default {
     .checkmark::after 
       background-color: #ccc !important
 
-  &:disabled
-    background-color: #ddd !important
+  &::disabled
+    background-color: #eee !important
 
+// <label  v-for="(service, index) in serviceTypes" :key="index" :class="service.serviceType === 1 ? 'hide' : ''" class="checkbox-label">
+//               <input :disabled="!isAdmin" class="checkbox" type="checkbox" @click="console.log(businessPartnerBody.serviceTypes)" :checked="isServiceSelected(service.serviceType)" :id="service.serviceTypeString" @change="toggleServiceSelection(service.serviceType)" />{{ $t(service.serviceTypeString) }}
+//               <span class="checkmark"></span>
+//             </label>
+
+// disable checkboxes
+
+.checkbox:disabled + .checkmark 
+  background-color: #eee !important
+  &::after 
+      background-color: #ccc !important
+
+  
 .hide
   display: none !important
 

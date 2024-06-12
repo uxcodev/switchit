@@ -129,8 +129,7 @@ export default {
       if (service) {
         service.selected = selected;
       }
-    }
-
+    },
   },
   getters: {
     isAdmin(state) {

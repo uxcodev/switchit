@@ -53,13 +53,14 @@
           <div class="checkbox-group">
 
             <label v-for="(service, index) in serviceTypes" :key="index" :class="service.serviceType === 1 ? 'hide' : ''" class="checkbox-label">
-              <input class="checkbox" type="checkbox" :checked="isServiceSelected(service.serviceType)" :id="service.serviceTypeString" @change="toggleServiceSelection(service.serviceType)" />{{ $t(service.serviceTypeString) }}
+              <input class="checkbox" type="checkbox" @click="console.log(businessPartnerBody.serviceTypes)" :checked="isServiceSelected(service.serviceType)" :id="service.serviceTypeString" @change="toggleServiceSelection(service.serviceType)" />{{ $t(service.serviceTypeString) }}
               <span class="checkmark"></span>
 
             </label>
           </div>
         </div>
-        
+
+        <!-- <div class='help' v-if="$store.getters.isAdmin">{{ businessPartnerBody.serviceTypes }}</div> -->
         <button class="icon">Submit</button>
 
         <div v-if="errors.length" class="msg_error">{{ errors[0] }}</div>
@@ -217,96 +218,73 @@ export default {
 
   },
   async created() {
-    try {
-      // check if editing
-      this.id = this.$route.query.id
-      this.isEditing = this.id ? true : false;
+  try {
+    // Check if editing
+    this.businessPartnerId = this.$route.query.id || this.form.businessPartner.id;
+    this.isEditing = !!this.businessPartnerId;
 
-      // populate the countries dropdown
-      let countryCodes = await this.$switchit.getCountries()
-      let country_options = countryCodes.map(country => ({
-        label: country.name,
-        value: country.code
-      }));
+    // Populate the countries dropdown
+    const countryCodes = await this.$switchit.getCountries();
+    this.country_options = countryCodes.map(country => ({
+      label: country.name,
+      value: country.code
+    }));
 
-      this.country_options.push(...country_options)
+    if (this.isEditing) {
+      console.log('this.businessPartnerId: ', this.businessPartnerId);
+      this.currentTab = 'edit';
+      
+      // Fetch full business partner details
+      this.fullBusinessPartner = await this.$switchit.getBusinessPartner(this.businessPartnerId);
+      console.log('fullBusinessPartner: ', this.fullBusinessPartner);
+      
+      // Populate businessPartnerBody with fetched details
+      this.businessPartnerBody = {
+        name: this.fullBusinessPartner.name,
+        domain: this.fullBusinessPartner.domain,
+        vatNumber: this.fullBusinessPartner.vatNumber,
+        address: this.fullBusinessPartner.address,
+        email: this.fullBusinessPartner.email,
+        countryCode: this.fullBusinessPartner.countryCode,
+        countriesOfOperation: this.fullBusinessPartner.countries.map(country => country.countryCode),
+        serviceTypes: bitwiseDecode(this.fullBusinessPartner.users[0]?.serviceType),
+        isApproved: this.fullBusinessPartner.isApproved
+      };
 
-      // populate the users and company differently depending on whether admin, and whether editing
+      console.log('businessPartnerBody: ', this.businessPartnerBody);
 
-      /*       if (this.isAdmin) {
-        this.users = this.isAdmin ? await this.$api_node.getUsers() : null
-        let company = this.isEditing ? await this.$api_node.getCompanyById(this.id) : null
-        this.form.company = company || this.form.company;
-        this.selectedAdmin = company?.roles[0]?.user || null;
-      } else {
-        this.user.first_name = this.$auth0.user._value.given_name;
-        this.user.last_name = this.$auth0.user._value.family_name;
-        this.user._id = this.activeUser?._id;
-      }
-    } catch (error) {
-      console.log('error: ', error)
-      this.$toast_error.show(error)
-    } */
-
-
-      // console.log('edit triggered: ', id)
-      this.businessPartnerId = this.form.businessPartner.id
-      this.currentTab = 'edit'
-      // this.businessPartnerBody = this.businessPartners.find(bp => bp.id === id)
-      this.fullBusinessPartner = await this.$switchit.getBusinessPartner(this.businessPartnerId)
-      console.log('fullBusinessPartner: ', this.fullBusinessPartner)
-
-      this.businessPartnerBody.name = this.fullBusinessPartner.name
-      this.businessPartnerBody.domain = this.fullBusinessPartner.domain
-      this.businessPartnerBody.vatNumber = this.fullBusinessPartner.vatNumber
-      this.businessPartnerBody.address = this.fullBusinessPartner.address
-      this.businessPartnerBody.email = this.fullBusinessPartner.email
-      this.businessPartnerBody.countryCode = this.fullBusinessPartner.countryCode
-      let countries = this.fullBusinessPartner.countries
-      // for each country, get the 'countryCode' and push it to the countriesOfOperation array
-
-      this.businessPartnerBody.countriesOfOperation = countries.map(country => country.countryCode)
-      let serviceType = this.fullBusinessPartner.users[0]?.serviceType
-      console.log('serviceType: ', serviceType)
-      this.businessPartnerBody.serviceTypes = bitwiseDecode(serviceType)
-      console.log('this.businessPartnerBody.serviceTypes: ', this.businessPartnerBody.serviceTypes)
-      // this.businessPartnerBody.serviceTypes = this.fullBusinessPartner.users[0].serviceType
-      this.businessPartnerBody.isApproved = this.fullBusinessPartner.isApproved
-
-      console.log('businessPartnerBody: ', this.businessPartnerBody)
-
-      this.serviceTypes = await this.$switchit.getServiceTypes()
-      // remove any item in this.businessPartnerBody.serviceTypes that is larger than the greates value in this.serviceTypes
-      this.businessPartnerBody.serviceTypes = this.businessPartnerBody.serviceTypes.filter(item => item <= this.serviceTypes[this.serviceTypes.length - 1].serviceType)
-      console.log('removed values larger that greatest value in serviceType array: ', this.serviceTypes)
-      this.componentKey++
-    } catch (error) {
-      this.$toast_error.show(error)
+      // Fetch service types and filter them
+      this.serviceTypes = await this.$switchit.getServiceTypes();
+      this.businessPartnerBody.serviceTypes = this.businessPartnerBody.serviceTypes.filter(
+        item => item <= this.serviceTypes[this.serviceTypes.length - 1].serviceType
+      );
+      console.log('Filtered serviceTypes: ', this.businessPartnerBody.serviceTypes);
     }
-  },
-
-  async mounted() {
-    // populate BusinessPartner form with dummy data
-    // this.form.businessPartner.name = 'Test Company'
-    // this.form.businessPartner.domain = 'testcompany.com'
-    // this.form.businessPartner.vatNumber = '12345678'
-    // this.form.businessPartner.address = 'Test Address'
-    // this.form.businessPartner.email = 'test@test.com'
-    // this.form.businessPartner.countryCode = 'DK'
-    // this.form.businessPartner.countriesOfOperation = ['DK', 'SE']
-    // this.form.businessPartner.serviceTypes = [1, 2]
-
-    this.form.businessPartner = this.$store.getters.activeBusinessPartner
-    let serviceType = this.form.businessPartner.users[0]?.serviceType // TEMP
-    this.form.businessPartner.serviceTypes = bitwiseDecode(serviceType)
-    this.form.businessPartner.countriesOfOperation = this.form.businessPartner.countries.map(country => country.countryCode)
-    console.log('this.form.businessPartner: ', this.form.businessPartner)
-    try {
-      this.loaded = true
-    } catch (error) {
-      this.$toast_error.show(error)
-    }
+    
+    this.componentKey++;
+  } catch (error) {
+    this.$toast_error.show(error);
   }
+},
+
+async mounted() {
+  try {
+    // Fetch the active business partner from the store
+    this.form.businessPartner = this.$store.getters.activeBusinessPartner;
+    
+    if (this.form.businessPartner) {
+      const serviceType = this.form.businessPartner.users[0]?.serviceType;
+      this.form.businessPartner.serviceTypes = bitwiseDecode(serviceType);
+      this.form.businessPartner.countriesOfOperation = this.form.businessPartner.countries.map(country => country.countryCode);
+      
+      console.log('this.form.businessPartner: ', this.form.businessPartner);
+    }
+
+    this.loaded = true;
+  } catch (error) {
+    this.$toast_error.show(error);
+  }
+}
 }
 </script>
 

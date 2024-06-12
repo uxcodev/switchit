@@ -65,6 +65,12 @@ const routes = [
     component: () => import('@/pages/onboarding/EditBusinessPartner.vue')
   },
   {
+    path: '/businesspartner/:id',
+    name: "edit_company",
+    beforeEnter: authGuard,
+    component: () => import('@/pages/onboarding/EditBusinessPartner.vue')
+  },
+  {
     path: '/offers',
     name: "offers",
     beforeEnter: authGuard,

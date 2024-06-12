@@ -37,6 +37,7 @@
             <div class="stats-title">
               Deals won
             </div>
+            
             <ChartDealsWon_temp />
           </div>
           <div class="card stats-deal-size">
@@ -46,7 +47,7 @@
               </div>
             </div>
             <div class="stats-deal-size-number">
-              <span class=''>N/A</span> 
+              <span class=''>0</span> 
             </div>
           </div>
         </div>

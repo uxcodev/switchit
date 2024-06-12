@@ -47,6 +47,7 @@
               </div>
               <div class="table-row-content-sm">
                 <div>
+                  <!-- <ChartOfferStats :values="[0, 0, 0]" /> -->
                   <ChartOfferStats :values="[offer.stats.won, offer.stats.lost, offer.stats.pending]" />
                 </div>
               </div>

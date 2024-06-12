@@ -70,8 +70,8 @@
               <input class="checkbox" type="checkbox" :checked="isCategorySelected(category.code)" :id="category.name" @change="toggleCategorySelection(category.code)" />{{ $t(key) }}
               <span class="checkmark"></span>
             </label> -->
-            <label v-for="(service, index) in serviceTypes" :key="index" class="checkbox-label">
-              <input class="checkbox" type="checkbox" :checked="isServiceSelected(service.serviceType)" :id="service.serviceTypeString" @change="toggleServiceSelection(service.serviceType)" />{{ $t(service.serviceTypeString) }}
+            <label v-for="(service, index) in serviceTypes" :key="index" class="checkbox-label" :class="service.serviceTypeString === 'Unknown' ? 'hide' : ''">
+              <input :disabled="service.serviceTypeString === 'Unknown'"  class="checkbox" type="checkbox" :checked="isServiceSelected(service.serviceType)" :id="service.serviceTypeString" @change="toggleServiceSelection(service.serviceType)" />{{ $t(service.serviceTypeString) }}
               <span class="checkmark"></span>
               <!-- <input class="checkbox" type="checkbox" />{{ $t(service.serviceTypeString) }}
               <span class="checkmark"></span> -->
@@ -502,6 +502,14 @@ export default {
       this.changeTab('get')
     },
     async editBusinessPartner(id) {
+      let serviceTypes = this.businessPartnerBody.serviceTypes
+
+      // if 1 does not exist in serviceTypes, add it (this ensures 'Unknown' is always selected)
+      if (!serviceTypes.includes(1)) {
+        serviceTypes.push(1)
+      }
+      console.log('serviceTypes: ', serviceTypes)
+      console.log('this.businessPartnerBody: ', this.businessPartnerBody, id)
       let response = await this.$switchit.editBusinessPartner(id, this.businessPartnerBody)
       console.log('response: ', response)
       this.changeTab('get')
@@ -794,6 +802,9 @@ h3
   // align-content: center
   // justify-content: center
   max-width: 900px
+
+.hide
+  display: none !important
 .table_header
   display: flex
   width: 100% 

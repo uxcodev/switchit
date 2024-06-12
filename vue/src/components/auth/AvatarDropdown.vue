@@ -3,7 +3,7 @@
     <img v-if="avatarUrl" :src="avatarUrl" alt="User Avatar" class="avatar" />
     <div v-if="showDropdown" class="dropdown">
       <router-link to="/profile" class="dropdown-item"><span class="material-symbols-outlined">person</span>Your profile</router-link>
-      <router-link v-if="businessPartner" to="/company" class="dropdown-item"><span class="material-symbols-outlined">location_city</span>{{ businessPartner?.name }}</router-link>
+      <router-link v-if="businessPartner" to="/businesspartner" class="dropdown-item"><span class="material-symbols-outlined">location_city</span>{{ businessPartner?.name }}</router-link>
       <div class="dropdown-item" @click="logout"><span class="material-symbols-outlined">power_rounded</span> Logout</div>
     </div>
   </div>

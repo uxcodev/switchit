@@ -168,6 +168,10 @@ export default {
       // this.$emit('open-modal', 'CreatebusinessPartner');
     },
     triggerEditbusinessPartner(id) {
+      // push to router url
+      
+      // this.$emit('open-modal', 'EditBusinessPartner', {id: id, editing: true});
+      this.$router.push({ path: `/businesspartner/${id}`, query: { id: id } })
       console.log('triggerEditbusinessPartner: ', id)
     },
   },

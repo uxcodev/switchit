@@ -44,15 +44,19 @@
           <label for="countries">Countries the company is active in</label>
           <Multiselect v-model="form.businessPartner.countriesOfOperation" mode="tags" @select="countrySelected" :searchable="true" :close-on-select="false" :options="country_options" />
         </div>
+
         <div class="group">
           <label for="markets">Markets the company serves</label>
           <div class="checkbox-group">
-            <label v-for="(category, key) in categories" :key="key" class="checkbox-label">
-              <input class="checkbox" type="checkbox" :checked="isCategorySelected(category.code)" :id="category.name" @change="toggleCategorySelection(category.code)" />{{ $t(key) }}
+
+            <label v-for="(service, index) in serviceTypes" :key="index" :class="service.serviceType === 1 ? 'hide' : ''" class="checkbox-label">
+              <input class="checkbox" type="checkbox" @click="console.log(form.businessPartner.serviceTypes)" :checked="isServiceSelected(service.serviceType)" :id="service.serviceTypeString" @change="toggleServiceSelection(service.serviceType)" />{{ $t(service.serviceTypeString) }}
               <span class="checkmark"></span>
+
             </label>
           </div>
         </div>
+        {{ form.businessPartner.serviceTypes }}
         <button :disabled="!domainMatch" class="icon">Submit</button>
 
         <div v-if="errors.length" class="msg_error">{{ errors[0] }}</div>
@@ -150,12 +154,12 @@ export default {
       // TEMP for testing
       console.log('countrySelected', this.form.businessPartner.countriesOfOperation)
     },
-    isCategorySelected(code) {
+
+    isServiceSelected(code) {
       return this.form.businessPartner.serviceTypes.includes(code);
     },
-
-    toggleCategorySelection(code) {
-      if (this.isCategorySelected(code)) {
+    toggleServiceSelection(code) {
+      if (this.isServiceSelected(code)) {
         const index = this.form.businessPartner.serviceTypes.indexOf(code);
         this.form.businessPartner.serviceTypes.splice(index, 1);
       } else {
@@ -185,7 +189,11 @@ export default {
     async submitForm() {
       try {
         let body = this.form.businessPartner
-        let response = await this.$switchit.createBusinessPartner(body)
+        if (!body.serviceTypes.includes(1)) {
+          body.serviceTypes.push(1)
+        }
+        console.log('body', body)
+        let response = null || await this.$switchit.createBusinessPartner(body)
         if (response.statusText === 'Created') {
           let id = response.headers.location.split('/').pop()
           let activeBusinessPartner = await this.$switchit.getBusinessPartner(id)
@@ -274,6 +282,8 @@ export default {
           this.businessPartnerExists = true
           // this.$toast_error.show({duration: 6000, message: 'BUSINESS_PARTNER_ALREADY_EXISTS'})
         }
+        this.serviceTypes = await this.$switchit.getServiceTypes();
+
         console.log('businessPartner', businessPartner)
         this.loaded = true
       }
@@ -290,6 +300,9 @@ export default {
 @import "@vueform/multiselect/themes/default.css"
 .img_placeholder
   width: 100%
+
+.hide
+  display: none  !important
 .main
   display: flex
   flex-direction: column

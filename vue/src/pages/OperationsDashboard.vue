@@ -25,6 +25,7 @@ import BusinessPartners from './OperationsBusinessPartnerTable.vue';
 import Companies from './OperationsCompanyTable.vue';
 import ImportCompanies from '@/components/import/ImportCompaniesFromSheet.vue';
 import CreateCompany from '@/components/admin/CreateCompany.vue';
+import EditBusinessPartner from './onboarding/EditBusinessPartner.vue';
 
 export default {
   components: {
@@ -33,6 +34,7 @@ export default {
     Companies,
     BusinessPartners,
     ImportCompanies,
+    EditBusinessPartner,
     CreateCompany
   },
   data() {

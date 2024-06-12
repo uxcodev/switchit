@@ -139,21 +139,17 @@ export default {
     services() {
       // return services from store, but only where the category is active in categoryAccess
 
-      console.log('computed services')
+
       const services = this.$store.getters.services;
       let serviceTypes = this.$store.getters.serviceTypes
-      console.log('serviceTypes: ', serviceTypes)
       const filteredServices = {};
 
       // loop through serviceTypes array. serviceTypes is an arra of objects with keys for each category, and a boolean value for 'access'
       // if the value is true, add the category to filteredServices
       for (let service of serviceTypes) {
-        console.log('service: ', service)
-        console.log('services', services)
+
         if (service.access) {
-          console.log('service.serviceTypeString: ', service.serviceTypeString)
           let key = service.serviceTypeString
-          console.log('key: ', key)
           if (services[key]) {
             filteredServices[key] = services[key]
           }
@@ -187,9 +183,6 @@ export default {
       // }
 
 
-      console.log('filteredServices: ', filteredServices)
-      console.log('this.categoryAccess: ', this.categoryAccess)
-      console.log('serviceTypes: ', serviceTypes)
       return filteredServices;
     },
 
@@ -368,8 +361,6 @@ export default {
     },
   },
   mounted() {
-    console.log('this.serviceTypes mounted: ', this.serviceTypes)
-    // this.categoryAccess.general = {selected: false, status: true}
     this.categoryAccess.General = { selected: false, status: true }
     this.getFiltersets()
   },

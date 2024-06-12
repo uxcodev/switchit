@@ -381,13 +381,18 @@ export default {
       let body = {
         "householdIds": this.leads,
         "businessPartnerId": this.$store.getters.activeBusinessPartner.id,
-        "offerStatusType": 0,
         "title": this.offer_obj.offer_details.name,
         "comment": this.offer_obj.offer_details.details,
+        "offerStatusType": 0,
+        "offerServiceType": this.leads[0]?.serviceType || this.lead.serviceType,
         "startDate": this.offer_obj.offer_details.start_date,
         "endDate": this.offer_obj.offer_details.expiry_date
       }
 
+      console.log('createOffer body', body)
+      // if (body.householdIds.length) {return}
+
+      // *** TEMP - Remove next 2 lines ***
       let response = await this.$switchit.createOffer(body)
 
       if (!response) {
@@ -429,7 +434,7 @@ export default {
               "bindingPeriodEnd": this.offer_obj.offer_details.expiry_date,
               "amount": this.offer_obj.offer[service].amount,
               "currencyType": 1,
-              "serviceType": serviceType,
+              "serviceType:": serviceType,
               "serviceFields": JSON.stringify(filteredServiceFields),
               "comment": "string",
               "offerId": lastOfferId

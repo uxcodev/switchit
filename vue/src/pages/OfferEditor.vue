@@ -379,6 +379,23 @@ export default {
     },
 
     async createOffer() {
+
+      /**TEMP **/
+      /*      let filteredServiceFields = {}
+     for (let service in this.offer_obj.offer) {
+         filteredServiceFields[service] = {}
+           for (let key in this.offer_obj.offer[service]) {
+             if (this.offer_obj.offer[service][key]) {
+               filteredServiceFields[service][key] = this.offer_obj.offer[service][key]
+             }
+           }
+           console.log('filteredServiceFields', filteredServiceFields)
+         }
+           if (this.offer_obj) {return}
+            */
+      /** END TEMP */
+
+
       let body = {
         "householdIds": this.leads,
         "businessPartnerId": this.$store.getters.activeBusinessPartner.id,
@@ -423,13 +440,20 @@ export default {
           if (serviceHasValue) {
             let serviceType = this.$store.getters.serviceTypeCode(service)
 
-            let filteredServiceFields = {}
+            /* let filteredServiceFields = {}
             for (let key in this.offer_obj.offer[service]) {
               if (this.offer_obj.offer[service][key]) {
                 filteredServiceFields[key] = this.offer_obj.offer[service][key]
               }
+            } */
+            let filteredServiceFields = {}
+            filteredServiceFields[service] = {}
+            for (let key in this.offer_obj.offer[service]) {
+              if (this.offer_obj.offer[service][key]) {
+                filteredServiceFields[service][key] = this.offer_obj.offer[service][key]
+              }
             }
-
+            console.log('filteredServiceFields', filteredServiceFields)
             let body = {
               "enrollmentDate": this.offer_obj.offer_details.start_date,
               "bindingPeriodEnd": this.offer_obj.offer_details.expiry_date,
@@ -442,7 +466,6 @@ export default {
             }
             body = JSON.stringify(body)
             console.log('body', body)
-            console.log('UNCOMMENT NEXT LINE')
             let response = await this.$switchit.createOfferService(body)
             console.log('createOfferService ' + service + ' response', response)
           }
@@ -545,12 +568,13 @@ export default {
 
       for (let service of offer.offerOfferServicesModels) {
 
-        let serviceType = service.serviceType
-        let serviceTypeName = this.$store.getters.serviceTypeName(serviceType)
+        // let serviceType = service.serviceType
+        // let serviceTypeName = this.$store.getters.serviceTypeName(serviceType)
         let serviceFields = JSON.parse(service.serviceFields)
 
         for (let serviceField in serviceFields) {
-          this.offer_obj.offer[serviceTypeName][serviceField] = serviceFields[serviceField]
+          // this.offer_obj.offer[serviceTypeName][serviceField] = serviceFields[serviceField]
+          this.offer_obj.offer[serviceField] = serviceFields[serviceField]
         }
 
       }
@@ -603,7 +627,7 @@ export default {
         // remove services that are not relevant to the lead
         for (let category in relevantServices) {
           console.log('category', category)
-          if (relevantServices[category] == false ) {
+          if (relevantServices[category] == false) {
             delete this.serviceAccess[category]
           }
         }

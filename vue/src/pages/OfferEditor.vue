@@ -400,7 +400,7 @@ export default {
         "title": this.offer_obj.offer_details.name,
         "comment": this.offer_obj.offer_details.details,
         "offerStatusType": 0,
-        "serviceTypeCombo": serviceTypeCombo,
+        "offerServiceType": serviceTypeCombo,
         "startDate": this.offer_obj.offer_details.start_date,
         "endDate": this.offer_obj.offer_details.expiry_date
       }

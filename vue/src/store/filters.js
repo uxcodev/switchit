@@ -321,15 +321,15 @@ const service_data = {
 // I'd like to not have to hard code this, but is there somewhere this could be stored in backend?
 const categories = {
 
-  General: {
-    selected: false,
-    icon: "info",
-    // code: 1
-  },
   Unknown: {
     selected: false,
     icon: "question_mark",
     code: 1
+  },
+  General: {
+    selected: false,
+    icon: "info",
+    // code: 1
   },
   Mobile: {
     selected: false,
@@ -432,6 +432,15 @@ export default {
     setFilteredServices(context, filters) {
       let services = context.state.services;
       let filteredServices = { ...services, ...filters };
+      // make sure matches 'categories'
+      let categories = context.state.categories;
+      for (let category in categories) {
+        if (filteredServices[category]) {
+          categories[category].selected = true;
+        } else {
+          categories[category].selected = false;
+        }
+      }
       context.commit('setFilteredServices', filteredServices);
     },
     filtersChanged(context) {

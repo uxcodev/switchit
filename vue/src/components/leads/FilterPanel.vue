@@ -372,7 +372,7 @@ export default {
     },
   },
   mounted() {
-    this.categoryAccess.General = { selected: false, status: true }
+    this.categoryAccess.General = { selected: true, status: true }
     this.getFiltersets()
     
     // get filters from store

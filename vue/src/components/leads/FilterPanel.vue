@@ -146,6 +146,8 @@ export default {
 
       // loop through serviceTypes array. serviceTypes is an arra of objects with keys for each category, and a boolean value for 'access'
       // if the value is true, add the category to filteredServices
+      filteredServices.General = services.General
+      
       for (let service of serviceTypes) {
 
         if (service.access) {
@@ -153,7 +155,6 @@ export default {
           if (services[key]) {
             filteredServices[key] = services[key]
           }
-          filteredServices.General = services.General
           // filteredServices[key] = services['Broadband']
         }
       }
@@ -182,6 +183,7 @@ export default {
       //   console.log('serviceType loop: ', key, value)
       // }
 
+      // make sure 'General' is always first
 
       return filteredServices;
     },
@@ -339,6 +341,7 @@ export default {
       this.saveFiltersToStore();
     },
     saveFiltersToStore() {
+      console.log('saving filters to store', this.filterObj)
       this.$store.dispatch('filtersChanged')
       this.$store.dispatch('setFilters', this.filterObj)
     },
@@ -354,6 +357,14 @@ export default {
       for (const category of this.selectedCategories) {
         this.visibleFilters[category] = { ...this.services[category] };
       }
+
+      // chage selected categories to match the filterObj
+      this.selectedCategories = Object.keys(this.filterObj);
+      
+      // make sure general is selected
+      if (!this.selectedCategories.includes('General')) {
+        this.selectedCategories.push('General')
+      }
       this.componentKey++
       // this.saveFiltersToStore();
       // }
@@ -363,6 +374,11 @@ export default {
   mounted() {
     this.categoryAccess.General = { selected: false, status: true }
     this.getFiltersets()
+    
+    // get filters from store
+    this.filterObj = this.filters
+    this.selectedCategories = Object.keys(this.filterObj);
+    this.loadFilters()
   },
 };
 </script>

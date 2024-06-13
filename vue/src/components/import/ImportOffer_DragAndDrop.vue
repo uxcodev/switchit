@@ -75,7 +75,7 @@ import LoaderAni from '@/components/ui/LoaderAni.vue'
 
 export default {
   components: { FieldMap, ImportedCompanies, LoaderAni },
-  emits: ['handleFile'],
+  emits: ['handleFile', 'cancel'],
   data() {
     return {
       names: [],
@@ -108,6 +108,7 @@ export default {
   },
   methods: {
     cancel() {
+      console.log('cancel')
       this.$emit('cancel');
     },
     deletePerson(index) {

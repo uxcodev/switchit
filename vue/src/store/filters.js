@@ -392,6 +392,8 @@ HOW THIS WORKS (needs updating)
 */
 
 export default {
+
+  // namespaced: true,
   state() {
     return {
       categories: categories,
@@ -407,6 +409,7 @@ export default {
       state.services = val
     },
     setFilters(state, val) {
+      console.log('setFilters', val)
       state.filters = val
     },
     setFilteredServices(state, val) {

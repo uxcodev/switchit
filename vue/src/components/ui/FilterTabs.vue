@@ -1,31 +1,35 @@
 <template>
- 
+
   <div class="filter-group">
     <div class="filter" :class="all ? 'active' : ''" @click="changeFilters('all')"><span>All</span></div>
-      <div v-for="(service, index) in filteredServiceTypes" :key="index" class="filter" @click="changeFilters(service.serviceTypeString)" :class="categories[service.serviceTypeString]?.status ? 'active' : ''">
-        <span class="icon material-symbols-outlined"> {{ service.icon }}</span>
-        <span class="text">{{ $t(service.serviceTypeString) }}</span>
-        </div>  
+    <div v-for="(service, index) in filteredServiceTypes" :key="index" class="filter" @click="changeFilters(service)" :class="service.selected ? 'active' : ''">
+      <span class="icon material-symbols-outlined"> {{ service.icon }}</span>
+      <span class="text">{{ $t(service.serviceTypeString) }}</span>
+    </div>
   </div>
 </template>
 
 <script>
 
 
+
 export default {
   props: {
     resources: Array,
   },
-  emits: ['applyFilterTabs'],
+  emits: ['applyFilterTabs', 'applyFilterTabsServices'],
   data() {
     return {
       all: true,
       categories: this.$store.getters.categories,
-      serviceTypes: this.$store.getters.serviceTypes
+      serviceTypes: this.$store.getters.serviceTypes,
     };
   },
   // a computed property called filteredCategories that is a copy of categories but with 'general' property removed
   computed: {
+    filters() {
+      return this.$store.getters.filters
+    },
     filteredServiceTypes() {
       return this.serviceTypes.filter(service => service.access && service.serviceTypeString !== 'General' && service.serviceTypeString !== 'Unknown')
     },
@@ -57,37 +61,81 @@ export default {
 
       delete filteredCategories.General;
       return filteredCategories;
-    }
+    },
+
+
+
+  },
+  // if filters changes, update tabs
+
+
+  watch: {
+    filters: {
+      handler(newVal) {
+        this.filteredServiceTypes.forEach(service => {
+          if (newVal[service.serviceTypeString]) {
+            service.selected = true
+          } else {
+            service.selected = false
+          }
+        })
+
+      },
+      deep: true,
+    },
+    filtersChanged() {
+      this.offer_obj.filters = this.$store.getters.filters
+    },
   },
   methods: {
     select(resource_id) {
       this.selected = resource_id;
       // // console.log(resource_id);
     },
-    changeFilters(category) {
-      console.log('changeFilters', category, this.categories)
-      this.all = true
-      if (category === 'all') {
-        for (let cat in this.categories) {
-          this.categories[cat].status = false
-        }
+
+    changeFilters(service) {
+      console.log('changeFilters', service, this.services)
+      if (service === 'all') {
+        this.all = true
+        this.services = []
+        this.filteredServiceTypes.forEach(service => {
+          service.selected = false
+        })
       } else {
-        this.categories[category].status = !this.categories[category].status
-        for (let cat in this.categories) {
-          if (this.categories[cat].status) {
-            this.all = false
-          }
-        }
+        service.selected = !service.selected
+        this.all = false
+        this.services = this.filteredServiceTypes.filter(service => service.selected)
       }
-      // // console.log(this.categories)
-      this.$emit('applyFilterTabs', this.categories)
+
+      // change filters in store
+      let filters = {}
+      this.filteredServiceTypes.forEach(service => {
+        if (service.selected) {
+          filters[service.serviceTypeString] = true
+        }
+      })
+      this.$store.commit('setFilters', filters)
+
+      this.$emit('applyFilterTabsServices', this.services)
     }
   },
   mounted() {
+    console.log('this.filteredServiceTypes()', this.filteredServiceTypes)
+    // get filters from store
+
+    // for each key in filters, set the corresponding serviceType.selected to true
+    for (let key in this.filters) {
+      this.filteredServiceTypes.forEach(service => {
+        if (service.serviceTypeString === key) {
+          service.selected = true
+        }
+      })
+    }
+    console.log('filters', this.filters)
     for (let cat in this.categories) {
       this.categories[cat].status = false
     }
-  },
+  }
 };
 </script>
 

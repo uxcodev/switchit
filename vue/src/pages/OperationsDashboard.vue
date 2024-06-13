@@ -1,5 +1,5 @@
 <template>
-  <ModalWindow v-if="modalComponent" :component="modalComponent"  @cancel="onCancel" @save="onSave" @closeModal="closeModal">
+  <ModalWindow v-if="modalComponent" :component="modalComponent"  @cancel="closeModal" @save="onSave" @closeModal="closeModal">
     <component :is="modalComponent" :props="componentProps" @closeModal="closeModal" @save="onSave"></component>
   </ModalWindow>
   <div v-if="isAdmin" class="main settings">

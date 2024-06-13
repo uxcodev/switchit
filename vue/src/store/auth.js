@@ -8,7 +8,6 @@ export default {
       isAdmin: false,
       activeUser: null,
       activeBusinessPartner: null,
-      selectedLeads: null,
       serviceAccessCode: null
     };
   },
@@ -18,9 +17,6 @@ export default {
     },
     setActiveUser(state, payload) {
       state.activeUser = payload.val
-    },
-    setSelectedLeads(state, payload) {
-      state.selectedLeads = payload.val
     },
     setActiveBusinessPartner(state, payload) {
       state.activeBusinessPartner = payload.val
@@ -41,9 +37,7 @@ export default {
       await context.dispatch('fetchAndSetActiveBusinessPartner');
       return
     },
-    setSelectedLeads(context, selectedLeads) {
-      context.commit('setSelectedLeads', { val: selectedLeads });
-    },
+
     setActiveBusinessPartner(context, activeBusinessPartner) {
       context.commit('setActiveBusinessPartner', { val: activeBusinessPartner });
     },
@@ -138,9 +132,7 @@ export default {
     activeUser(state) {
       return state.activeUser;
     },
-    selectedLeads(state) {
-      return state.selectedLeads;
-    },
+
     activeBusinessPartner(state) {
       return state.activeBusinessPartner;
     },

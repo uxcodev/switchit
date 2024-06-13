@@ -102,12 +102,13 @@
       </div>
       <div class="table">
         <div class="table-header">
-          <div class="table-header-check">
+          <!-- ***CHECKMARKS TEMPORARILY DISABLED -->
+          <!-- <div class="table-header-check">
             <label class="checkbox-label">
               <input class="checkbox" type="checkbox" v-model="selectVisible" @change="toggleSelectVisible" name="select_all" />
               <span class="checkmark transparent"></span>
             </label>
-          </div>
+          </div> -->
           <div class="table-header-content">
             <div class="table-header-content-sm">Match</div>
             <div class="table-header-content-med">User ID</div>
@@ -119,13 +120,13 @@
         </div>
         <div class="table-rows">
           <div v-for="(lead, index) in leads" :key="index" class="table-row">
-            <div class="table-row-check">
+             <!-- ***CHECKMARKS TEMPORARILY DISABLED -->
+  <!--           <div class="table-row-check">
               <label class=" checkbox-label nolabel">
                 <input v-show="false" class="checkbox" v-model="lead.selected" @change="updateSelectedLeads(lead)" type="checkbox" name="select_all" />
                 <span class="checkmark"></span>
               </label>
-
-            </div>
+            </div> -->
             <div @click="openLead(lead.id)" class="table-row-content">
               <div class="table-row-content-sm">
                 <div class="donut">

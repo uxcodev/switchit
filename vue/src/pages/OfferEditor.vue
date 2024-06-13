@@ -165,6 +165,7 @@
 
 import ModalWindow from '@/components/ui/ModalWindow.vue';
 import ImportOffer from '@/components/import/ImportOffer.vue';
+import bitwise from '@/helpers/bitwiseEncode.js'
 
 export default {
   components: {
@@ -371,36 +372,27 @@ export default {
 
     async createOffer() {
 
-
-      // check if there are any values in offer_obj.offer
-      console.log('createOffer')
-      let offerHasValue
+      // check for all categories in offer_obj.offer that have values. If the service has a value, add the category to haveValues array
+      let serviceTypeArray = []
+      let hasValue = false 
       for (let category in this.offer_obj.offer) {
         for (let key in this.offer_obj.offer[category]) {
           if (this.offer_obj.offer[category][key]) {
-            offerHasValue = true
+            hasValue = true
           }
         }
+        if (hasValue) {
+          let serviceType = this.$store.getters.serviceTypeCode(category)
+          serviceTypeArray.push(serviceType)
+        }
+        hasValue = false
       }
-      if (!offerHasValue) {
-        this.$toast_error.show({ message: 'You must enter details for at least one service into the form.' })
-        return
-      }
+      
+      let serviceTypeCombo = bitwise.bitwiseEncode(serviceTypeArray);
+      console.log('serviceTypeArray', serviceTypeArray)
+      console.log('serviceTypeCombo', serviceTypeCombo)
 
-       /**TEMP **/
-      /*      let filteredServiceFields = {}
-     for (let service in this.offer_obj.offer) {
-         filteredServiceFields[service] = {}
-           for (let key in this.offer_obj.offer[service]) {
-             if (this.offer_obj.offer[service][key]) {
-               filteredServiceFields[service][key] = this.offer_obj.offer[service][key]
-             }
-           }
-           console.log('filteredServiceFields', filteredServiceFields)
-         }
-           if (this.offer_obj) {return}
-            */
-      /** END TEMP */
+      
 
       let body = {
         "householdIds": this.leads,
@@ -408,7 +400,7 @@ export default {
         "title": this.offer_obj.offer_details.name,
         "comment": this.offer_obj.offer_details.details,
         "offerStatusType": 0,
-        "offerServiceType": this.lead?.serviceType || this.leads[0]?.serviceType,
+        "serviceTypeCombo": serviceTypeCombo,
         "startDate": this.offer_obj.offer_details.start_date,
         "endDate": this.offer_obj.offer_details.expiry_date
       }
@@ -551,7 +543,9 @@ export default {
     }
   },
   async mounted() {
-    // const { path, params, query } = this.$route;
+    console.log('test')
+
+
     const { path, params } = this.$route;
     const type = path.includes('campaign') ? 'campaign' : path.includes('offer') ? 'offer' : null;
     this.mode = params.id ? 'Edit' : 'Create';

@@ -144,6 +144,11 @@ export default {
       const service = state.serviceTypes.find((service) => service.serviceType === id);
       return service ? service.serviceTypeString : 'Unknown';
     },
+    serviceTypeComboCode: (state) => {
+      const serviceTypes = state.serviceTypes;
+      console.log('serviceTypes', serviceTypes)
+      return serviceTypes;
+    },
     serviceTypeCode: (state) => (name) => {
       const service = state.serviceTypes.find((service) => service.serviceTypeString.toLowerCase() === name.toLowerCase());
       return service ? service.serviceType : 1;

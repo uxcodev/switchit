@@ -3,7 +3,7 @@
   <div>
     <!-- <TabNavigation :tabs="tabs" v-model:activeTab="activeTab" /> -->
     <h1>Upload Offer</h1>
-    <Import @handleFile="handleFile" />
+    <Import @cancel="cancel" @handleFile="handleFile" />
     <div v-for="(file, index) in files" :key="index">
       <p>{{ file.name }}</p>
     </div>

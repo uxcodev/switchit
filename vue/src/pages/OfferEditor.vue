@@ -1,13 +1,11 @@
 <template>
   <ModalWindow v-if="modalComponent" :component="modalComponent" @closeModal="closeModal">
-    <component :is="modalComponent" @handleFile="handleFile"></component>
+    <component :is="modalComponent" @cancel="closeModal" @handleFile="handleFile"></component>
   </ModalWindow>
 
   <div class="main" v-if="loaded">
     <div class="container">
       <section v-if="offerType === 'offer'">
-        <!-- <FilterGroup /> -->
-        <!-- <FilterTabs @applyFilterTabs="applyFilterTabs" /> -->
         <h1>{{ mode }} offer for {{ leads.length }} lead{{ leads.length > 1 ? 's' : '' }}</h1>
         <div class="right form_actions">
           <!-- <span class="link" @click="openFilters">{{ filterCount }} filters applied</span> -->
@@ -77,8 +75,6 @@
       </section>
 
       <section v-if="offerType === 'campaign'">
-        <!-- <FilterGroup /> -->
-        <!-- <FilterTabs @applyFilterTabs="applyFilterTabs" /> -->
         <h1>{{ mode }} campaign</h1>
         <div class="right form_actions">
           <span class="link" @click="openFilters">{{ filterCount }} filters applied</span>
@@ -305,7 +301,6 @@ export default {
       deep: true,
     },
     filtersChanged() {
-      console.log('filtersChanged', this.$store.getters.filtersChanged)
       this.offer_obj.filters = this.$store.getters.filters
     },
   },
@@ -322,7 +317,6 @@ export default {
       ) ?? 0;
     },
     filtersChanged() {
-      console.log('filtersChanged', this.$store.getters.filtersChanged)
       return this.$store.getters.filtersChanged
     },
     filteredCategoryAccess() {
@@ -353,9 +347,6 @@ export default {
     closeModal() {
       this.modalComponent = null
     },
-    async applyFilterTabs(categories) {
-      console.log('applyFilterTabs', categories)
-    },
     async openFilters() {
       await this.$store.dispatch('setFilters', this.offer_obj.filters)
       await this.$store.dispatch('filtersChangedExternally');
@@ -380,7 +371,23 @@ export default {
 
     async createOffer() {
 
-      /**TEMP **/
+
+      // check if there are any values in offer_obj.offer
+      console.log('createOffer')
+      let offerHasValue
+      for (let category in this.offer_obj.offer) {
+        for (let key in this.offer_obj.offer[category]) {
+          if (this.offer_obj.offer[category][key]) {
+            offerHasValue = true
+          }
+        }
+      }
+      if (!offerHasValue) {
+        this.$toast_error.show({ message: 'You must enter details for at least one service into the form.' })
+        return
+      }
+
+       /**TEMP **/
       /*      let filteredServiceFields = {}
      for (let service in this.offer_obj.offer) {
          filteredServiceFields[service] = {}
@@ -394,8 +401,6 @@ export default {
            if (this.offer_obj) {return}
             */
       /** END TEMP */
-      console.log('this.leads', this.leads)
-      console.log('this.lead', this.lead)
 
       let body = {
         "householdIds": this.leads,
@@ -403,29 +408,24 @@ export default {
         "title": this.offer_obj.offer_details.name,
         "comment": this.offer_obj.offer_details.details,
         "offerStatusType": 0,
-        "offerServiceType": this.lead.serviceType,
+        "offerServiceType": this.lead?.serviceType || this.leads[0]?.serviceType,
         "startDate": this.offer_obj.offer_details.start_date,
         "endDate": this.offer_obj.offer_details.expiry_date
       }
 
-      console.log('createOffer body', body)
       // if (body.householdIds.length) {return}
 
-      // *** TEMP - Remove next 2 lines ***
       let response = await this.$switchit.createOffer(body)
-
-      if (!response) {
-        return
-      }
-
-
       let lastOfferIds = response.ids
+
+
+
+      // let lastOfferIds = response.ids
 
       for (let lastOfferId of lastOfferIds) {
 
         if (this.uploadedOffers.length) {
           for (let offer of this.uploadedOffers) {
-            console.log('uploading offer', offer.formData, lastOfferId)
             await this.$switchit.uploadOffer(lastOfferId, offer.formData)
           }
         }
@@ -440,39 +440,37 @@ export default {
           }
           if (serviceHasValue) {
             let serviceType = this.$store.getters.serviceTypeCode(service)
-
-            /* let filteredServiceFields = {}
+            
+             let filteredServiceFields = {}
             for (let key in this.offer_obj.offer[service]) {
               if (this.offer_obj.offer[service][key]) {
                 filteredServiceFields[key] = this.offer_obj.offer[service][key]
               }
-            } */
-            let filteredServiceFields = {}
-            filteredServiceFields[service] = {}
-            for (let key in this.offer_obj.offer[service]) {
-              if (this.offer_obj.offer[service][key]) {
-                filteredServiceFields[service][key] = this.offer_obj.offer[service][key]
-              }
-            }
-            console.log('filteredServiceFields', filteredServiceFields)
+            } 
+            // let filteredServiceFields = {}
+            // filteredServiceFields[service] = {}
+            // for (let key in this.offer_obj.offer[service]) {
+            //   if (this.offer_obj.offer[service][key]) {
+            //     filteredServiceFields[service][key] = this.offer_obj.offer[service][key]
+            //   }
+            // }
             let body = {
               "enrollmentDate": this.offer_obj.offer_details.start_date,
               "bindingPeriodEnd": this.offer_obj.offer_details.expiry_date,
               "amount": this.offer_obj.offer[service].amount,
               "currencyType": 1,
-              "serviceType:": serviceType,
+              "serviceType": serviceType,
               "serviceFields": JSON.stringify(filteredServiceFields),
               "comment": "string",
               "offerId": lastOfferId
             }
             body = JSON.stringify(body)
-            console.log('body', body)
-            let response = await this.$switchit.createOfferService(body)
-            console.log('createOfferService ' + service + ' response', response)
+            await this.$switchit.createOfferService(body)
           }
         }
         this.$router.push({ path: '/offers' })
       }
+     
     },
     async updateOffer() {
       let response = await this.$switchit.updateOffer(this.id, this.offer_obj)
@@ -499,159 +497,132 @@ export default {
       const fileURL = URL.createObjectURL(fileBlob);
       window.open(fileURL);
     },
+    async buildOfferForm() {
+      this.offer_obj.offer_details ??= {};
+      this.offer_obj.filters ??= this.$store.getters.filters;
+
+      Object.keys(this.offer_template.offer_details).forEach(key => {
+        this.offer_obj.offer_details[key] ??= this.offer_template.offer_details[key].value;
+      });
+
+      this.offer_obj.offer ??= {};
+      Object.keys(this.offer_template.offer).forEach(category => {
+        this.offer_obj.offer[category] ??= {};
+        Object.keys(this.offer_template.offer[category]).forEach(key => {
+          this.offer_obj.offer[category][key] ??= this.offer_template.offer[category][key].value;
+        });
+      });
+
+      Object.assign(this.offer_obj.offer_details, {
+        start_date: this.$dayjs().format('YYYY-MM-DD'),
+        name: 'Test offer ' + new Date().toISOString().split('T')[0],
+        expiry_date: this.$dayjs().add(30, 'day').format('YYYY-MM-DD'),
+        details: 'Details for ' + this.offer_obj.offer_details.name,
+        term: '12 months'
+      });
+    },
+    async loadOffer(id) {
+      const offer = (await this.$switchit.getOffer(id)).model;
+      console.log('getOffer response', offer);
+
+      Object.assign(this.offer_obj.offer_details, {
+        name: offer.title,
+        start_date: this.$dayjs(offer.startDate).format('YYYY-MM-DD'),
+        expiry_date: this.$dayjs(offer.endDate).format('YYYY-MM-DD'),
+        details: offer.comment,
+        term: ''
+      });
+
+      this.offer_obj.uploads = offer.offerOfferuploadsModels;
+      let leadId = offer.householdId;
+      this.leads = [leadId];
+
+      // console.log('load offer', offer);
+      // offer.offerOfferServicesModels.forEach(service => {
+      //   const serviceFields = JSON.parse(service.serviceFields);
+      //   Object.assign(this.offer_obj.offer, serviceFields);
+      // });
+          offer.offerOfferServicesModels.forEach(service => {
+            let serviceTypeString = this.$store.getters.serviceTypeName(service.serviceType);
+            console.log('serviceType code', serviceTypeString)
+        const serviceFields = JSON.parse(service.serviceFields);
+        Object.assign(this.offer_obj.offer[serviceTypeString], serviceFields);
+      });
+    }
   },
   async mounted() {
+    // const { path, params, query } = this.$route;
+    const { path, params } = this.$route;
+    const type = path.includes('campaign') ? 'campaign' : path.includes('offer') ? 'offer' : null;
+    this.mode = params.id ? 'Edit' : 'Create';
+    this.offerType = type;
+    this.id = params.id;
 
-    // console.log('OfferEditor mounted')
-    // console.log('categoryAccess', this.categoryAccess)
-    // console.log('serviceAccessCode', this.serviceAccessCode)
-    // console.log('serviceTypes', this.serviceTypes)
+    this.buildOfferForm();
+
+
+    this.changed = false;
+    this.loaded = true;
+
+    if (params.id) {
+      this.loadOffer(params.id);
+    }
+
+    // let leadId = query?.lead;
+    let leadId
+    console.log('mounted leadId', leadId);
+    // if (!leadId) {
+    // this.leads = await this.$loadSessionValue('offer_selectedLeads') || [];
+    this.leads = this.$store.getters.selectedLeads;
+    console.log('selectedLeads from vuex', this.leads);
+    if (this.leads.length === 1) {
+      leadId = this.leads[0];
+    }
+    // }
+
+    if (leadId) {
+      const all_leads = await this.$switchit.getLeads({ take: 999, skip: 0, filterData: '' });
+      console.log('mounted all_leads', all_leads);
+      this.lead = all_leads.find(lead => lead.id === leadId);
+      this.leads = [leadId];
+
+      if (this.lead) {
+        this.lead.documents = (await this.$switchit.getPensionUploads(leadId)).model || [];
+
+        Object.keys(this.lead.relevantServices).forEach(category => {
+          if (!this.lead.relevantServices[category]) {
+            delete this.serviceAccess[category];
+          }
+        });
+      }
+    }
 
     this.serviceAccess = this.serviceTypes.reduce((obj, service) => {
       if (service.access) {
-        obj[service.serviceTypeString] = service
+        obj[service.serviceTypeString] = service;
       }
-      return obj
-    }, {})
+      return obj;
+    }, {});
 
-    console.log('serviceAccess', this.serviceAccess)
-    for (let category in this.offer_template.offer) {
-      let serviceType = this.serviceTypes.find(service => service.serviceTypeString === category)
+    Object.keys(this.offer_template.offer).forEach(category => {
+      const serviceType = this.serviceTypes.find(service => service.serviceTypeString === category);
       if (!serviceType?.access) {
-        delete this.offer_template.offer[category]
+        delete this.offer_template.offer[category];
       }
-    }
+    });
 
-    let path = this.$route.path
-    let params = this.$route.params
-    let type = path.includes('campaign') ? 'campaign' : path.includes('offer') ? 'offer' : null
-    this.mode = params.id ? 'Edit' : 'Create'
-    this.offerType = type
-    this.id = params.id
-
-    this.offer_obj.offer_details ??= {}
-    this.offer_obj.filters ??= this.$store.getters.filters
-
-    for (let key in this.offer_template.offer_details) {
-      this.offer_obj.offer_details[key] ??= this.offer_template.offer_details[key].value
-    }
-    this.offer_obj.offer ??= {}
-    for (let category in this.offer_template.offer) {
-      this.offer_obj.offer[category] ??= {}
-      for (let key in this.offer_template.offer[category]) {
-        this.offer_obj.offer[category][key] ??= this.offer_template.offer[category][key].value
-      }
-    }
-
-    this.offer_obj.offer_details.start_date = this.$dayjs().format('YYYY-MM-DD')
-    this.offer_obj.offer_details.name = 'Test offer ' + new Date().toISOString().split('T')[0]
-    this.offer_obj.offer_details.expiry_date = this.$dayjs().add(30, 'day').format('YYYY-MM-DD')
-    this.offer_obj.offer_details.details = 'Details for ' + this.offer_obj.offer_details.name
-    this.offer_obj.offer_details.term = '12 months'
-
-    this.changed = false
-    this.loaded = true
-
-
-    // if there is an id param, it's a real offer, so populate with offer details
-
-    let leadId = this.$route.query?.lead
-
-    if (params.id) {
-      let offer = (await this.$switchit.getOffer(params.id)).model
-      console.log('getOffer response', offer)
-      this.offer_obj.offer_details.name = offer.title
-      this.offer_obj.offer_details.start_date = this.$dayjs(offer.startDate).format('YYYY-MM-DD')
-      this.offer_obj.offer_details.expiry_date = this.$dayjs(offer.endDate).format('YYYY-MM-DD')
-      this.offer_obj.offer_details.details = offer.comment
-      this.offer_obj.offer_details.term = ''
-      this.offer_obj.uploads = offer.offerOfferuploadsModels
-
-      for (let service of offer.offerOfferServicesModels) {
-
-        // let serviceType = service.serviceType
-        // let serviceTypeName = this.$store.getters.serviceTypeName(serviceType)
-        let serviceFields = JSON.parse(service.serviceFields)
-
-        for (let serviceField in serviceFields) {
-          // this.offer_obj.offer[serviceTypeName][serviceField] = serviceFields[serviceField]
-          this.offer_obj.offer[serviceField] = serviceFields[serviceField]
-        }
-
-      }
-
-      leadId = offer.householdId
-      this.leads = [leadId]
-
-      let offerServices = offer.offerOfferServicesModels
-
-      for (let offerService of offerServices) {
-        let serviceType = offerService.serviceType
-        let serviceFields = JSON.parse(offerService.serviceFields)
-
-        this.offer_obj.offer[serviceType] = serviceFields
-        // let serviceTypeName = this.$store.getters.serviceTypeName(serviceType)
-
-      }
-    }
-
-    // if a lead id is provided in the query, use that lead
-    if (!leadId) {
-      // if leads are saved in the session, use that lead
-      this.leads = await this.$loadSessionValue('offer_selectedLeads') || [];
-      // if only one lead, save it to leadId
-      if (this.leads.length === 1) {
-        leadId = this.leads[0]
-      }
-    }
-
-    if (leadId) {
-
-      // NOTE: Currently, there is no 'getLead' method in the switchit api, 
-      // so we have to get all leads and find the one we need
-
-      let all_leads = await this.$switchit.getLeads({
-        take: 999,
-        skip: 0,
-        filterData: ''
-      })
-      this.lead = all_leads.find(lead => lead.id === leadId)
-      this.leads = [leadId]
-
-      if (this.lead) {
-        // get docs uploaded by lead
-        this.lead.documents = (await this.$switchit.getPensionUploads(leadId)).model || []
-
-        // see what services the lead has consented to
-        let relevantServices = this.lead.relevantServices
-        console.log('relevant services', relevantServices)
-        // remove services that are not relevant to the lead
-        for (let category in relevantServices) {
-          console.log('category', category)
-          if (relevantServices[category] == false) {
-            delete this.serviceAccess[category]
-          }
-        }
-
-
-      }
-    }
     if (!this.leads?.length) {
-      this.$toast_error.show({ message: 'No leads selected' })
-      return
-    }
-    if (!this.leads?.length) {
-      if (this.offer_obj.users?.length) {
-        this.leads = this.offer_obj.users.map(user => user.leadId)
-      } else {
-        // this.$router.push({ path: '/offers' })
-      }
+      this.$toast_error.show({ message: 'No leads selected' });
+      return;
     }
 
+    if (!this.leads?.length && this.offer_obj.users?.length) {
+      this.leads = this.offer_obj.users.map(user => user.leadId);
+    }
+
+    console.log('mounted lead', this.lead);
     /* Auto populate with dummy data */
-
     // check for documents
-
   }
 }
 </script>

@@ -5,7 +5,8 @@
   <div class="main">
     <div class="container">
       <div class="header_options">
-        <FilterTabs @applyFilterTabs="applyFilterTabs" />
+        <!-- <FilterTabs @applyFilterTabs="applyFilterTabs" /> -->
+        <FilterTabs @applyFilterTabsServices="applyFilterTabsServices" />
         <!-- <div title="create 20 leads" v-if="isAdmin" class="icon button" @click="createFakeData"><span class="material-symbols-outlined">list_alt_add</span></div> -->
       </div>
 
@@ -281,6 +282,21 @@ export default {
       store.dispatch("openMenu");
     }
 
+    function applyFilterTabsServices(services) {
+      const filterObj = { ...store.getters.filters };
+
+      console.log('services', services)
+      for (let service of services) {
+        console.log('service', service.serviceTypeString)
+        filterObj[service.serviceTypeString] = {
+          ...filterObj[service.serviceTypeString]
+        };
+      }
+      console.log('filterObj', filterObj)
+      store.dispatch('setFilters', filterObj);
+      store.dispatch('filtersChanged');
+    }
+
     function applyFilterTabs(categories) {
       const filterObj = { ...store.getters.filters };
 
@@ -335,14 +351,15 @@ export default {
     const businessPartner = store.getters.activeBusinessPartner
     console.log('businessPartner', businessPartner)
     
-    function openLead(id) {
-      store.dispatch("setSelectedLeads", [id]);
-      $storeSessionValue('offer_selectedLeads', [id], 60);
-      router.push({ path: `/offer`, query: { lead: id } });
+    function openLead(lead) {
+      store.dispatch("setSelectedLeads", [lead]);
+      $storeSessionValue('offer_selectedLeads', [lead], 60);
+      router.push({ path: `/offer`, query: { lead: lead.id } });
     }
 
     function openLeads() {
       $storeSessionValue('offer_selectedLeads', selectedLeads.value, 60);
+      store.dispatch("setSelectedLeads", selectedLeads.value);
       router.push({ path: `/offer` });
     }
 
@@ -487,6 +504,7 @@ export default {
       pg_last,
       openFilters,
       applyFilterTabs,
+      applyFilterTabsServices,
       gotoPage,
       displayedPages,
       openLead,

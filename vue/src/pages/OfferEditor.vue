@@ -394,7 +394,8 @@ export default {
            if (this.offer_obj) {return}
             */
       /** END TEMP */
-
+      console.log('this.leads', this.leads)
+      console.log('this.lead', this.lead)
 
       let body = {
         "householdIds": this.leads,
@@ -402,7 +403,7 @@ export default {
         "title": this.offer_obj.offer_details.name,
         "comment": this.offer_obj.offer_details.details,
         "offerStatusType": 0,
-        "offerServiceType": this.leads[0]?.serviceType || this.lead.serviceType,
+        "offerServiceType": this.lead.serviceType,
         "startDate": this.offer_obj.offer_details.start_date,
         "endDate": this.offer_obj.offer_details.expiry_date
       }

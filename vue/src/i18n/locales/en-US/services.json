@@ -84,6 +84,7 @@
 	"latest_tech_importance": "Latest tech importance",
 	"bundling_services_preference": "Bundling services preference",
 	"fixed_rate_preference": "Fixed rate preference",
+  "commitment_period": "Commitment Period",
 
   "General": "General",
 	"Unknown": "Unknown",

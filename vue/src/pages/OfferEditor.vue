@@ -150,7 +150,7 @@
                   <span class="checkmark transparent"></span>
                 </label>
 
-                <input v-else v-model="offer_obj.offer[service][key]" class="input" />
+                <input v-else :ref="service + '_' + key" :placeholder="field.placeholder" v-model="offer_obj.offer[service][key]" class="input"  />
                 <div class="symbol">{{ field.suffix }}</div>
               </div>
 
@@ -201,7 +201,7 @@ export default {
           status: { value: '', type: 'String' },
           start_date: { value: null, type: 'Date' },
           expiry_date: { value: null, type: 'Date' },
-          term: { value: '', type: 'String' },
+          // term: { value: '', type: 'String' },
           details: { value: '', type: 'String' },
         },
         // filters: this.$store.getters.filters,
@@ -214,6 +214,7 @@ export default {
             total_due: { value: null, type: 'Number', suffix: '€' },
             device_payment: { value: null, type: 'Number', suffix: '€' },
             accessory_payment: { value: null, type: 'Number', suffix: '€' },
+            commitment_period: { value: null, type: 'String', placeholder: 'ie - 1 year', suffix: '', required: false },
           },
           Mortgage: {
             rate: { value: null, type: 'Number', suffix: '%' },
@@ -227,9 +228,13 @@ export default {
             one_time_cost: { value: null, type: 'Number', suffix: '€' },
             monthly_cost: { value: null, type: 'Number', suffix: '€' },
             downpayment: { value: null, type: 'Number', suffix: '€' },
+            commitment_period: { value: null, type: 'String', placeholder: 'ie - 1 year', suffix: '', required: false },
+
           },
           Electricity: {
             kwh_rate: { value: null, type: 'Number', suffix: '€' },
+            commitment_period: { value: null, type: 'String', placeholder: 'ie - 1 year', suffix: '', required: false },
+
           },
           CarInsurance: {
             premium: { value: null, type: 'Number', suffix: '€' },
@@ -240,6 +245,8 @@ export default {
             glass_damage: { value: null, type: 'Boolean' },
             theft_protection: { value: null, type: 'Boolean' },
             roadside_assistance: { value: null, type: 'Boolean' },
+            commitment_period: { value: null, type: 'String', placeholder: 'ie - 1 year', suffix: '', required: false },
+
           },
           HomeInsurance: {
             premium: { value: null, type: 'Number', suffix: '€' },
@@ -249,18 +256,23 @@ export default {
             fire_protection: { value: null, type: 'Boolean' },
             water_damage_protection: { value: null, type: 'Boolean' },
             storm_damage_protection: { value: null, type: 'Boolean' },
+            commitment_period: { value: null, type: 'String', placeholder: 'ie - 1 year', suffix: '', required: false },
+
           },
           Broadband: {
             total_due: { value: null, type: 'Number', suffix: 'Mbps' },
             plan_data_speed: { value: null, type: 'Number', suffix: 'Mbps' },
             plan_data_gb: { value: null, type: 'Number', suffix: 'GB' },
+            commitment_period: { value: null, type: 'String', placeholder: 'ie - 1 year', suffix: '', required: false },
+
           },
           MedicalInsurance: {
             total_due: { value: null, type: 'Number', suffix: '€' },
+            commitment_period: { value: null, type: 'String', placeholder: 'ie - 1 year', suffix: '', required: false },
+
           },
-
           Pension: {
-
+            commitment_period: { value: null, type: 'String', placeholder: 'ie - 1 year', suffix: '', required: false },
           },
         }
       },
@@ -343,7 +355,39 @@ export default {
     handleFile(file) {
       this.modalComponent = null
       this.uploadedOffers.push({ file: file, formData: file.formData, service: this.uploadingToService })
+      this.requiredFieldsCheck()
+    },
+    requiredFieldsCheck() {
+      // loop through each service, console.log it
+      let inputRef
+      console.log('this.$refs', this.$refs)
+      for (let service in this.offer_obj.offer) {
+        inputRef = this.$refs[service + '_commitment_period'];
 
+        if(inputRef) {
+          inputRef.required = false
+        }
+        // inputRef.value = 'test'; // Set the required property to true
+        
+      }
+
+      // loop through uploadedOffers, for each service, console log it
+      for (let upload of this.uploadedOffers) {
+        console.log('offer', upload.service)
+        inputRef = this.$refs[upload.service + '_commitment_period'];
+        let inputValue = this.offer_obj.offer[upload.service].commitment_period
+        if (!inputValue) {
+          this.$toast_success.show('Please enter a commitment period for ' + upload.service)
+        }
+        // inputRef.value = '1 year'
+      }
+      // let requiredFields = Object.entries(this.offer_template.offer[this.uploadingToService])
+      //   .filter(([key, value]) => value.required)
+      //   .map(([key, value]) => key)
+      // let missingFields = requiredFields.filter(field => !this.offer_obj.offer[this.uploadingToService][field])
+      // if (missingFields.length) {
+      //   this.$toast_error.show({ message: `Please fill in the required fields: ${missingFields.join(', ')}` })
+      // }
     },
     closeModal() {
       this.modalComponent = null
@@ -372,9 +416,21 @@ export default {
 
     async createOffer() {
 
-      // check for all categories in offer_obj.offer that have values. If the service has a value, add the category to haveValues array
+      // validate that there is a commitment_period for each service that has an upload
+      if (this.uploadedOffers.length) {
+          for (let offer of this.uploadedOffers) {
+            // check if there is a commitment_period for the service
+            if (!this.offer_obj.offer[offer.service].commitment_period) {
+              this.$toast_error.show({message: 'Please enter a commitment period for ' + offer.service})
+              return
+            }
+          }
+        }
+
+      // check for all services in offer_obj.offer that have values. If the service has a value, add it to haveValues array
+
       let serviceTypeArray = []
-      let hasValue = false 
+      let hasValue = false
       for (let category in this.offer_obj.offer) {
         for (let key in this.offer_obj.offer[category]) {
           if (this.offer_obj.offer[category][key]) {
@@ -387,15 +443,17 @@ export default {
         }
         hasValue = false
       }
-      
+
+      // create a combined serviceType based on all services that have values
+
       let serviceTypeCombo = bitwise.bitwiseEncode(serviceTypeArray);
       console.log('serviceTypeArray', serviceTypeArray)
       console.log('serviceTypeCombo', serviceTypeCombo)
 
-      
+      // post the offer, and return the id
 
       let body = {
-        "householdIds": this.leads,
+        "householdIds": this.householdIds,
         "businessPartnerId": this.$store.getters.activeBusinessPartner.id,
         "title": this.offer_obj.offer_details.name,
         "comment": this.offer_obj.offer_details.details,
@@ -405,47 +463,48 @@ export default {
         "endDate": this.offer_obj.offer_details.expiry_date
       }
 
-      // if (body.householdIds.length) {return}
-
       let response = await this.$switchit.createOffer(body)
-      let lastOfferIds = response.ids
+      let postedOfferIds = response.ids
 
+      // handle posting of uploads and services to the posted offer
 
+      for (let postedOfferId of postedOfferIds) {
 
-      // let lastOfferIds = response.ids
-
-      for (let lastOfferId of lastOfferIds) {
+        // check for uploads, and upload each file to the offer
 
         if (this.uploadedOffers.length) {
           for (let offer of this.uploadedOffers) {
-            await this.$switchit.uploadOffer(lastOfferId, offer.formData)
+            // check if there is a commitment_period for the service
+            
+            await this.$switchit.uploadOffer(postedOfferId, offer.formData)
           }
         }
 
+        // post each service
 
         for (let service in this.offer_obj.offer) {
+
+          // check if there is a value in each service
+
           let serviceHasValue
           for (let key in this.offer_obj.offer[service]) {
             if (this.offer_obj.offer[service][key]) {
               serviceHasValue = true
             }
           }
+
+          // if there is a value, post the service
+
           if (serviceHasValue) {
             let serviceType = this.$store.getters.serviceTypeCode(service)
-            
-             let filteredServiceFields = {}
+
+            let filteredServiceFields = {}
             for (let key in this.offer_obj.offer[service]) {
               if (this.offer_obj.offer[service][key]) {
                 filteredServiceFields[key] = this.offer_obj.offer[service][key]
               }
-            } 
-            // let filteredServiceFields = {}
-            // filteredServiceFields[service] = {}
-            // for (let key in this.offer_obj.offer[service]) {
-            //   if (this.offer_obj.offer[service][key]) {
-            //     filteredServiceFields[service][key] = this.offer_obj.offer[service][key]
-            //   }
-            // }
+            }
+
             let body = {
               "enrollmentDate": this.offer_obj.offer_details.start_date,
               "bindingPeriodEnd": this.offer_obj.offer_details.expiry_date,
@@ -454,7 +513,7 @@ export default {
               "serviceType": serviceType,
               "serviceFields": JSON.stringify(filteredServiceFields),
               "comment": "string",
-              "offerId": lastOfferId
+              "offerId": postedOfferId
             }
             body = JSON.stringify(body)
             await this.$switchit.createOfferService(body)
@@ -462,7 +521,7 @@ export default {
         }
         this.$router.push({ path: '/offers' })
       }
-     
+
     },
     async updateOffer() {
       let response = await this.$switchit.updateOffer(this.id, this.offer_obj)
@@ -509,8 +568,8 @@ export default {
         start_date: this.$dayjs().format('YYYY-MM-DD'),
         name: 'Test offer ' + new Date().toISOString().split('T')[0],
         expiry_date: this.$dayjs().add(30, 'day').format('YYYY-MM-DD'),
-        details: 'Details for ' + this.offer_obj.offer_details.name,
-        term: '12 months'
+        details: 'Details for ' + this.offer_obj.offer_details.name
+        // term: '12 months'
       });
     },
     async loadOffer(id) {
@@ -527,22 +586,24 @@ export default {
 
       this.offer_obj.uploads = offer.offerOfferuploadsModels;
       let leadId = offer.householdId;
-      this.leads = [leadId];
+      this.householdIds = [leadId];
 
       // console.log('load offer', offer);
       // offer.offerOfferServicesModels.forEach(service => {
       //   const serviceFields = JSON.parse(service.serviceFields);
       //   Object.assign(this.offer_obj.offer, serviceFields);
       // });
-          offer.offerOfferServicesModels.forEach(service => {
-            let serviceTypeString = this.$store.getters.serviceTypeName(service.serviceType);
-            console.log('serviceType code', serviceTypeString)
+      offer.offerOfferServicesModels.forEach(service => {
+        let serviceTypeString = this.$store.getters.serviceTypeName(service.serviceType);
+        console.log('serviceType code', serviceTypeString)
         const serviceFields = JSON.parse(service.serviceFields);
         Object.assign(this.offer_obj.offer[serviceTypeString], serviceFields);
       });
     }
   },
   async mounted() {
+
+
     console.log('test')
 
 
@@ -566,11 +627,11 @@ export default {
     let leadId
     console.log('mounted leadId', leadId);
     // if (!leadId) {
-    // this.leads = await this.$loadSessionValue('offer_selectedLeads') || [];
-    this.leads = this.$store.getters.selectedLeads;
-    console.log('selectedLeads from vuex', this.leads);
-    if (this.leads.length === 1) {
-      leadId = this.leads[0];
+    // this.householdIds = await this.$loadSessionValue('offer_selectedLeads') || [];
+    this.householdIds = this.$store.getters.selectedLeads;
+    console.log('selectedLeads from vuex', this.householdIds);
+    if (this.householdIds.length === 1) {
+      leadId = this.householdIds[0];
     }
     // }
 
@@ -578,7 +639,7 @@ export default {
       const all_leads = await this.$switchit.getLeads({ take: 999, skip: 0, filterData: '' });
       console.log('mounted all_leads', all_leads);
       this.lead = all_leads.find(lead => lead.id === leadId);
-      this.leads = [leadId];
+      this.householdIds = [leadId];
 
       if (this.lead) {
         this.lead.documents = (await this.$switchit.getPensionUploads(leadId)).model || [];
@@ -605,13 +666,13 @@ export default {
       }
     });
 
-    if (!this.leads?.length) {
+    if (!this.householdIds?.length) {
       this.$toast_error.show({ message: 'No leads selected' });
       return;
     }
 
-    if (!this.leads?.length && this.offer_obj.users?.length) {
-      this.leads = this.offer_obj.users.map(user => user.leadId);
+    if (!this.householdIds?.length && this.offer_obj.users?.length) {
+      this.householdIds = this.offer_obj.users.map(user => user.leadId);
     }
 
     console.log('mounted lead', this.lead);

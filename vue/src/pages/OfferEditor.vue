@@ -6,7 +6,7 @@
   <div class="main" v-if="loaded">
     <div class="container">
       <section v-if="offerType === 'offer'">
-        <h1>{{ mode }} offer for {{ leads.length }} lead{{ leads.length > 1 ? 's' : '' }}</h1>
+        <h1>{{ mode }} offer for {{ householdIds.length }} lead{{ householdIds.length > 1 ? 's' : '' }}</h1>
         <div class="right form_actions">
           <!-- <span class="link" @click="openFilters">{{ filterCount }} filters applied</span> -->
           {{ filterCount }} filters applied
@@ -15,7 +15,7 @@
           <button v-else @click="createOffer" :disabled="!changed">Submit offer</button>
         </div>
         <div v-if="uploadedOffers.length || offer_obj.uploads?.length" class="highlight mb5">
-          The document{{ uploadedOffers.length > 1 ? 's' : '' }} you uploaded will be visible to the selected lead{{ leads.length > 1 ? 's' : '' }}.
+          The document{{ uploadedOffers.length > 1 ? 's' : '' }} you uploaded will be visible to the selected lead{{ householdIds.length > 1 ? 's' : '' }}.
           <div class="file_list" v-for="offer in uploadedOffers" :key="offer.service">
             <span class="material-symbols-outlined icon">description</span>
             <span>{{ offer.file.name }}</span>
@@ -33,7 +33,7 @@
           <!-- <div v-for="i in 3" :key='i'><span :class='i'></span></div> -->
           <div class="card stats-rating">
             <div class="card-top">
-              <div v-if='leads.length === 1' class="stats-title">
+              <div v-if='householdIds.length === 1' class="stats-title">
                 <div>Lead ID: {{ lead.userId }}</div>
                 <div>Location: {{ lead.householdPartialAddress }}</div>
                 <div>Postal Code: {{ lead.postalCode }}</div>
@@ -46,7 +46,7 @@
                 </div>
               </div>
               <div v-else class="stats-title">
-                Users selected: {{ leads.length }}
+                Users selected: {{ householdIds.length }}
               </div>
             </div>
             <div class="card-bottom">
@@ -377,7 +377,7 @@ export default {
         inputRef = this.$refs[upload.service + '_commitment_period'];
         let inputValue = this.offer_obj.offer[upload.service].commitment_period
         if (!inputValue) {
-          this.$toast_success.show('Please enter a commitment period for ' + upload.service)
+          this.$toast_success.show('Please enter a commitment period for ' + this.$t(upload.service))
         }
         // inputRef.value = '1 year'
       }
@@ -417,11 +417,12 @@ export default {
     async createOffer() {
 
       // validate that there is a commitment_period for each service that has an upload
+
       if (this.uploadedOffers.length) {
           for (let offer of this.uploadedOffers) {
             // check if there is a commitment_period for the service
             if (!this.offer_obj.offer[offer.service].commitment_period) {
-              this.$toast_error.show({message: 'Please enter a commitment period for ' + offer.service})
+              this.$toast_error.show({message: 'Please enter a commitment period for ' + this.$t(offer.service)})
               return
             }
           }

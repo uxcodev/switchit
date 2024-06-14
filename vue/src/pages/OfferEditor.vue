@@ -377,7 +377,7 @@ export default {
         inputRef = this.$refs[upload.service + '_commitment_period'];
         let inputValue = this.offer_obj.offer[upload.service].commitment_period
         if (!inputValue) {
-          this.$toast_success.show('Please enter a commitment period for ' + upload.service)
+          this.$toast_success.show('Please enter a commitment period for ' + this.$t(upload.service))
         }
         // inputRef.value = '1 year'
       }
@@ -417,11 +417,12 @@ export default {
     async createOffer() {
 
       // validate that there is a commitment_period for each service that has an upload
+
       if (this.uploadedOffers.length) {
           for (let offer of this.uploadedOffers) {
             // check if there is a commitment_period for the service
             if (!this.offer_obj.offer[offer.service].commitment_period) {
-              this.$toast_error.show({message: 'Please enter a commitment period for ' + offer.service})
+              this.$toast_error.show({message: 'Please enter a commitment period for ' + this.$t(offer.service)})
               return
             }
           }

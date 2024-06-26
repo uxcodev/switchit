@@ -17,6 +17,7 @@ const offerRoutes = require("./routes/offers");
 const importRoutes = require("./routes/imports");
 const campaignRoutes = require("./routes/campaigns");
 const filtersetRoutes = require("./routes/filtersets");
+const chatRoutes = require("./routes/chat");
 
 app.use(bodyParser.json());
 
@@ -40,6 +41,7 @@ app.use("/offers", offerRoutes);
 app.use("/imports", importRoutes);
 app.use("/campaigns", campaignRoutes);
 app.use("/filtersets", filtersetRoutes);
+app.use("/chat", chatRoutes);
 
 app.use(errorController.get404);
 

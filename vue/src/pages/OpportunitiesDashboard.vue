@@ -175,17 +175,19 @@
     </h2>
     <button @click="openLeads">Send offer</button>
   </div>
+  <ChatBox />
 </template>
 <script>
 import ModalWindow from "@/components/ui/ModalWindow.vue";
 import FilterTabs from "../components/ui/FilterTabs.vue";
 import IconsCategoryAccess from "@/components/ui/IconsCategoryAccess.vue";
 import ChartDealsWon_temp from "../components/ui/charts/ChartDealsWon_temp.vue";
+import ChatBox from "@/components/chat/ChatBox.vue";
 import { Chart as ChartJS, ArcElement, Tooltip } from "chart.js";
 import { Doughnut } from "vue-chartjs";
 
 
-import { ref, computed, watch, onMounted, reactive, toRefs, getCurrentInstance } from "vue";
+import {ref, computed, watch, onMounted, reactive, toRefs, getCurrentInstance} from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 // import bitwiseDecode from '@/helpers/bitwise'
@@ -200,7 +202,8 @@ export default {
     FilterTabs,
     ChartDealsWon_temp,
     Doughnut,
-    IconsCategoryAccess
+    IconsCategoryAccess,
+    ChatBox
   },
 
   setup() {
@@ -330,9 +333,6 @@ export default {
       // load leads
       
     }
-
-
-
 
     // ***** Leads *****
 

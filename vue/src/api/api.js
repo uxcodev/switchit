@@ -117,6 +117,21 @@ export default {
       throw error
     }
   },
+  async chat(messages) {
+    try {
+      const response = await _axios.post('/chat', {messages});
+      if (response.status === 200) {
+        response.data.ok = true;
+        return response.data;
+      } else {
+        console.error('Unexpected status code:', response.status);
+        return { error: 'Unexpected status code' };
+      }
+    } catch (err) {
+      let error = err.response?.data?.error || err
+      throw error
+    }
+  },
 
   async getUsers() {
     try {

@@ -1,6 +1,7 @@
 <template>
   <MainNav />
   <FilterPanel v-if="!loading && activeBusinessPartner && serviceTypes" />
+  <InsightsPanel v-if="!loading" />
   <div class="mt-10" id="app">
     <LoaderAniOverlay v-if="loading" />
     <router-view v-if="!loading"></router-view>
@@ -13,9 +14,11 @@ import MainNav from "@/components/layout/MainNav.vue";
 import FilterPanel from "@/components/leads/FilterPanel.vue";
 import jwtDecode from "jwt-decode";
 import LoaderAniOverlay from "@/components/ui/LoaderAniOverlay.vue";
+import InsightsPanel from "@/components/leads/InsightsPanel.vue";
 
 export default {
   components: {
+    InsightsPanel,
     MainNav,
     FilterPanel,
     LoaderAniOverlay

@@ -8,6 +8,9 @@
         <!-- <FilterTabs @applyFilterTabs="applyFilterTabs" /> -->
         <FilterTabs @applyFilterTabsServices="applyFilterTabsServices" />
         <!-- <div title="create 20 leads" v-if="isAdmin" class="icon button" @click="createFakeData"><span class="material-symbols-outlined">list_alt_add</span></div> -->
+        <div class="filter-group">
+          <div class="filter active" @click="openInsights"><span>Insights</span></div>
+        </div>
       </div>
 
       <section>
@@ -283,6 +286,10 @@ export default {
       store.dispatch("openMenu");
     }
 
+    function openInsights() {
+      store.dispatch("openInsightsMenu", {page: 'dashboard'});
+    }
+
     function applyFilterTabsServices(services) {
       const filterObj = { ...store.getters.filters };
 
@@ -503,6 +510,7 @@ export default {
       pg_back,
       pg_forward,
       pg_last,
+      openInsights,
       openFilters,
       applyFilterTabs,
       applyFilterTabsServices,

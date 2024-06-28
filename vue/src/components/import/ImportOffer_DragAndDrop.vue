@@ -10,17 +10,15 @@
           <button v-if="additionalTagsCount" class="tags-additional" @click="toggleTags = !toggleTags">
             {{ toggleTags ? 'show less' : `+ ${additionalTagsCount} more` }}
           </button>
-
         </div>
         <div class="hit-area" :class="{ 'drag-over': isDragOver }" @dragenter.prevent="dragEnter" @dragleave.prevent="dragLeave" @dragover.prevent @drop.prevent="handleDrop">
           {{ "Drag and drop your file here" }}
           <br><br>
-          <!-- {{ "All .csv, .xlsx, and .xls file types are supported" }} -->
           {{ ".pdf file types are supported" }}
+          <input type="file" @change="handleFileChange" accept=".pdf">
         </div>
       </div>
       <div v-if="jsonTable && !newTable" class="content table-container">
-
         <table>
           <thead>
             <tr>
@@ -41,37 +39,26 @@
           <FieldMap :jsonTable="jsonTable" :mappingDictionary="mappingDictionary"></FieldMap>
         </div>
       </div>
-
       <div v-if="newTable">
         <ImportedCompanies :table="newTable"></ImportedCompanies>
       </div>
     </div>
-    <!-- <div class="button-panel"> -->
-    <!-- <div class="toggle-container">
-        <label for="publish-toggle">Publish when done</label>
-        <input type="checkbox" id="publish-toggle" />
-      </div> -->
-
     <div class="file_list">
       <div v-for="file in files" :key="file.name">
         {{ file.name }}<span class="material-symbols-outlined check">check</span>
       </div>
-      <!-- <div>sample_doc.pdf</div> -->
     </div>
     <div class="buttons">
       <button @click="cancel" class="button__secondary">Cancel</button>
       <button :disabled="!files.length" @click="importFile">Import</button>
     </div>
-    <!-- </div> -->
   </div>
 </template>
 
 <script>
-
 import FieldMap from './ImportCompanies_Import_Map.vue'
 import ImportedCompanies from './ImportCompanies_Import_Results.vue';
 import LoaderAni from '@/components/ui/LoaderAni.vue'
-
 
 export default {
   components: { FieldMap, ImportedCompanies, LoaderAni },
@@ -135,32 +122,44 @@ export default {
       this.$emit('handleFile', this.files[0]);
     },
     async handleDrop(event) {
-
-      // console.log('temporarily disabled')
       const selectedFile = event.dataTransfer.files[0];
       const formData = new FormData();
       formData.append('offerFile', selectedFile);
 
-      // get name and extension
       const fileName = selectedFile.name;
       const fileExtension = fileName.split('.').pop();
 
-
-      // emit 'handleFile'
       if (fileExtension === 'pdf') {
         let file = {
           formData: formData,
           name: fileName,
           extension: fileExtension
         }
-        // this.$emit('handleFile', file);
         this.files[0] = file;
       }
       else {
         this.$toast_error.show({ message: 'Invalid file type. Please upload a .pdf file' });
       }
     },
+    handleFileChange(event) {
+      const selectedFile = event.target.files[0];
+      const formData = new FormData();
+      formData.append('offerFile', selectedFile);
 
+      const fileName = selectedFile.name;
+      const fileExtension = fileName.split('.').pop();
+
+      if (fileExtension === 'pdf') {
+        let file = {
+          formData: formData,
+          name: fileName,
+          extension: fileExtension
+        }
+        this.files[0] = file;
+      } else {
+        this.$toast_error.show({ message: 'Invalid file type. Please upload a .pdf file' });
+      }
+    }
   },
 };
 </script>
@@ -174,7 +173,6 @@ h3
   padding: 0
   display: flex
   flex-direction: column
-  // gap: 20px
   background-color: #f6f6f6
 
 .content-area
@@ -193,7 +191,6 @@ h3
   max-height: 400px
   overflow-y: scroll
 
-
 .tag 
   background-color: #333
   color: white
@@ -202,14 +199,12 @@ h3
   border-radius: 4px
   padding: 2px 6px
 
-
 .close-btn 
   color: grey
   background: none
   border: none
   margin-left: 5px
   cursor: pointer
-
 
 .hit-area 
   display: flex
@@ -221,16 +216,25 @@ h3
   border-radius: 10px
   border: 2px dashed #dbdbdb
   background-color: #fbfbfb
+  position: relative
+
+  input[type="file"] 
+    position: absolute
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+    opacity: 0
+    cursor: pointer
+  
     
   &.drag-over 
     border-color: #007bff 
     background-color: #f0f8ff
 
-
 .hint-text 
   font-size: 14px
   color: #777
-
 
 .button-panel 
   display: flex
@@ -260,7 +264,6 @@ button
   padding-top: 20px 
   width: 100%
   display: flex
-  // flex-end
   justify-content: flex-end
   gap: 20px
 
@@ -284,12 +287,10 @@ button
   padding: 10px 15px
   border-radius: 6px
 
-
 .cancel-btn 
   background-color: transparent
   border: 2px solid #007bff
   color: #007bff
-
 
 .save-btn 
   background-color: #007bff

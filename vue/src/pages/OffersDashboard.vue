@@ -53,7 +53,7 @@
               </div>
             </div>
             <div class="table-row-actions">
-              <div class="material-symbols-outlined" @click="saveAsCampaign(offer)">save</div>
+              <!-- <div class="material-symbols-outlined" @click="saveAsCampaign(offer)">save</div> -->
               <div class="material-symbols-outlined" @click="deleteOffer(offer.id)">delete</div>
             </div>
           </div>
@@ -476,7 +476,8 @@ pre
         flex: 1
     &-actions
       display: flex
-      justify-content: flex-end
+      // justify-content: flex-end
+      justify-content: center
       align-items: center
       padding: 10px
       width: 100px

@@ -9,6 +9,10 @@
         <h1 v-if="mode === 'Create'" >Create offer for {{ leads.length }} lead{{ leads.length > 1 ? 's' : '' }}</h1>
         <h1 v-else>Edit offer</h1>
 
+        <div v-if="isAdmin">
+          <!-- upload offer button -->
+          <button @click="openUploadModal('ImportOffer', 'Mobile')">Upload offer test</button>
+        </div>
         <div class="right form_actions">
           <!-- <span class="link" @click="openFilters">{{ filterCount }} filters applied</span> -->
           {{ filterCount }} filters applied
@@ -181,6 +185,7 @@ export default {
 
   data() {
     return {
+      isAdmin: false,
       modalComponent: null,
       screen: 'UserTable',
       selectAll: false,
@@ -361,6 +366,12 @@ export default {
       this.modalComponent = null
       this.uploadedOffers.push({ file: file, formData: file.formData, service: this.uploadingToService })
       this.requiredFieldsCheck()
+      
+      // if admin, and if there is an offer id, upload the file to the offer immediately
+
+      if (this.isAdmin && this.id) {
+        this.$switchit.uploadOffer(this.id, file.formData)
+      }
     },
     requiredFieldsCheck() {
       // loop through each service, console.log it
@@ -609,6 +620,8 @@ export default {
   },
   async mounted() {
 
+    // check query params for isAdmin=true
+    this.isAdmin = this.$route.query.isAdmin;
     const { path, params } = this.$route;
     const type = path.includes('campaign') ? 'campaign' : path.includes('offer') ? 'offer' : null;
     this.mode = params.id ? 'Edit' : 'Create';

@@ -6,18 +6,16 @@
   <div class="main" v-if="loaded">
     <div class="container">
       <section v-if="offerType === 'offer'">
-        <h1 v-if="mode === 'Create'" >Create offer for {{ leads.length }} lead{{ leads.length > 1 ? 's' : '' }}</h1>
-        <h1 v-else>Edit offer</h1>
-
+        <h1>{{ mode }} offer for {{ householdIds.length }} lead{{ householdIds.length > 1 ? 's' : '' }}</h1>
         <div class="right form_actions">
           <!-- <span class="link" @click="openFilters">{{ filterCount }} filters applied</span> -->
           {{ filterCount }} filters applied
-          <button @click="cancel">{{mode==='Create' ? 'Cancel' : 'Close'}}</button>
-          <!-- <button v-if="mode === 'Edit'" @click="updateOffer" :disabled="!changed">Update offer</button> -->
-          <button v-if="mode === 'Create'" @click="createOffer" :disabled="!changed">Submit offer</button>
+          <button @click="cancel">Cancel</button>
+          <button v-if="mode === 'Edit'" @click="updateOffer" :disabled="!changed">Update offer</button>
+          <button v-else @click="createOffer" :disabled="!changed">Submit offer</button>
         </div>
         <div v-if="uploadedOffers.length || offer_obj.uploads?.length" class="highlight mb5">
-          The document{{ uploadedOffers.length > 1 ? 's' : '' }} you uploaded will be visible to the selected lead{{ leads.length > 1 ? 's' : '' }}.
+          The document{{ uploadedOffers.length > 1 ? 's' : '' }} you uploaded will be visible to the selected lead{{ householdIds.length > 1 ? 's' : '' }}.
           <div class="file_list" v-for="offer in uploadedOffers" :key="offer.service">
             <span class="material-symbols-outlined icon">description</span>
             <span>{{ offer.file.name }}</span>
@@ -31,11 +29,11 @@
             <span class="material-symbols-outlined icon_delete button" @click="$toast_warn.show('Updating offers is not supported yet')">close</span>
           </div>
         </div>
-        <div v-if="leads.length <= 1  && mode === 'Create'" class="pageheader__boxes stats">
+        <div v-if='lead?.value' class="pageheader__boxes stats">
           <!-- <div v-for="i in 3" :key='i'><span :class='i'></span></div> -->
           <div class="card stats-rating">
             <div class="card-top">
-              <div v-if="leads.length === 1" class="stats-title">
+              <div v-if='householdIds.length === 1' class="stats-title">
                 <div>Lead ID: {{ lead.userId }}</div>
                 <div>Location: {{ lead.householdPartialAddress }}</div>
                 <div>Postal Code: {{ lead.postalCode }}</div>
@@ -48,7 +46,7 @@
                 </div>
               </div>
               <div v-else class="stats-title">
-                Users selected: {{ leads.length }}
+                Users selected: {{ householdIds.length }}
               </div>
             </div>
             <div class="card-bottom">
@@ -62,7 +60,7 @@
               </div>
             </div>
             <div class="stats-deal-size-number">
-              {{ lead?.value ? lead.value + '€' : 'NA' }}
+              {{ lead?.value }}€
             </div>
             <div class="stats-title">
               <div>
@@ -70,7 +68,7 @@
               </div>
             </div>
             <div class="stats-deal-size-number">
-              {{ lead?.value ? lead?.value * 12 + '€' : 'NA' }}
+              {{ lead?.value * 12 }}€
             </div>
           </div>
         </div>
@@ -110,11 +108,12 @@
 
       </section>
 
+
       <section class="mt5" v-for="(value, service) in serviceAccess" :key="service">
 
         <h1>{{ $t(service) }}</h1>
         <div class="right form_actions">
-          <button v-if="mode==='Create'" @click="openUploadModal('ImportOffer', service)">Upload offer</button>
+          <button @click="openUploadModal('ImportOffer', service)">Upload offer</button>
         </div>
         <div class="cards lg switchit-form">
 
@@ -143,28 +142,24 @@
               <!-- right column -->
               <div class="offer-group-input_group fixed">
                 <div v-if="field.prefix" class="symbol">{{ field.prefix }}</div>
-
                 <select v-if="field.type === 'dropdown'" v-model="offer_obj.offer[service][key]" class="select">
                   <option v-for="(option, key) in field.options" :key="key">{{ option.label }}</option>
                 </select>
-
                 <label v-else-if="field.type === 'Boolean'" class="checkbox-label">
                   <input class="checkbox" type="checkbox" v-model="offer_obj.offer[service][key]" :id="key" />Included
                   <span class="checkmark transparent"></span>
                 </label>
 
-                <input v-else :type="field.type === 'Number' ? 'number' : 'text'" :ref="service + '_' + key" :placeholder="field.placeholder" v-model="offer_obj.offer[service][key]" class="input" />
-
+                <input v-else :ref="service + '_' + key" :placeholder="field.placeholder" v-model="offer_obj.offer[service][key]" class="input"  />
                 <div class="symbol">{{ field.suffix }}</div>
               </div>
-
 
             </div>
           </div>
         </div>
       </section>
     </div>
-  </div>z
+  </div>
 </template>
 <script>
 
@@ -219,7 +214,7 @@ export default {
             total_due: { value: null, type: 'Number', suffix: '€' },
             device_payment: { value: null, type: 'Number', suffix: '€' },
             accessory_payment: { value: null, type: 'Number', suffix: '€' },
-            commitment_period: { value: null, type: 'Number', placeholder: '', suffix: 'mos', required: false },
+            commitment_period: { value: null, type: 'String', placeholder: 'ie - 1 year', suffix: '', required: false },
           },
           Mortgage: {
             rate: { value: null, type: 'Number', suffix: '%' },
@@ -233,12 +228,12 @@ export default {
             one_time_cost: { value: null, type: 'Number', suffix: '€' },
             monthly_cost: { value: null, type: 'Number', suffix: '€' },
             downpayment: { value: null, type: 'Number', suffix: '€' },
-            commitment_period: { value: null, type: 'Number', placeholder: '', suffix: 'mos', required: false },
+            commitment_period: { value: null, type: 'String', placeholder: 'ie - 1 year', suffix: '', required: false },
 
           },
           Electricity: {
             kwh_rate: { value: null, type: 'Number', suffix: '€' },
-            commitment_period: { value: null, type: 'Number', placeholder: '', suffix: 'mos', required: false },
+            commitment_period: { value: null, type: 'String', placeholder: 'ie - 1 year', suffix: '', required: false },
 
           },
           CarInsurance: {
@@ -250,7 +245,7 @@ export default {
             glass_damage: { value: null, type: 'Boolean' },
             theft_protection: { value: null, type: 'Boolean' },
             roadside_assistance: { value: null, type: 'Boolean' },
-            commitment_period: { value: null, type: 'Number', placeholder: '', suffix: 'mos', required: false },
+            commitment_period: { value: null, type: 'String', placeholder: 'ie - 1 year', suffix: '', required: false },
 
           },
           HomeInsurance: {
@@ -261,23 +256,23 @@ export default {
             fire_protection: { value: null, type: 'Boolean' },
             water_damage_protection: { value: null, type: 'Boolean' },
             storm_damage_protection: { value: null, type: 'Boolean' },
-            commitment_period: { value: null, type: 'Number', placeholder: '', suffix: 'mos', required: false },
+            commitment_period: { value: null, type: 'String', placeholder: 'ie - 1 year', suffix: '', required: false },
 
           },
           Broadband: {
             total_due: { value: null, type: 'Number', suffix: 'Mbps' },
             plan_data_speed: { value: null, type: 'Number', suffix: 'Mbps' },
             plan_data_gb: { value: null, type: 'Number', suffix: 'GB' },
-            commitment_period: { value: null, type: 'Number', placeholder: '', suffix: 'mos', required: false },
+            commitment_period: { value: null, type: 'String', placeholder: 'ie - 1 year', suffix: '', required: false },
 
           },
           MedicalInsurance: {
             total_due: { value: null, type: 'Number', suffix: '€' },
-            commitment_period: { value: null, type: 'Number', placeholder: '', suffix: 'mos', required: false },
+            commitment_period: { value: null, type: 'String', placeholder: 'ie - 1 year', suffix: '', required: false },
 
           },
           Pension: {
-            commitment_period: { value: null, type: 'Number', placeholder: '', suffix: 'mos', required: false },
+            commitment_period: { value: null, type: 'String', placeholder: 'ie - 1 year', suffix: '', required: false },
           },
         }
       },
@@ -369,11 +364,11 @@ export default {
       for (let service in this.offer_obj.offer) {
         inputRef = this.$refs[service + '_commitment_period'];
 
-        if (inputRef) {
+        if(inputRef) {
           inputRef.required = false
         }
         // inputRef.value = 'test'; // Set the required property to true
-
+        
       }
 
       // loop through uploadedOffers, for each service, console log it
@@ -424,14 +419,14 @@ export default {
       // validate that there is a commitment_period for each service that has an upload
 
       if (this.uploadedOffers.length) {
-        for (let offer of this.uploadedOffers) {
-          // check if there is a commitment_period for the service
-          if (!this.offer_obj.offer[offer.service].commitment_period) {
-            this.$toast_error.show({ message: 'Please enter a commitment period for ' + this.$t(offer.service) })
-            return
+          for (let offer of this.uploadedOffers) {
+            // check if there is a commitment_period for the service
+            if (!this.offer_obj.offer[offer.service].commitment_period) {
+              this.$toast_error.show({message: 'Please enter a commitment period for ' + this.$t(offer.service)})
+              return
+            }
           }
         }
-      }
 
       // check for all services in offer_obj.offer that have values. If the service has a value, add it to haveValues array
 
@@ -481,7 +476,7 @@ export default {
         if (this.uploadedOffers.length) {
           for (let offer of this.uploadedOffers) {
             // check if there is a commitment_period for the service
-
+            
             await this.$switchit.uploadOffer(postedOfferId, offer.formData)
           }
         }
@@ -591,23 +586,27 @@ export default {
       });
 
       this.offer_obj.uploads = offer.offerOfferuploadsModels;
+      let leadId = offer.householdId;
+      this.householdIds = [leadId];
 
-      this.householdIds = [offer.householdId];
-
+      // console.log('load offer', offer);
+      // offer.offerOfferServicesModels.forEach(service => {
+      //   const serviceFields = JSON.parse(service.serviceFields);
+      //   Object.assign(this.offer_obj.offer, serviceFields);
+      // });
       offer.offerOfferServicesModels.forEach(service => {
         let serviceTypeString = this.$store.getters.serviceTypeName(service.serviceType);
         console.log('serviceType code', serviceTypeString)
         const serviceFields = JSON.parse(service.serviceFields);
-
-        // if the offer_obj has a key for this serviceType, assign the serviceFields to it (ie - 'Unknown' will be skipped)
-
-        if (this.offer_obj.offer[serviceTypeString]) {
-          Object.assign(this.offer_obj.offer[serviceTypeString], serviceFields);
-        }
+        Object.assign(this.offer_obj.offer[serviceTypeString], serviceFields);
       });
     }
   },
   async mounted() {
+
+
+    console.log('test')
+
 
     const { path, params } = this.$route;
     const type = path.includes('campaign') ? 'campaign' : path.includes('offer') ? 'offer' : null;
@@ -622,24 +621,36 @@ export default {
     this.loaded = true;
 
     if (params.id) {
-      console.log('offer loaded. householdIds:', this.householdIds)
       this.loadOffer(params.id);
-    } else {
-      this.leads = this.$store.getters.selectedLeads;
-      this.householdIds = this.leads ? this.leads.map(lead => lead.id || lead) : [];
     }
 
+    // let leadId = query?.lead;
+    let leadId
+    console.log('mounted leadId', leadId);
+    // if (!leadId) {
+    // this.householdIds = await this.$loadSessionValue('offer_selectedLeads') || [];
+    this.householdIds = this.$store.getters.selectedLeads;
+    console.log('selectedLeads from vuex', this.householdIds);
+    if (this.householdIds.length === 1) {
+      leadId = this.householdIds[0];
+    }
+    // }
 
-    if (this.leads.length === 1) {
+    if (leadId) {
+      const all_leads = await this.$switchit.getLeads({ take: 999, skip: 0, filterData: '' });
+      console.log('mounted all_leads', all_leads);
+      this.lead = all_leads.find(lead => lead.id === leadId);
+      this.householdIds = [leadId];
 
-      this.lead = this.leads[0];
-      this.lead.documents = (await this.$switchit.getPensionUploads(this.lead.id)).model || [];
+      if (this.lead) {
+        this.lead.documents = (await this.$switchit.getPensionUploads(leadId)).model || [];
 
-      Object.keys(this.lead.relevantServices).forEach(category => {
-        if (!this.lead.relevantServices[category]) {
-          delete this.serviceAccess[category];
-        }
-      });
+        Object.keys(this.lead.relevantServices).forEach(category => {
+          if (!this.lead.relevantServices[category]) {
+            delete this.serviceAccess[category];
+          }
+        });
+      }
     }
 
     this.serviceAccess = this.serviceTypes.reduce((obj, service) => {
@@ -656,12 +667,12 @@ export default {
       }
     });
 
-    if (!this.leads?.length && this.mode === 'Create') {
+    if (!this.householdIds?.length) {
       this.$toast_error.show({ message: 'No leads selected' });
       return;
     }
 
-    if (!this.leads?.length && this.offer_obj.users?.length) {
+    if (!this.householdIds?.length && this.offer_obj.users?.length) {
       this.householdIds = this.offer_obj.users.map(user => user.leadId);
     }
 

@@ -103,12 +103,12 @@
       <div class="table">
         <div class="table-header">
           <!-- ***CHECKMARKS TEMPORARILY DISABLED -->
-          <!-- <div class="table-header-check">
+          <div class="table-header-check">
             <label class="checkbox-label">
               <input class="checkbox" type="checkbox" v-model="selectVisible" @change="toggleSelectVisible" name="select_all" />
               <span class="checkmark transparent"></span>
             </label>
-          </div> -->
+          </div>
           <div class="table-header-content">
             <div class="table-header-content-sm">Match</div>
             <div class="table-header-content-med">User ID</div>
@@ -121,13 +121,13 @@
         <div class="table-rows">
           <div v-for="(lead, index) in leads" :key="index" class="table-row">
              <!-- ***CHECKMARKS TEMPORARILY DISABLED -->
-  <!--           <div class="table-row-check">
+            <div class="table-row-check">
               <label class=" checkbox-label nolabel">
                 <input v-show="false" class="checkbox" v-model="lead.selected" @change="updateSelectedLeads(lead)" type="checkbox" name="select_all" />
                 <span class="checkmark"></span>
               </label>
-            </div> -->
-            <div @click="openLead(lead.id)" class="table-row-content">
+            </div>
+            <div @click="openLead(lead)" class="table-row-content">
               <div class="table-row-content-sm">
                 <div class="donut">
                   <Doughnut class='chart' id="my-chart-id" :options="chartOptions" :data="chartData" />
@@ -326,13 +326,8 @@ export default {
 
       // store.dispatch('setFilters', filterObj);
       store.dispatch('filtersChanged');
-  
-      // load leads
       
     }
-
-
-
 
     // ***** Leads *****
 
@@ -346,13 +341,13 @@ export default {
         await loadLeads();
       }
     });
-
   
     // get active business partner from store
     const businessPartner = store.getters.activeBusinessPartner
     console.log('businessPartner', businessPartner)
     
     function openLead(lead) {
+      console.log('stored lead', lead)
       store.dispatch("setSelectedLeads", [lead]);
       $storeSessionValue('offer_selectedLeads', [lead], 60);
       router.push({ path: `/offer`, query: { lead: lead.id } });

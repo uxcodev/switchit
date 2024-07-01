@@ -15,14 +15,20 @@
       <div v-else class="empty">
         <div class="logo-wrapper">
           <SwitchitIcon class="logo" :width="40" :height="40" color="#03D0BF" />
-          <span class="title">SwitchIt LeadManager</span>
+          <span class="title">SwitchIt LeadManager AI</span>
         </div>
         <span class="copilot-description">Your Copilot for managing leads</span>
       </div>
     </div>
 
     <div class="chat-input-container">
-      <input v-model.trim="message" @keydown.enter="sendMessage" placeholder="Ask me anything"/>
+      <textarea
+        v-model.trim="message"
+        class="chat-input"
+        rows="3"
+        @keydown.enter="handleKeyDown"
+        placeholder="Ask me anything related to SwitchIt leads"
+      />
       <span class="material-symbols-outlined" @click="sendMessage">send</span>
     </div>
   </div>
@@ -45,6 +51,13 @@ const scrollToBottom = () => {
     chatContainer.value.scrollTop = chatContainer.value.scrollHeight - chatContainer.value.clientHeight;
   }
 };
+
+
+const handleKeyDown = (event) => {
+  if (event.key === 'Enter' && event.ctrlKey) {
+    sendMessage();
+  }
+}
 
 const sendMessage = async () => {
   if (message.value) {
@@ -169,15 +182,17 @@ onMounted(() => {
     min-height: 40px
     border-radius: 8px
     border: 1px solid #1059a7
+    padding: 8px 0
 
-    input
+    .chat-input
       height: 100%
       border-top-left-radius: 8px
       border-bottom-left-radius: 8px
-      padding: 4px 4px 4px 8px
+      padding: 4px 8px
       border: none
       outline: none
       flex-grow: 1
+      resize: none
 
     .material-symbols-outlined
       color: #1059a7

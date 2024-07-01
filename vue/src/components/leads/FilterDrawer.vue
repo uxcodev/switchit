@@ -11,7 +11,7 @@
       />
 
       <FilterPanel v-if="activeTab === 'filter'" />
-      <ChatPanel v-if="activeTab === 'chat'" />
+      <ChatPanel v-if="activeTab === 'chat'" :key="isOpen" />
     </div>
   </div>
 </template>

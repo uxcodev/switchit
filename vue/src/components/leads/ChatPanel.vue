@@ -35,13 +35,28 @@
 </template>
 
 <script setup>
-import { getCurrentInstance, nextTick, onMounted, ref, watch } from "vue";
+import {getCurrentInstance, nextTick, onMounted, ref, watch, defineProps, computed} from "vue";
 import SwitchitIcon from "@/components/assets/SwitchitIcon.vue";
+
+const props = defineProps({
+  type: {
+    type: String,
+    default: 'filter'
+  }
+});
 
 const isResponding = ref(false);
 const message = ref('');
 const messageHistory = ref(JSON.parse(localStorage.getItem('chat_messages') || '[]'));
 const chatContainer = ref(null);
+
+const storageKey = computed(() => {
+  if (props.type === 'dashboard-insight') return 'dashboard-insight-messages';
+
+  if (props.type === 'offer-insight') return 'offer-insight-messages';
+
+  return 'filter-chat-messages';
+})
 
 const instance = getCurrentInstance();
 const api = instance.appContext.config.globalProperties.$api_node
@@ -70,7 +85,7 @@ const sendMessage = async () => {
       isResponding.value = false;
       messageHistory.value.push(response);
       nextTick(scrollToBottom);
-      localStorage.setItem('chat_messages', JSON.stringify(messageHistory.value));
+      localStorage.setItem(storageKey.value, JSON.stringify(messageHistory.value));
 
     } catch (e) {
       isResponding.value = false;
@@ -85,7 +100,7 @@ watch(messageHistory, async () => {
 })
 
 onMounted(() => {
-  messageHistory.value = JSON.parse(localStorage.getItem('chat_messages') || '[]');
+  messageHistory.value = JSON.parse(localStorage.getItem(storageKey.value) || '[]');
   nextTick(scrollToBottom);
 })
 </script>
@@ -152,6 +167,9 @@ onMounted(() => {
           border-radius: 1.125rem 1.125rem 0 1.125rem
           background-color: #2C3E50
           color: #fff
+
+        &.assistant
+          color: $darker
 
     .empty
       display: flex

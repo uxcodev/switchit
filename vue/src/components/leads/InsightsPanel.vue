@@ -8,7 +8,7 @@
         <h1>{{ $t('insights') }}</h1>
       </div>
 
-      <ChatPanel />
+      <ChatPanel :type="type" :key="isOpen" />
     </div>
 
   </div>
@@ -31,6 +31,9 @@ export default {
     insightsInPage() {
       return this.$store.getters.insightsInPage;
     },
+    type() {
+      return this.insightsInPage === 'dashboard' ? 'dashboard-insight' : 'offer-insight';
+    }
   },
   methods: {
     closeModal() {

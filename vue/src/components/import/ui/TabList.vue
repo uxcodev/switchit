@@ -51,7 +51,6 @@ const changeTab = (value) => {
     position: relative
     cursor: pointer
 
-
     .tab-label
       white-space: nowrap
       font-size: 16px
@@ -61,9 +60,6 @@ const changeTab = (value) => {
 
       &.active
         font-weight: bold
-
-      .material-symbols-outlined
-
 
     .indicator
       height: 2px

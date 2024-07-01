@@ -1,111 +1,97 @@
 <template>
-  <div :class="['sidebar', isOpen ? '' : 'sidebar-hidden']">
-    <div @click="closeModal" class="close material-symbols-outlined">
-      close
-    </div>
-    <div class="sidebar-content">
-      <div v-if="Object.keys(filterObj).length || filtersets.length">
-        <div class="inline_center button mb3" @click="toggleFilterOptions">
-          <span class="material-symbols-outlined">page_info</span> Filter presets
-        </div>
+  <div class="filter-panel">
+    <div v-if="Object.keys(filterObj).length || filtersets.length">
+      <div class="inline_center button mb3" @click="toggleFilterOptions">
+        <span class="material-symbols-outlined">page_info</span> Filter presets
+      </div>
 
-        <div v-if="showFiltersetOptions" class="pl7">
-          <form @submit.prevent="createFilterset" class="switchit-form sm">
-            <div v-if="Object.keys(filterObj).length" class="group">
-              <label for="filtersetName">Save this set of filters</label>
-              <div class="inline_center input_button">
-                <input v-model="filtersetName" placeholder="Name" type="text" id="filtersetName" class="input lg mr3" />
-                <button>
-                  <span class="material-symbols-outlined">Done</span>
-                </button>
-              </div>
+      <div v-if="showFiltersetOptions" class="pl7">
+        <form @submit.prevent="createFilterset" class="switchit-form sm">
+          <div v-if="Object.keys(filterObj).length" class="group">
+            <label for="filtersetName">Save this set of filters</label>
+            <div class="inline_center input_button">
+              <input v-model="filtersetName" placeholder="Name" type="text" id="filtersetName" class="input lg mr3" />
+              <button>
+                <span class="material-symbols-outlined">Done</span>
+              </button>
             </div>
+          </div>
 
-          </form>
+        </form>
 
-          <div v-if="filtersets?.length" class="mt3">
-            <div v-if="isAdmin" class="inline_center mb4">
-              <span>Show filters from: </span>
-              <span class="link" @click="showFiltersFrom('all')">
+        <div v-if="filtersets?.length" class="mt3">
+          <div v-if="isAdmin" class="inline_center mb4">
+            <span>Show filters from: </span>
+            <span class="link" @click="showFiltersFrom('all')">
                 All
               </span>
-              <span class="link" @click="showFiltersFrom('company')">
+            <span class="link" @click="showFiltersFrom('company')">
                 Company
               </span>
-              <span class="link" @click="showFiltersFrom('me')">
+            <span class="link" @click="showFiltersFrom('me')">
                 Me
               </span>
-            </div>
+          </div>
 
-            <div v-for="(filterset, index) in filtersets" :key="index" class="filterset">
-              <div class="filterset-list_item">
-                <div class="filterset-name" @click="loadFilters(filterset.filters)">{{ filterset.filtersetName || 'untitled' }}</div>
-                <!-- material symbol trash icon -->
-                <div class="material-symbols-outlined" @click="deleteCampain(filterset._id)">delete</div>
-              </div>
+          <div v-for="(filterset, index) in filtersets" :key="index" class="filterset">
+            <div class="filterset-list_item">
+              <div class="filterset-name" @click="loadFilters(filterset.filters)">{{ filterset.filtersetName || 'untitled' }}</div>
+              <!-- material symbol trash icon -->
+              <div class="material-symbols-outlined" @click="deleteCampain(filterset._id)">delete</div>
             </div>
           </div>
         </div>
       </div>
-
-
-      <section>
-        <div>
-          <h1>{{ $t('filter_opportunities') }}</h1>
-          <p>{{ $t('only_checked_categories') }}</p>
-        </div>
-        <div class="checkboxes">
-          <div v-for="(categoryData, category) in this.services" :key="category" class="checkbox">
-            <label class="checkbox-label">
-              <input :name="category" v-model="selectedCategories" type="checkbox" @change="onCheckboxChange" :value="category" />
-              <span class="checkmark"></span>
-              <span class="checkbox-text">
+    </div>
+    <section>
+      <div>
+        <h1>{{ $t('filter_opportunities') }}</h1>
+        <p>{{ $t('only_checked_categories') }}</p>
+      </div>
+      <div class="checkboxes">
+        <div v-for="(categoryData, category) in this.services" :key="category" class="checkbox">
+          <label class="checkbox-label">
+            <input :name="category" v-model="selectedCategories" type="checkbox" @change="onCheckboxChange" :value="category" />
+            <span class="checkmark"></span>
+            <span class="checkbox-text">
                 <span class="checkbox-icon material-symbols-outlined">{{ categoryData.icon }}
                 </span>
                 {{ $t(category) }}
               </span>
-            </label>
-            <div :class="filterObj[category] ? 'checkbox-link' : 'hidden'" @click="clearFilter(category)">Clear filter</div>
-          </div>
+          </label>
+          <div :class="filterObj[category] ? 'checkbox-link' : 'hidden'" @click="clearFilter(category)">Clear filter</div>
         </div>
-      </section>
-      <button class="mt2" v-if="Object.keys(filterObj).length" @click="createCampaign">Create campaign from these filters</button>
-      <section v-if="Object.keys(visibleFilters).length > 0 || selectedCategories.length > 0">
-        <div v-for="(categoryData, category) in visibleFilters" :key="category">
-          <h1 class="">{{ $t(category) }}</h1>
+      </div>
+    </section>
+    <button class="mt2" v-if="Object.keys(filterObj).length" @click="createCampaign">Create campaign from these filters</button>
+    <section v-if="Object.keys(visibleFilters).length > 0 || selectedCategories.length > 0">
+      <div v-for="(categoryData, category) in visibleFilters" :key="category">
+        <h1 class="">{{ $t(category) }}</h1>
 
-          <!-- Filters -->
+        <!-- Filters -->
 
-          <div v-if="selectedCategories.includes(category)">
+        <div v-if="selectedCategories.includes(category)">
 
-            <div class="filters" v-for="(fields, dataType, index) in categoryData" :key="index + componentKey">
-              <div>
-                <h2 class="mt5 mb1">{{ $t(dataType) }}</h2>
-                <p>{{ $t(`select_options_below_${dataType}`) }}</p>
-              </div>
-              <div class="filter" v-for="(filter, key) in fields" :key="key + componentKey" :class="dataType === 'preference_data' ? 'slider' : ''">
-                <filter-component v-if="resetCategory !== category" :currentValue="getFilterValue(category, dataType, key)" :filter-data="filter" :dataType="dataType" :filter-key="key" :category="category" @filter-changed="applyFilter" />
-              </div>
+          <div class="filters" v-for="(fields, dataType, index) in categoryData" :key="index + componentKey">
+            <div>
+              <h2 class="mt5 mb1">{{ $t(dataType) }}</h2>
+              <p>{{ $t(`select_options_below_${dataType}`) }}</p>
+            </div>
+            <div class="filter" v-for="(filter, key) in fields" :key="key + componentKey" :class="dataType === 'preference_data' ? 'slider' : ''">
+              <filter-component v-if="resetCategory !== category" :currentValue="getFilterValue(category, dataType, key)" :filter-data="filter" :dataType="dataType" :filter-key="key" :category="category" @filter-changed="applyFilter" />
             </div>
           </div>
-
         </div>
-      </section>
 
-
-    </div>
-
+      </div>
+    </section>
   </div>
 </template>
 <script>
-// import Slider from '@vueform/slider'
 import api from '@/api/api'
-// import { mapState } from 'vuex'
-
 export default {
   name: "TheSidebar",
   components: {
-    // Slider,
   },
   data() {
     return {
@@ -121,9 +107,16 @@ export default {
       filtersets: [],
       componentKey: 0,
       showFiltersetOptions: false,
+      activeTab: 'chat'
     }
   },
   computed: {
+    tabs() {
+      return [
+        { label: 'Chat', value: 'chat' },
+        { label: 'Filter', value: 'filter' },
+      ]
+    },
     serviceTypes() {
         return this.$store.getters.serviceTypes
     },
@@ -147,7 +140,7 @@ export default {
       // loop through serviceTypes array. serviceTypes is an arra of objects with keys for each category, and a boolean value for 'access'
       // if the value is true, add the category to filteredServices
       filteredServices.General = services.General
-      
+
       for (let service of serviceTypes) {
 
         if (service.access) {
@@ -159,7 +152,7 @@ export default {
         }
       }
 
-      /* 
+      /*
       for (const [key, value] of Object.entries(services)) {
         // if (this.categoryAccess[key]?.status === true) {  // use this line instead of the next to make tab filters affect available filters in the filters panel
         // NOTE: 'general' is added on mount, so it will always be available
@@ -172,7 +165,7 @@ export default {
           // filteredServices[key] = value;
           console.log('key: ', key)
         }
-      } 
+      }
       */
 
       // // reduce serviceTypes to only those where 'access' is true
@@ -360,7 +353,7 @@ export default {
 
       // chage selected categories to match the filterObj
       this.selectedCategories = Object.keys(this.filterObj);
-      
+
       // make sure general is selected
       if (!this.selectedCategories.includes('General')) {
         this.selectedCategories.push('General')
@@ -370,11 +363,15 @@ export default {
       // }
 
     },
+    changeTab(value) {
+      console.log('*****', value);
+      this.activeTab = value;
+    }
   },
   mounted() {
     this.categoryAccess.General = { selected: true, status: true }
     this.getFiltersets()
-    
+
     // get filters from store
     this.filterObj = this.filters
     this.selectedCategories = Object.keys(this.filterObj);

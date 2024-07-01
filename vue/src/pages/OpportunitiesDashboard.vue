@@ -23,7 +23,7 @@
                 Your rating
               </div>
               <div class="rating">
-                <span class=''>N/A</span> 
+                <span class=''>N/A</span>
                 <div class="stars">
                   <span class="icon-filled material-symbols-rounded">star</span>
                   <span class="icon-filled material-symbols-rounded">star</span>
@@ -41,7 +41,7 @@
             <div class="stats-title">
               Deals won
             </div>
-            
+
             <ChartDealsWon_temp />
           </div>
           <div class="card stats-deal-size">
@@ -51,7 +51,7 @@
               </div>
             </div>
             <div class="stats-deal-size-number">
-              <span class=''>0</span> 
+              <span class=''>0</span>
             </div>
           </div>
         </div>
@@ -100,7 +100,10 @@
             <a href="#" class="ml5 link" @click="clearSelection">Clear selection</a>
           </div>
           <!-- <a href="#" class="link" @click="selectAll">Select all {{ leadCount }} users</a> -->
-          <button @click="openFilters"><span class="material-symbols-outlined">tune</span>Filter</button>
+          <button @click="openFilters">
+            <span class="material-symbols-outlined">tune</span>
+            Chat / Filter
+          </button>
         </div>
       </div>
       <div class="table">
@@ -178,7 +181,6 @@
     </h2>
     <button @click="openLeads">Send offer</button>
   </div>
-  <ChatBox />
 </template>
 <script>
 import ModalWindow from "@/components/ui/ModalWindow.vue";
@@ -336,7 +338,7 @@ export default {
 
       // store.dispatch('setFilters', filterObj);
       store.dispatch('filtersChanged');
-      
+
     }
 
     // ***** Leads *****
@@ -351,11 +353,11 @@ export default {
         await loadLeads();
       }
     });
-  
+
     // get active business partner from store
     const businessPartner = store.getters.activeBusinessPartner
     console.log('businessPartner', businessPartner)
-    
+
     function openLead(lead) {
       console.log('stored lead', lead)
       store.dispatch("setSelectedLeads", [lead]);
@@ -420,7 +422,7 @@ export default {
 
 
 
-    // ***** Pagination ***** 
+    // ***** Pagination *****
 
     function pg_back() {
       let p = pg.currentPage;
@@ -529,7 +531,7 @@ export default {
 @import "/src/styles/mixins.sass"
 // @import "@vueform/multiselect/themes/default.css"
 
-.link 
+.link
     color: #0088ff !important
     background: transparent !important
 .pagination
@@ -561,7 +563,7 @@ export default {
 
 .donut
   width: 40px
-  height: 40px  
+  height: 40px
   display: flex
   justify-content: center
   align-items: center
@@ -569,8 +571,8 @@ export default {
   color: #999
   .chart
     width: 40px
-    height: 40px  
-    position: absolute 
+    height: 40px
+    position: absolute
 h1
   color: #666
 .main
@@ -636,7 +638,7 @@ section
 
       &-bottom
         color: #aaa
-      
+
 
       .rating
         display: flex
@@ -654,16 +656,16 @@ section
     &-title
       font-size: 1.2em
       color:#aaa
-    
+
     &-deals-won,
     &-deal-size
       padding: 0
       justify-content: flex-start !important
       gap: 16px
       &-number
-        font-size: 1.8em 
-        color: #666       
-        
+        font-size: 1.8em
+        color: #666
+
   .cards.lg
     display: flex
     flex-direction: row
@@ -674,12 +676,12 @@ section
     flex-direction: column
     flex:1
     gap: 16px
-    min-height: 200px   
+    min-height: 200px
     border-radius: 10px
     padding: 20px
     padding: 20px
     color: white
-    
+
     &.green
       background-color: #00C6C6
     &.blue
@@ -718,7 +720,7 @@ section
     background-color: #eee
     width: 100px
     height: 30px
-    border-radius: 20px    
+    border-radius: 20px
 .checkbox-group
   flex-direction: row
   flex-wrap: wrap
@@ -761,7 +763,7 @@ pre
   &-rows
     background-color: white
     border-radius:10px
-  &-row 
+  &-row
     display: flex
     justify-content: space-between
     align-items: center
@@ -780,7 +782,7 @@ pre
     color: rgba(255,255,255,0.7)
 
   &-header,
-  &-row  
+  &-row
     &-check
       width: 20px
       display: flex
@@ -789,7 +791,7 @@ pre
       display: flex
       justify-content: space-between
       align-items: center
-      padding: 0 10px 0 50px 
+      padding: 0 10px 0 50px
       &-xs
         width: 20px
       &-sm
@@ -810,8 +812,8 @@ pre
       opacity: .1
       color: #00C6C6
     span.active
-      opacity: 1  
-  // .stars 
+      opacity: 1
+  // .stars
 //   font-variation-settings: {
 //   'FILL' 1,
 //   'wght' 400,
@@ -855,7 +857,7 @@ pre
         opacity: .1
         color: #00C6C6
       span.active
-        opacity: 1  
+        opacity: 1
 </style>
 
 <style lang="scss">

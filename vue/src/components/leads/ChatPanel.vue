@@ -165,12 +165,10 @@ const sendMessage = async () => {
 
 watch(messageHistory, async () => {
   await nextTick();
-  scrollToBottom();
 })
 
 onMounted(() => {
   messageHistory.value = JSON.parse(localStorage.getItem(storageKey.value) || '[]');
-  nextTick(scrollToBottom);
 })
 </script>
 

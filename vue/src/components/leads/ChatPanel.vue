@@ -2,7 +2,7 @@
   <div class="chat-panel">
     <div class="chat-panel-content">
       <div class="chat-box-content-history" ref="chatContainer">
-        <div class="chat-message assistant">
+        <div v-if="type === 'dashboard-insight' || type === 'offer-insight'" class="chat-message assistant">
           <div v-if="type === 'dashboard-insight'">
             <h3>Insights About Current Household Services:</h3>
             <ul>
@@ -79,15 +79,15 @@
           <div class="typing typing-2" />
           <div class="typing typing-3" />
         </div>
-      </div>
 
-<!--      <div v-else class="empty">-->
-<!--        <div class="logo-wrapper">-->
-<!--          <SwitchitIcon class="logo" :width="40" :height="40" color="#03D0BF" />-->
-<!--          <span class="title">SwitchIt LeadManager AI</span>-->
-<!--        </div>-->
-<!--        <span class="copilot-description">Your Copilot for managing leads</span>-->
-<!--      </div>-->
+        <div v-if="type === 'filter' && !isResponding && messageHistory.length === 0" class="empty">
+          <div class="logo-wrapper">
+            <SwitchitIcon class="logo" :width="40" :height="40" color="#03D0BF" />
+            <span class="title">SwitchIt LeadManager AI</span>
+          </div>
+          <span class="copilot-description">Your Copilot for managing leads</span>
+        </div>
+      </div>
     </div>
 
     <div class="chat-input-container">
@@ -104,8 +104,8 @@
 </template>
 
 <script setup>
-import {getCurrentInstance, nextTick, onMounted, ref, watch, defineProps, computed} from "vue";
-// import SwitchitIcon from "@/components/assets/SwitchitIcon.vue";
+import { getCurrentInstance, nextTick, onMounted, ref, watch, defineProps, computed } from "vue";
+import SwitchitIcon from "@/components/assets/SwitchitIcon.vue";
 
 const props = defineProps({
   type: {

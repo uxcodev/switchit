@@ -138,6 +138,10 @@ export default {
 
   async createBusinessPartner(body) {
     try {
+      if (!body.serviceTypes.includes(1)) {
+        body.serviceTypes.push(1)
+        body.serviceTyps.sort((a, b) => a - b)
+      }
       let url = "/api/v1/businesspartners";
       const response = await _axios.post(url, body);
       return response;
@@ -153,6 +157,10 @@ export default {
 
   async editBusinessPartner(id, body) {
     try {
+      if (!body.serviceTypes.includes(1)) {
+        body.serviceTypes.push(1)
+        body.serviceTyps.sort((a, b) => a - b)
+      }
       let url = `/api/v1/businesspartners/${id}`;
       const response = await _axios.put(url, body);
       if (response.status > 199 && response.status < 300) {

@@ -189,10 +189,9 @@ export default {
     async submitForm() {
       try {
         let body = this.form.businessPartner
-        if (!body.serviceTypes.includes(1)) {
-          body.serviceTypes.push(1)
-        }
-        console.log('body', body)
+        // if (!body.serviceTypes.includes(1)) {
+        //   body.serviceTypes.push(1)
+        // }
         let response = null || await this.$switchit.createBusinessPartner(body)
         if (response.statusText === 'Created') {
           let id = response.headers.location.split('/').pop()

@@ -19,6 +19,7 @@
           <button @click="cancel">{{mode==='Create' ? 'Cancel' : 'Close'}}</button>
           <!-- <button v-if="mode === 'Edit'" @click="updateOffer" :disabled="!changed">Update offer</button> -->
           <button v-if="mode === 'Create'" @click="createOffer" :disabled="!changed">Submit offer</button>
+          <button @click="openInsights">Insights</button>
         </div>
         <div v-if="uploadedOffers.length || offer_obj.uploads?.length" class="highlight mb5">
           The document{{ uploadedOffers.length > 1 ? 's' : '' }} you uploaded will be visible to the selected lead{{ leads.length > 1 ? 's' : '' }}.
@@ -356,6 +357,10 @@ export default {
       this.$router.go(-1)
       this.$router.push({ path: '/offers' })
 
+    },
+
+    openInsights() {
+      this.$store.dispatch("openInsightsMenu", {page: 'offer'});
     },
 
     openUploadModal(component, service) {

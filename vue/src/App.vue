@@ -1,6 +1,7 @@
 <template>
   <MainNav />
-  <FilterPanel v-if="!loading && activeBusinessPartner && serviceTypes" />
+  <FilterDrawer v-if="!loading && activeBusinessPartner && serviceTypes" />
+  <InsightsPanel v-if="!loading" />
   <div class="mt-10" id="app">
     <LoaderAniOverlay v-if="loading" />
     <router-view v-if="!loading"></router-view>
@@ -10,14 +11,16 @@
 <script>
 import { loading } from '@/store/index.js';
 import MainNav from "@/components/layout/MainNav.vue";
-import FilterPanel from "@/components/leads/FilterPanel.vue";
+import FilterDrawer from "@/components/leads/FilterDrawer.vue";
 import jwtDecode from "jwt-decode";
 import LoaderAniOverlay from "@/components/ui/LoaderAniOverlay.vue";
+import InsightsPanel from "@/components/leads/InsightsPanel.vue";
 
 export default {
   components: {
+    InsightsPanel,
     MainNav,
-    FilterPanel,
+    FilterDrawer,
     LoaderAniOverlay
   },
   name: "App",
@@ -44,7 +47,7 @@ export default {
       let access_token = await this.$auth0.getAccessTokenSilently()
       localStorage.setItem('access_token', access_token)
       let isAdminEmail = this.auth0User.email.includes('@switchit.ai')
-    
+
       let permissions = (jwtDecode(access_token)).permissions || [];
       if (permissions.includes('superadmin') || isAdminEmail) {
         this.$store.dispatch('isAdmin', true)
@@ -55,9 +58,9 @@ export default {
 
       let email = this.auth0User.email
       let activeUser = await this.$api_node.getActiveUser(email)
-      
+
       // if there is no activeUser, create one
-      
+
       if (!activeUser) {
         let fields = {
           email: this.auth0User.email,
@@ -79,7 +82,7 @@ export default {
       // console.log('watch initUser complete')
     }
   },
-  async mounted() {    
+  async mounted() {
     setTimeout(async () => {
       if (!this.activeUser) {
         console.log('no activeUser found')

@@ -4,7 +4,7 @@
 $transition-sidebar: .2s ease-in-out
 
 // SIDEBAR
-.sidebar 
+.sidebar
   position: fixed
   top: 0
   right: -20px
@@ -16,49 +16,49 @@ $transition-sidebar: .2s ease-in-out
   transition: $transition-sidebar
   box-shadow: rgba(0, 0, 0, 0.1) -10px 0 10px
   z-index: 99
-  padding: 40px 60px 40px 40px
+  padding: 40px 60px 20px 40px
   background-color: $panel-dark
   color: $white
   overflow-y: scroll
 
-  h1, h2 
+  h1, h2
 
     color: inherit
-  
 
-  h1 
+
+  h1
     font-size: 1.8em
-  
 
-  h2 
+
+  h2
     font-size: 1.4em
-  
 
-  p 
+
+  p
     margin: 0
     color: $gray
     line-height: 120%
     margin-top: 6px
-  
 
-  section 
+
+  section
     display: flex
     flex-direction: column
     gap: 20px
     color: inherit
-  
+
   .filters
     display: flex
     flex-direction: column
     gap: 20px
-  .filter 
+  .filter
     display: flex
     flex-direction: column
     // gap: 4px
     input
       height: 30px
       font-family: inherit
-      padding: 4px 8px  
+      padding: 4px 8px
       border: 1px solid rgba(255, 255, 255, 0.8)
       border-radius: 2px
       width: auto
@@ -70,111 +70,112 @@ $transition-sidebar: .2s ease-in-out
       input
         width: 100%
         font-size: inherit
-          
+
       .legend
         font-size: .8em
         opacity: .5
-    label 
+    label
       margin-bottom: 4px
       font-size: 1.1em
-    
+
     .number,
-    .date 
+    .date
       display: flex
       justify-content: space-between
       gap: 10px
-    
-    &.slider 
+
+    &.slider
       margin-bottom: 4px
       gap: 10px
 
       .slider_container
         padding: 6px 0 0 6px
-        .legend 
+        .legend
           margin-top: 4px
           font-size: .8em
           opacity: .5
           display: flex
           justify-content: space-between
-    
-  
 
-  label 
+
+
+  label
     color: inherit
-  
 
-  .close 
+
+  .close
     cursor: pointer
     position: fixed
     top: 20px
     right: 20px
-  
 
-  &-hidden 
+
+  &-hidden
     transform: translateX(300px)
     opacity: 0
     visibility: hidden
-  
 
-  &-content 
+
+  &-content
     display: flex
     flex-direction: column
     flex-basis: auto
     flex-wrap: nowrap
-    padding: 30px
-    gap: 40px
+    padding: 30px 10px 10px
+    gap: 20px
+    height: 100%
 
-    ul 
-      li, a, div 
+    ul
+      li, a, div
         color: inherit
         margin: 8px 0
         list-style: none
         text-decoration: none
         cursor: pointer
-      
 
-      .active 
+
+      .active
         color: $primary
-      
-    
 
-    select 
+
+
+    select
       color: inherit
       font-size: inherit
       font-weight: inherit
       text-transform: uppercase
       padding: 2px 4px
-    
-  
 
-  .checkboxes 
+
+
+  .checkboxes
     display: flex
     flex-direction: column
     gap: 20px
 
-    .checkbox 
+    .checkbox
       display: flex
-      &-text 
+      &-text
         display: flex
         align-items: center
         gap: 10px
-      
+
       &-link
        opacity: .7
-       cursor: pointer 
-       
+       cursor: pointer
 
-      &-icon 
+
+      &-icon
         color: $primary
         font-size: 2em
-      
+
       .hidden
         display: none
-      .checkmark 
+      .checkmark
         color: $primary
         transform: scale(0.75)
-      
-    
+
+
 // .filter-form
 //   display: flex
 //   flex-direction: column
@@ -183,12 +184,12 @@ $transition-sidebar: .2s ease-in-out
 //     margin: 0 0 0.2em 0
 //   .group
 //     // display: flex
-//     // flex-direction: column  
+//     // flex-direction: column
 
 //   input
 //     height: 40px
 //     font-family: inherit
-//     padding: 4px 8px  
+//     padding: 4px 8px
 //     border: 1px solid rgba(255, 255, 255, 0.8)
 //     border-radius: 2px
 

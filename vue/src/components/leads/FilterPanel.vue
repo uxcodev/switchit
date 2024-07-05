@@ -15,10 +15,7 @@
                   <span class="material-symbols-outlined">Done</span>
                 </button>
               </div>
-
             </div>
-          </div>
-
         </form>
 
         <div v-if="filtersets?.length" class="mt3">

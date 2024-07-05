@@ -51,8 +51,7 @@
 
               </div>
               <!-- <IconsCategoryAccess v-if="businessPartner.access" :access="businessPartner.access"/> -->
-              <IconsCategoryAccess v-if="businessPartner.serviceType" :access="getCategories(businessPartner.serviceType)"/>
-              
+
               <div class='status_wrapper' :class="businessPartner.isApproved">
                 <!-- <div :class="['dot', user.status]"></div> -->
                 <select name="status" class="select status" v-model="businessPartner.isApproved" @change="changeStatus(businessPartner)">
@@ -84,12 +83,12 @@
 </template>
 <script>
 
-import IconsCategoryAccess from '@/components/ui/IconsCategoryAccess.vue';
+// import IconsCategoryAccess from '@/components/ui/IconsCategoryAccess.vue';
 import bitwiseDecode from '@/helpers/bitwise'
 
 export default {
   components: {
-    IconsCategoryAccess
+    // IconsCategoryAccess
   },
   provide() {
     return {
@@ -176,6 +175,7 @@ export default {
     },
   },
   async mounted() {
+    // this.businessPartners = await this.$switchit.getBusinessPartners()
     this.businessPartners = await this.$switchit.getBusinessPartners()
 
     this.businessPartners.sort((a, b) => {

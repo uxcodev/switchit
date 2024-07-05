@@ -10,7 +10,7 @@
         </div>
 
         <div v-if="showFiltersetOptions" class="pl7">
-          <form @submit.prevent="createFilterset" class="switchit-form sm">
+          <form @submit.prevent="createFilterset" class="switchit-form med">
             <div v-if="Object.keys(filterObj).length" class="group">
               <label for="filtersetName">Save this set of filters</label>
               <div class="inline_center input_button">

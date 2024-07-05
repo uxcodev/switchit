@@ -80,7 +80,7 @@
           <div class="card lg-content">
             <div class="card lg-content-left">
               <div>Value of open offers:</div>
-              <div class="mt4"><span class="large">0€</span> / mth</div>
+              <div class="mt4"><span class="large">0 kr</span> / mth</div>
             </div>
             <div class="card lg-content-right">
               <span class="material-symbols-outlined">keyboard_arrow_right</span>
@@ -145,7 +145,7 @@
                 <span v-if="lead.documents?.length" class="material-symbols-outlined table_icon">description</span>
               </div>
               <div class="table-row-content-sm">
-                {{ lead.value }} €
+                {{ lead.value }} kr
               </div>
               <div class="table-row-content-sm last">
                 <span class="material-symbols-outlined">chevron_right</span>

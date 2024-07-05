@@ -66,7 +66,7 @@
               </div>
             </div>
             <div class="stats-deal-size-number">
-              {{ lead?.value ? lead.value + '€' : 'NA' }}
+              {{ lead?.value ? lead.value + ' kr' : 'NA' }}
             </div>
             <div class="stats-title">
               <div>
@@ -74,7 +74,7 @@
               </div>
             </div>
             <div class="stats-deal-size-number">
-              {{ lead?.value ? lead?.value * 12 + '€' : 'NA' }}
+              {{ lead?.value ? (lead.value * 12).toFixed(2) + ' kr' : 'NA' }}
             </div>
           </div>
         </div>
@@ -221,9 +221,9 @@ export default {
             data_limit: { value: null, type: 'Number', suffix: 'GB' },
             internet_speed: { value: null, type: 'Number', suffix: 'Mbps' },
             extra_services: { value: null, type: 'String' },
-            total_due: { value: null, type: 'Number', suffix: '€' },
-            device_payment: { value: null, type: 'Number', suffix: '€' },
-            accessory_payment: { value: null, type: 'Number', suffix: '€' },
+            total_due: { value: null, type: 'Number', suffix: 'kr' },
+            device_payment: { value: null, type: 'Number', suffix: 'kr' },
+            accessory_payment: { value: null, type: 'Number', suffix: 'kr' },
             commitment_period: { value: null, type: 'Number', placeholder: '', suffix: 'mos', required: false },
           },
           Mortgage: {
@@ -235,23 +235,23 @@ export default {
                 { label: 'Variable', value: "Variable" }
               ]
             },
-            one_time_cost: { value: null, type: 'Number', suffix: '€' },
-            monthly_cost: { value: null, type: 'Number', suffix: '€' },
-            downpayment: { value: null, type: 'Number', suffix: '€' },
+            one_time_cost: { value: null, type: 'Number', suffix: 'kr' },
+            monthly_cost: { value: null, type: 'Number', suffix: 'kr' },
+            downpayment: { value: null, type: 'Number', suffix: 'kr' },
             commitment_period: { value: null, type: 'Number', placeholder: '', suffix: 'mos', required: false },
 
           },
           Electricity: {
-            kwh_rate: { value: null, type: 'Number', suffix: '€' },
+            kwh_rate: { value: null, type: 'Number', suffix: 'kr' },
             commitment_period: { value: null, type: 'Number', placeholder: '', suffix: 'mos', required: false },
 
           },
           CarInsurance: {
-            premium: { value: null, type: 'Number', suffix: '€' },
-            injury_liability: { value: null, type: 'Number', suffix: '€' },
-            property_liability: { value: null, type: 'Number', suffix: '€' },
-            collision_deductible: { value: null, type: 'Number', suffix: '€' },
-            comprehensive_deductible: { value: null, type: 'Number', suffix: '€' },
+            premium: { value: null, type: 'Number', suffix: 'kr' },
+            injury_liability: { value: null, type: 'Number', suffix: 'kr' },
+            property_liability: { value: null, type: 'Number', suffix: 'kr' },
+            collision_deductible: { value: null, type: 'Number', suffix: 'kr' },
+            comprehensive_deductible: { value: null, type: 'Number', suffix: 'kr' },
             glass_damage: { value: null, type: 'Boolean' },
             theft_protection: { value: null, type: 'Boolean' },
             roadside_assistance: { value: null, type: 'Boolean' },
@@ -259,10 +259,10 @@ export default {
 
           },
           HomeInsurance: {
-            premium: { value: null, type: 'Number', suffix: '€' },
-            injury_liability: { value: null, type: 'Number', suffix: '€' },
-            property_liability: { value: null, type: 'Number', suffix: '€' },
-            comprehensive_deductible: { value: null, type: 'Number', suffix: '€' },
+            premium: { value: null, type: 'Number', suffix: 'kr' },
+            injury_liability: { value: null, type: 'Number', suffix: 'kr' },
+            property_liability: { value: null, type: 'Number', suffix: 'kr' },
+            comprehensive_deductible: { value: null, type: 'Number', suffix: 'kr' },
             fire_protection: { value: null, type: 'Boolean' },
             water_damage_protection: { value: null, type: 'Boolean' },
             storm_damage_protection: { value: null, type: 'Boolean' },
@@ -277,7 +277,7 @@ export default {
 
           },
           MedicalInsurance: {
-            total_due: { value: null, type: 'Number', suffix: '€' },
+            total_due: { value: null, type: 'Number', suffix: 'kr' },
             commitment_period: { value: null, type: 'Number', placeholder: '', suffix: 'mos', required: false },
 
           },

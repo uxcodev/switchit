@@ -1,7 +1,7 @@
 import store from '@/store/index.js'
 import axios from 'axios';
 import auth0 from '@/helpers/auth0.js'
-import jwtDecode from 'jwt-decode'
+import { jwtDecode } from 'jwt-decode'
 
 const _axios = axios.create({
   baseURL: process.env.VUE_APP_NODE_URL,
@@ -46,7 +46,7 @@ export default {
 
   // Switchit API calls
 
-  // TESTING 
+  // TESTING
 
   // async whateverApiCall(method, path) {
   //   try {
@@ -409,7 +409,7 @@ export default {
       throw error
     }
   },
-  /* 
+  /*
     async updateOffer(offer, leads) {
       try {
         let id = offer._id
@@ -421,7 +421,7 @@ export default {
         console.error(err);
       }
       return true;
-    }, 
+    },
     */
 
   async getCampaigns(companyId) {

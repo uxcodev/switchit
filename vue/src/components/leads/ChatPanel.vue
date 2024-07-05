@@ -104,7 +104,7 @@
 </template>
 
 <script setup>
-import { getCurrentInstance, nextTick, onMounted, ref, watch, defineProps, computed } from "vue";
+import { getCurrentInstance, nextTick, onMounted, ref, watch, computed } from "vue";
 import SwitchitIcon from "@/components/assets/SwitchitIcon.vue";
 
 const props = defineProps({

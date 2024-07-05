@@ -12,7 +12,7 @@
 import { loading } from '@/store/index.js';
 import MainNav from "@/components/layout/MainNav.vue";
 import FilterDrawer from "@/components/leads/FilterDrawer.vue";
-import jwtDecode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import LoaderAniOverlay from "@/components/ui/LoaderAniOverlay.vue";
 import InsightsPanel from "@/components/leads/InsightsPanel.vue";
 

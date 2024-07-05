@@ -1,7 +1,7 @@
 // import store from '@/store/index.js'
 import axios from 'axios';
 import auth0 from '@/helpers/auth0.js';
-import jwtDecode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 // this allows use of global variables
 let toast_error = null;
@@ -57,7 +57,7 @@ export default {
 
   // Switchit API calls
 
-  // TESTING 
+  // TESTING
 
   async whateverApiCall(method, path) {
     try {
@@ -402,7 +402,7 @@ export default {
         let url = "/api/v1/leads";
         const response = await _axios.get(url);
         let leads = response.data.model
-  
+
         // let serviceFields = await fake_data.getServiceFields(leads.length)
         // console.log('serviceFields', serviceFields)
         console.log('body', body)
@@ -411,9 +411,9 @@ export default {
         console.log('nodeLeads', nodeLeads)
         console.log('leads', leads)
         let count = 0
-  
+
         for (let lead of leads) {
-  
+
           // lead.serviceFields = serviceFields[count].data
           lead.serviceFields = nodeLeads[count].data
           count++
@@ -423,15 +423,15 @@ export default {
           //   .replace(/\\/g, '')
           //   .replace(/\s/g, '')
           //   .replace(/[\u201C\u201D]/g, '"')
-  
+
           // let validJson = JSON.parse(cleanJsonString)
           // lead.serviceFields = validJson
           lead.userId = lead.householdId // or should be lead.id ?
           lead.value = lead.amount
           lead.match = '80'
           lead.data = lead.serviceFields
-  
-  
+
+
           // lead.serviceFields = cleanJsonString
         }
         // if body.ids = true, return only the ids
@@ -440,7 +440,7 @@ export default {
           console.log('ids after loop:', ids)
           return ids
         }
-  
+
         return leads;
       } catch (err) {
         console.error(err);

@@ -282,6 +282,9 @@ export default {
         this.businessPartnerBody.serviceTypes = this.businessPartnerBody.serviceTypes.filter(
           item => item <= this.serviceTypes[this.serviceTypes.length - 1].serviceType
         );
+          if (!this.businessPartnerBody.serviceTypes.includes(1)) {
+            this.businessPartnerBody.serviceTypes.push(1)
+      }
         console.log('Filtered serviceTypes: ', this.businessPartnerBody.serviceTypes);
       }
 

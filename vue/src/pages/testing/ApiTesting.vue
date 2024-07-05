@@ -502,14 +502,13 @@ export default {
       this.changeTab('get')
     },
     async editBusinessPartner(id) {
-      let serviceTypes = this.businessPartnerBody.serviceTypes
-
-      // if 1 does not exist in serviceTypes, add it (this ensures 'Unknown' is always selected)
+      /*
+       let serviceTypes = this.businessPartnerBody.serviceTypes
+       // if 1 does not exist in serviceTypes, add it (this ensures 'Unknown' is always selected)
       if (!serviceTypes.includes(1)) {
         serviceTypes.push(1)
-      }
-      console.log('serviceTypes: ', serviceTypes)
-      console.log('this.businessPartnerBody: ', this.businessPartnerBody, id)
+      } 
+        */
       let response = await this.$switchit.editBusinessPartner(id, this.businessPartnerBody)
       console.log('response: ', response)
       this.changeTab('get')

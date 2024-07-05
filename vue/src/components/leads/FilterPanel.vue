@@ -5,15 +5,17 @@
         <span class="material-symbols-outlined">page_info</span> Filter presets
       </div>
 
-      <div v-if="showFiltersetOptions" class="pl7">
-        <form @submit.prevent="createFilterset" class="switchit-form sm">
-          <div v-if="Object.keys(filterObj).length" class="group">
-            <label for="filtersetName">Save this set of filters</label>
-            <div class="inline_center input_button">
-              <input v-model="filtersetName" placeholder="Name" type="text" id="filtersetName" class="input lg mr3" />
-              <button>
-                <span class="material-symbols-outlined">Done</span>
-              </button>
+        <div v-if="showFiltersetOptions" class="pl7">
+          <form @submit.prevent="createFilterset" class="switchit-form med">
+            <div v-if="Object.keys(filterObj).length" class="group">
+              <label for="filtersetName">Save this set of filters</label>
+              <div class="inline_center input_button">
+                <input v-model="filtersetName" placeholder="Name" type="text" id="filtersetName" class="input lg mr3" />
+                <button>
+                  <span class="material-symbols-outlined">Done</span>
+                </button>
+              </div>
+
             </div>
           </div>
 

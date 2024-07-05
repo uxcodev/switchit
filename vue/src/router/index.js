@@ -77,6 +77,12 @@ const routes = [
     component: () => import('@/pages/OffersDashboard.vue')
   },
   {
+    path: '/users',
+    name: "users",
+    beforeEnter: authGuard,
+    component: () => import('@/pages/UserManagement.vue')
+  },
+  {
     path: '/offer/:id',
     name: "offer",
     beforeEnter: authGuard,

@@ -7,7 +7,7 @@
       </div>
 
 
-      <form v-else @submit.prevent="submitForm" class="switchit-form sm">
+      <form v-else @submit.prevent="submitForm" class="switchit-form med">
         <!-- inputs for creating business partner -->
         <div class="highlight disabled">
           <div class="checkbox-group">
@@ -53,7 +53,7 @@
           <div class="checkbox-group">
 
             <label v-for="(service, index) in serviceTypes" :key="index" :class="service.serviceType === 1 ? 'hide' : ''" class="checkbox-label">
-              <input :disabled="!isAdmin" class="checkbox" type="checkbox" @click="console.log(businessPartnerBody.serviceTypes)" :checked="isServiceSelected(service.serviceType)" :id="service.serviceTypeString" @change="toggleServiceSelection(service.serviceType)" />{{ $t(service.serviceTypeString) }}
+              <input :disabled="!isAdmin" class="checkbox" type="checkbox" :checked="isServiceSelected(service.serviceType)" :id="service.serviceTypeString" @change="toggleServiceSelection(service.serviceType)" />{{ $t(service.serviceTypeString) }}
               <span class="checkmark"></span>
 
             </label>
@@ -131,6 +131,7 @@ export default {
         countryCode: '',
         serviceTypes: [] //[1]
       },
+      originalBusinessPartnerBody: {},
       selectedAdmin: null,
       users: [],
       errors: [],
@@ -163,6 +164,7 @@ export default {
       } else {
         this.businessPartnerBody.serviceTypes.push(code);
       }
+      this.businessPartnerBody.serviceTypes.sort((a, b) => a - b);
     },
     validateForm() {
       this.errors = [];
@@ -185,25 +187,64 @@ export default {
       this.screen = page
     },
     async submitForm() {
-
       try {
-        let id = this.fullBusinessPartner.id
-        let body = this.businessPartnerBody
-        console.log('id: ', id)
-        console.log('body: ', body)
-        if (!body.serviceTypes.includes(1)) {
-          body.serviceTypes.push(1)
+        const { id } = this.fullBusinessPartner;
+        const newBp = this.businessPartnerBody;
+        const originalBp = this.originalBusinessPartnerBody;
+        const changesRequested = {};
+
+        console.log('id:', id);
+        console.log('body:', newBp);
+        console.log('original:', originalBp);
+
+        for (const key in newBp) {
+          if (newBp[key] !== originalBp[key]) {
+            const newValues = newBp[key].filter(value => !originalBp[key].includes(value));
+            const removedValues = originalBp[key].filter(value => !newBp[key].includes(value));
+
+            if (newValues.length || removedValues.length) {
+              changesRequested[key] = {
+                ...(newValues.length && { added: newValues }),
+                ...(removedValues.length && { removed: removedValues })
+              };
+            }
+          }
         }
-        let response = await this.$switchit.editBusinessPartner(id, body)
-        console.log(response)
-        if (response) {
-          // this.$router.push({ path: '/operations', query: { q: 'Companies' } })
-          this.$toast_success.show('Saved successfully')
+        console.log('changesRequested:', changesRequested);
+
+        let body = {
+          ...newBp,
+          changesRequested
+        };
+        console.log('body:', body);
+
+        // *** TEMP ***
+        // this.isAdmin = false
+
+        if (this.isAdmin) {
+          let response = await this.$switchit.editBusinessPartner(id, body)
+          console.log(response)
+          if (response) {
+            // this.$router.push({ path: '/operations', query: { q: 'Companies' } })
+            this.$toast_success.show('Saved successfully')
+          } 
+        } else {
+          // let response = await this.$switchit.requestBusinessPartnerChanges(id, body)
+          let response = null
+          console.log(response)
+          if (response) {
+            this.$toast_success.show('Request sent successfully')
+          } else {
+            this.$toast_warn.show('Requesting changes to access not available yet.')
+          
+          }
         }
+        
       } catch (error) {
-        this.$toast_error.show(error)
+        this.$toast_error.show(error);
       }
-    },
+    }
+
 
   },
   async created() {
@@ -233,6 +274,9 @@ export default {
           isApproved: this.fullBusinessPartner.isApproved
         };
 
+        // clone to originalBusinessPartnerBody for comparison
+        this.originalBusinessPartnerBody = { ...this.businessPartnerBody };
+
         // Fetch service types and filter them
         this.serviceTypes = await this.$switchit.getServiceTypes();
         this.businessPartnerBody.serviceTypes = this.businessPartnerBody.serviceTypes.filter(
@@ -256,7 +300,7 @@ export default {
 
   async mounted() {
     try {
-      // Fetch the active business partner from the store
+
 
 
       this.loaded = true;

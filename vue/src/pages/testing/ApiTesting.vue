@@ -17,7 +17,7 @@
         <AddressAutocomplete :init_address="null" @updateAddress="updateAddress" />
       </div>
 
-      <form class="switchit-form sm" v-if="currentTab == 'edit' || currentTab == 'create'" @submit.prevent="submitBusinessPartner()">
+      <form class="switchit-form med" v-if="currentTab == 'edit' || currentTab == 'create'" @submit.prevent="submitBusinessPartner()">
         <div class="group" v-if="currentTab == 'edit'">
           <label for="name">id</label>
           <input type="text" id="id" name="id" v-model="businessPartnerId">

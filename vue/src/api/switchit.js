@@ -2,6 +2,7 @@
 import axios from 'axios';
 import auth0 from '@/helpers/auth0.js';
 import jwtDecode from 'jwt-decode';
+import bitwiseDecode from '@/helpers/bitwise.js';
 
 // this allows use of global variables
 let toast_error = null;
@@ -80,9 +81,23 @@ export default {
 
   async getBusinessPartners() {
     try {
-      let url = "/api/v1/businesspartners?includeBusinessPartnerCountrys=true";
+      let url = "/api/v1/businesspartners?includeBusinessPartnerCountrys=true&includeBusinessPartnerRoles=true&includeBusinessPartnerRoleBusinessPartnerUsers";
       const response = await _axios.get(url);
-      return response?.data?.model;
+      let businessPartners = response?.data?.model
+      console.log('getBusinessPartners response', businessPartners)
+      // for each business partner
+      for (let bp of businessPartners) {
+        bp.countries = bp.businessPartnerBusinessPartnerCountrysModels
+        bp.roles = bp.businessPartnerBusinessPartnerRolesModels
+        bp.users = bp.businessPartnerBusinessPartnerRoleBusinessPartnerUserCollectionModels
+        bp.serviceTypes = bitwiseDecode(bp.serviceType)
+        delete bp.businessPartnerBusinessPartnerCountrysModels
+        delete bp.businessPartnerBusinessPartnerRolesModels
+        delete bp.businessPartnerBusinessPartnerRoleBusinessPartnerUserCollectionModels
+        console.log('serviceType', bp.serviceType)
+      }
+      return businessPartners;
+      // return response?.data?.model;
     } catch (err) {
       console.error(err);
     }
@@ -367,7 +382,21 @@ export default {
       let url = "/api/countrydialcodes";
       const response = await _axios.get(url);
       response.data.ok = response?.statusText === "OK"
-      return response.data;
+      // move Denmark, Norway, Sweden, Germany, and US to top of list
+      let countries = response.data
+      /*       let denmark = countries.find(country => country.name === "Denmark")
+            let norway = countries.find(country => country.name === "Norway")
+            let sweden = countries.find(country => country.name === "Sweden")
+            let germany = countries.find(country => country.name === "Germany")
+            let us = countries.find(country => country.name === "United States")
+            countries = countries.filter(country => country.name !== "Denmark" && country.name !== "Norway" && country.name !== "Sweden" && country.name !== "Germany")
+            countries.unshift(us)
+            countries.unshift(germany)
+            countries.unshift(sweden)
+            countries.unshift(norway)
+            countries.unshift(denmark) */
+      return countries
+      // return response.data;
     } catch (err) {
       console.error(err);
     }

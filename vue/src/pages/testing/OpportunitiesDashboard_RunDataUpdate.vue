@@ -46,7 +46,7 @@
               </div>
             </div>
             <div class="stats-deal-size-number">
-              1,292€
+              1,292kr
             </div>
           </div>
         </div>
@@ -78,7 +78,7 @@
           <div class="card lg-content">
             <div class="card lg-content-left">
               <div>Value of open offers:</div>
-              <div class="mt4"><span class="large">210,543€</span> / mth</div>
+              <div class="mt4"><span class="large">210,543kr</span> / mth</div>
             </div>
             <div class="card lg-content-right">
               <span class="material-symbols-outlined">keyboard_arrow_right</span>
@@ -137,7 +137,7 @@
                 <IconsCategoryAccess :access="lead.data"/>
               </div>
               <div class="table-row-content-sm">
-                {{ lead.value }} €
+                {{ lead.value }} kr
               </div>
               <div class="table-row-content-sm last">
                 <span class="material-symbols-outlined">chevron_right</span>

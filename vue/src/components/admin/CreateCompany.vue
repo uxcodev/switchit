@@ -8,7 +8,7 @@
       <div v-if="loading">
         <LoaderAni />
       </div>
-      <form v-else @submit.prevent="submitForm" class="switchit-form sm">
+      <form v-else @submit.prevent="submitForm" class="switchit-form med">
         <div class="group" v-if="!isAdmin">
           <label for="email">Created by</label>
           <div class="inline">

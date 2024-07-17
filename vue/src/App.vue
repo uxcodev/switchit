@@ -2,7 +2,7 @@
   <MainNav />
   <FilterDrawer v-if="!loading && activeBusinessPartner && serviceTypes" />
   <InsightsPanel v-if="!loading" />
-  <div class="mt-10" id="app">
+  <div id="app">
     <LoaderAniOverlay v-if="loading" />
     <router-view v-if="!loading"></router-view>
   </div>
@@ -95,5 +95,5 @@ export default {
 
 <style lang="sass">
 @import "/src/styles/styles.sass"
-
+@import "/src/styles/index"
 </style>

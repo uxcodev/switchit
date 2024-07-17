@@ -71,10 +71,16 @@ const routes = [
     component: () => import('@/pages/onboarding/EditBusinessPartner.vue')
   },
   {
+    path: '/offers/create',
+    name: "create_offer",
+    beforeEnter: authGuard,
+    component: () => import('@/pages/offers/CreateOffer.vue')
+  },
+  {
     path: '/offers',
     name: "offers",
     beforeEnter: authGuard,
-    component: () => import('@/pages/OffersDashboard.vue')
+    component: () => import('@/pages/offers/OffersDashboard.vue')
   },
   {
     path: '/users',

@@ -22,25 +22,29 @@ module.exports = {
       maxWidth: sizes,
       minHeight: sizes,
       maxHeight: sizes,
-      borderRadius: {
-        sm: '3px',
-        ...sizes,
-      },
+      borderRadius: sizes,
       fontSize: {
-        xxs: ['11px', { lineHeight: '16px', letterSpacing: '0.54px' }],
-        xs: ['12px', { lineHeight: '17px', letterSpacing: '0.54px' }],
-        sm: ['14px', { lineHeight: '20px', letterSpacing: '0.63px' }],
-        base: ['16px', { lineHeight: '22px', letterSpacing: '0.48px' }],
-        lg: ['18px', { lineHeight: '24px', letterSpacing: '0.6px' }],
-        xl: ['20px', { lineHeight: '28px', letterSpacing: '0.6px' }],
-        '2xl': ['24px', { lineHeight: '32px', letterSpacing: '0.72px' }],
+        xs: ['12px', { lineHeight: '17px' }],
+        sm: ['14px', { lineHeight: '18px', }],
+        base: ['16px', { lineHeight: '20px' }],
+        lg: ['18px', { lineHeight: '24px' }],
+        xl: ['20px', { lineHeight: '28px'  }],
+        '2xl': ['24px', { lineHeight: '32px' }],
+      },
+      fontFamily: {
+        metropolis: ['Metropolis', 'sans-serif'],
       },
       colors: {
-        primary: '#00203F',
-        secondary: '#05C4CB',
+        darker: '#151E27',
+        dark: '#2c3e50',
         shade: {
-          20: '#53657B',
+          '5d': '#5D647A',
+          'f1': '#f1f1f1'
         },
+        gray: {
+          800: '#424242',
+          900: '#212121',
+        }
       },
     },
   },

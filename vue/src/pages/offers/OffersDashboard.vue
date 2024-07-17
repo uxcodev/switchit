@@ -109,7 +109,7 @@
 <script>
 
 import ModalWindow from '@/components/ui/ModalWindow.vue';
-import FilterTabs from '../components/ui/FilterTabs.vue';
+import FilterTabs from '../../components/ui/FilterTabs.vue';
 import ChartOfferStats from '@/components/ui/charts/ChartOfferStats.vue';
 import api from '@/api/api'
 
@@ -211,7 +211,7 @@ export default {
       // console.log(categories)
       this.$store.dispatch('setCategories', categories)
       this.loadOffers()
-      /* 
+      /*
       const filteredOffers = this.offers.filter((offer) => {
         // Get the categories' status from the offer's access object
         const categories = Object.keys(offer.access);
@@ -340,7 +340,7 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-@import "/src/styles/styles.sass"
+@import "/src/styles/styles"
 
 .pagination
   display: flex
@@ -414,7 +414,7 @@ section
       color: white
       border: 0
 
-  
+
 
 pre
   color: black
@@ -430,7 +430,7 @@ pre
     background-color: white
     border-radius:10px
     overflow: hidden
-  &-row 
+  &-row
     display: flex
     justify-content: space-between
     align-items: center
@@ -448,7 +448,7 @@ pre
     color: rgba(255,255,255,0.7)
 
   &-header,
-  &-row  
+  &-row
     padding: 0
     & > div
       &:hover
@@ -464,7 +464,7 @@ pre
       display: flex
       justify-content: space-between
       align-items: center
-      padding:  10px 10px 10px 50px 
+      padding:  10px 10px 10px 50px
 
       &-xs
         width: 20px
@@ -503,8 +503,8 @@ pre
       opacity: .1
       color: #00C6C6
     span.active
-      opacity: 1  
-  // .stars 
+      opacity: 1
+  // .stars
 //   font-variation-settings: {
 //   'FILL' 1,
 //   'wght' 400,
@@ -513,7 +513,7 @@ pre
 //   }
   // .checkmark
   //   background-color: #00C6C6
-  
+
 @media only screen and (max-width: 767px)
   .table-row-content,
   .table-header-content
@@ -537,10 +537,10 @@ pre
         opacity: .1
         color: #00C6C6
       span.active
-        opacity: 1  
+        opacity: 1
 
 
-// 
+//
 </style>
 
 <style lang="scss">

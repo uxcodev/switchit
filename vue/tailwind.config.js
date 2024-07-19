@@ -25,6 +25,7 @@ module.exports = {
       borderRadius: sizes,
       fontSize: {
         xs: ['12px', { lineHeight: '17px' }],
+        xsm: ['13px'],
         sm: ['14px', { lineHeight: '18px', }],
         base: ['16px', { lineHeight: '20px' }],
         lg: ['18px', { lineHeight: '24px' }],
@@ -39,6 +40,7 @@ module.exports = {
         dark: '#2c3e50',
         shade: {
           '5d': '#5D647A',
+          'e5': '#e5e5e5',
           'f1': '#f1f1f1'
         },
         gray: {

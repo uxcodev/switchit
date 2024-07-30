@@ -582,7 +582,7 @@ h1
   justify-content: flex-start
   background-color: #f1f1f1
   min-height: 100vh
-  padding: 120px 20px 120px 20px
+  padding: 40px 20px 120px 20px
   top: 80px
 section
   display: flex
@@ -826,6 +826,7 @@ pre
 .action_panel
   position: fixed
   bottom: 0
+  left: 0
   width: 100vw
   display: flex
   padding: 20px 30px

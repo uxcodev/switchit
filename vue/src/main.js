@@ -1,41 +1,44 @@
 if (module.hot) {
-  module.hot.accept()
-  module.hot.addStatusHandler(status => {
-    if (status === 'prepare') console.clear()
-  })
+  module.hot.accept();
+  module.hot.addStatusHandler((status) => {
+    if (status === 'prepare') console.clear();
+  });
 }
 
-import { createApp } from 'vue'
-import App from './App.vue'
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+import App from './App.vue';
+
+const pinia = createPinia();
 const app = createApp(App);
 
+app.use(pinia);
 
 /* make api available throughout app */
 
-import api from "@/api/api";
-import switchit from "@/api/switchit";
+import api from '@/api/api';
+import switchit from '@/api/switchit';
 const plugin = {
   install() {
-    app.config.globalProperties.$api_node = api
-    app.config.globalProperties.$switchit = switchit
-  }
-}
-app.use(plugin)
+    app.config.globalProperties.$api_node = api;
+    app.config.globalProperties.$switchit = switchit;
+  },
+};
+app.use(plugin);
 
 /* use Vuex store */
 
-import store from '@/store/index.js'
-app.use(store)
+import store from '@/store/index.js';
+app.use(store);
 // app.provide('store', store);
 
 /* import plugins and custom components */
 
-
-import locale from '@/plugins/locale'
-app.use(locale)
+import locale from '@/plugins/locale';
+app.use(locale);
 
 import i18n from './i18n';
-app.use(i18n)
+app.use(i18n);
 export default i18n;
 
 import FilterComponent from '@/plugins/FilterComponent.vue';
@@ -48,11 +51,10 @@ app.use(ToastPlugin);
 import { initialize } from './api/switchit';
 initialize(app);
 
+import forms from '@/plugins/forms';
+app.use(forms);
 
-import forms from '@/plugins/forms'
-app.use(forms)
-
-import sessions from '@/plugins/sessions'
+import sessions from '@/plugins/sessions';
 app.use(sessions);
 
 import dayjsPlugin from '@/plugins/dayjs';
@@ -62,15 +64,12 @@ import VueTelInput from 'vue-tel-input';
 import 'vue-tel-input/vue-tel-input.css';
 let options = {
   defaultCountry: store.getters.country,
-  preferredCountries: ["DK", "CA"]
-}
+  preferredCountries: ['DK', 'CA'],
+};
 app.use(VueTelInput, options);
 
-
-
 // check if mobile
-store.dispatch('isMobile')
-
+store.dispatch('isMobile');
 
 /* use Auth0 */
 
@@ -79,10 +78,7 @@ app.use(auth0);
 
 /* use Router */
 
-import router from "./router";
-app.use(router)
+import router from './router';
+app.use(router);
 
-
-
-app.mount('#app')
-
+app.mount('#app');

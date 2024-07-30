@@ -22,7 +22,7 @@
 body
   padding: 0
   margin: 0
-  // font-family: Nunito, sans-serif 
+  // font-family: Nunito, sans-serif
   font-family: $body-font
   color: #333
   font-size: $body-font-size
@@ -72,6 +72,7 @@ h1, h2, h3, h4, h5, h6
   align-items: center
   font-size: 11px
   color: #999
+  position: relative
   .chart
     width: 40px
     height: 40px
@@ -230,7 +231,7 @@ section
 .white
   input, select, textarea
     background-color: #f5f5f5
-    border: 1px solid #eee        
+    border: 1px solid #eee
 .pageheader__header
   display: flex
   background-color: #ccc
@@ -287,14 +288,14 @@ pre
     padding: 10px
     border-radius: 10px
     color: rgba(255,255,255,0.7)
-        
+
   &-header,
   &-row
     &-content
       &-check
         width: 50px
         display: flex
-      &-xs  
+      &-xs
         width: 60px
 
       &-sm
@@ -338,7 +339,7 @@ pre
 .banner_green
   // make a green banner - the corners should be rounded, background .1 opacity, text a dark shade, and border a slightly darker shade than bg. Corners rounded 10px
   background: rgba(0,198,198,.1)
-  color: $dark  
+  color: $dark
   border: 1px solid rgba(0,198,198,.2)
   border-radius: 10px
   padding: 10px
@@ -365,17 +366,17 @@ pre
     border-radius: 20px
 
 .wrap
-  flex-wrap: wrap 
+  flex-wrap: wrap
 
 .bold
-  font-weight: bold  
+  font-weight: bold
 
 .link
   color: $link
   cursor: pointer
   text-decoration: none
   &:hover
-    text-decoration: underline  
+    text-decoration: underline
 @media only screen and (max-width: 767px)
   .main
     margin-left: 0px

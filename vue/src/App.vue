@@ -1,10 +1,18 @@
 <template>
-  <MainNav />
-  <FilterDrawer v-if="!loading && activeBusinessPartner && serviceTypes" />
-  <InsightsPanel v-if="!loading" />
-  <div class="mt-10" id="app">
+  <div class="h-screen flex flex-col">
+    <MainNav />
+
+    <FilterDrawer v-if="!loading && activeBusinessPartner && serviceTypes" />
+    <InsightsPanel v-if="!loading" />
     <LoaderAniOverlay v-if="loading" />
-    <router-view v-if="!loading"></router-view>
+
+    <div v-if="!loading" class="flex flex-grow h-0 w-screen bg-shade-f1">
+      <SideBar class="flex-shrink-0" />
+
+      <div class="flex-grow w-0 h-full overflow-auto">
+        <router-view></router-view>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -15,9 +23,11 @@ import FilterDrawer from "@/components/leads/FilterDrawer.vue";
 import { jwtDecode } from "jwt-decode";
 import LoaderAniOverlay from "@/components/ui/LoaderAniOverlay.vue";
 import InsightsPanel from "@/components/leads/InsightsPanel.vue";
+import SideBar from '@/components/layout/SideBar.vue';
 
 export default {
   components: {
+    SideBar,
     InsightsPanel,
     MainNav,
     FilterDrawer,
@@ -95,5 +105,5 @@ export default {
 
 <style lang="sass">
 @import "/src/styles/styles.sass"
-
+@import "/src/styles/index"
 </style>

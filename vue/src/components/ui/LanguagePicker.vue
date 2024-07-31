@@ -38,12 +38,12 @@ export default {
   },
   computed: {
     flagImg() {
-      return require(`@/i18n/flags/${this.$i18n.locale}.svg`);
+      return `/assets/images/i18n/flags/${this.$i18n.locale}.svg`;
     },
   },
   methods: {
     flagImage(locale) {
-      return require(`@/i18n/flags/${locale}.svg`);
+      return `/assets/images/i18n/flags/${locale}.svg`;
     },
     showModal() {
       this.isModalOpen = true;
@@ -118,7 +118,7 @@ export default {
       padding: 16px
       margin-top: 0
       background: #333
-    
+
     .content
       padding: 16px 0
       display: flex
@@ -136,7 +136,7 @@ export default {
         &:hover
           background: #fafafa
         &:active
-          background: #eee  
+          background: #eee
 
       input
         margin: 0

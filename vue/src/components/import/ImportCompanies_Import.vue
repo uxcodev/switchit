@@ -62,14 +62,14 @@
 <script>
 
 import Papa from 'papaparse';
-import * as XLSX from 'xlsx'; // docs.sheetjs.com  
+import * as XLSX from 'xlsx'; // docs.sheetjs.com
 import axios from 'axios';
 import FieldMap from './ImportCompanies_Import_Map.vue'
 import ImportedCompanies from './ImportCompanies_Import_Results.vue';
 import LoaderAni from '@/components/ui/LoaderAni.vue'
 
 const _axios = axios.create({
-  baseURL: process.env.VUE_APP_NODE_URL,
+  baseURL: import.meta.env.VITE_APP_NODE_URL,
   headers: {
     accept: "application/json",
   },
@@ -135,7 +135,7 @@ export default {
       this.isDragOver = false;
 
       const file = event.dataTransfer.files[0];
-      
+
       let type = this.getFileType(file)
       if (type === "excel") {
         console.log('type is excel')
@@ -247,7 +247,7 @@ export default {
 
     async saveMap() {
       this.newTable = await this.transformData(this.jsonTable, this.mappingDictionary)
-      
+
       // split full names into first and last
       this.newTable.forEach(person => {
         if (person.full_name && !person.first_name && !person.last_name) {
@@ -276,7 +276,7 @@ export default {
 h3
   text-align: left
   font-weight: bold
-.import-wrapper 
+.import-wrapper
   padding: 0
   display: flex
   flex-direction: column
@@ -292,7 +292,7 @@ h3
   padding: 20px 40px
   gap: 10px
 
-.tags 
+.tags
   display: flex
   flex-wrap: wrap
   gap: 4px
@@ -300,7 +300,7 @@ h3
   overflow-y: scroll
 
 
-.tag 
+.tag
   background-color: #333
   color: white
   display: flex
@@ -309,7 +309,7 @@ h3
   padding: 2px 6px
 
 
-.close-btn 
+.close-btn
   color: grey
   background: none
   border: none
@@ -317,7 +317,7 @@ h3
   cursor: pointer
 
 
-.hit-area 
+.hit-area
   display: flex
   flex-direction: column
   justify-content: center
@@ -327,18 +327,18 @@ h3
   border-radius: 10px
   border: 2px dashed #dbdbdb
   background-color: #fbfbfb
-    
-  &.drag-over 
-    border-color: #007bff 
+
+  &.drag-over
+    border-color: #007bff
     background-color: #f0f8ff
 
 
-.hint-text 
+.hint-text
   font-size: 14px
   color: #777
 
 
-.button-panel 
+.button-panel
   display: flex
   justify-content: space-between
   align-items: center
@@ -351,7 +351,7 @@ button
     opacity: .3
     cursor: default
 
-.toggle-container 
+.toggle-container
   display: flex
   align-items: center
   gap: 5px
@@ -361,24 +361,24 @@ button
   border: none
   color: #08f
 
-.buttons 
+.buttons
   display: flex
   gap: 20px
 
 
 .cancel-btn,
-.save-btn 
+.save-btn
   padding: 10px 15px
   border-radius: 6px
 
 
-.cancel-btn 
+.cancel-btn
   background-color: transparent
   border: 2px solid #007bff
   color: #007bff
 
 
-.save-btn 
+.save-btn
   background-color: #007bff
   color: white
   border: none
@@ -398,7 +398,7 @@ button
     background-image: linear-gradient(to left, rgba(246, 246, 246, 1), rgba(246, 246, 246, 0) 100%)
     pointer-events: none
 
-  table 
+  table
     width: 50%
     overflow: hidden
     border-collapse: collapse
@@ -407,13 +407,13 @@ button
     position: relative
 
     th,
-    td 
+    td
       padding: 8px
       text-align: left
       border-bottom: 1px solid #ddd
     tr
       position: relative
-    tbody 
+    tbody
       tr:last-child
         opacity: .5
         td

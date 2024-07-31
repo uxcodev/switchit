@@ -14,7 +14,7 @@ export function initialize(app) {
 // import node_api from '@/api/api.js'
 
 const _axios = axios.create({
-  baseURL: process.env.VUE_APP_API,
+  baseURL: import.meta.env.VITE_APP_API,
   headers: {
     accept: "application/json",
     "Content-Type": "application/json",

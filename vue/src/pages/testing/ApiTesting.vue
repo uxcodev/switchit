@@ -304,12 +304,12 @@
 // const api = instance.appContext.config.globalProperties.$api_node;
 
 import api from '@/api/api';
-// components 
+// components
 import ModalWindow from '@/components/ui/ModalWindow.vue';
 import TagInput from '@/components/ui/TagInput.vue'
 import AddressAutocomplete from '@/components/ui/AddressAutocomplete.vue';
 import bitwiseDecode from '@/helpers/bitwise'
-import Multiselect from '@vueform/multiselect/src/Multiselect';
+import Multiselect from '@vueform/multiselect';
 
 export default {
   components: {
@@ -507,7 +507,7 @@ export default {
        // if 1 does not exist in serviceTypes, add it (this ensures 'Unknown' is always selected)
       if (!serviceTypes.includes(1)) {
         serviceTypes.push(1)
-      } 
+      }
         */
       let response = await this.$switchit.editBusinessPartner(id, this.businessPartnerBody)
       console.log('response: ', response)
@@ -755,25 +755,25 @@ export default {
 
 // styles for tabs
 
-.tabs 
+.tabs
   display: flex
   margin-bottom: 20px
 
-  button 
+  button
     padding: 10px 20px
     margin-right: 5px
     border: none
     cursor: pointer
     transition: background-color 0.2s
     background-color: #2c3e50
-    &:hover 
+    &:hover
       // make background a bit lighter
       background-color: lighten(#2c3e50, 10%)
 
-    &.active 
+    &.active
       background-color: lighten(#2c3e50, 20%)
 
-.tab-content 
+.tab-content
   border: 1px solid #ccc
   padding: 20px
   box-shadow: 2px 2px 8px rgba(0,0,0,0.1)
@@ -794,7 +794,7 @@ h3
   justify-content: flex-start
   align-items: flex-start
 .content
-  width: 100%  
+  width: 100%
   display: flex
   flex-direction: column
   align-items: flex-start
@@ -806,7 +806,7 @@ h3
   display: none !important
 .table_header
   display: flex
-  width: 100% 
+  width: 100%
   border-radius: 6px
   background-color: #546E7A
   padding: 6px 10px
@@ -821,7 +821,7 @@ h3
     width:100%
     display: flex
     justify-content: space-between
-    .field 
+    .field
       padding: 0 10px
       width: 180px
       opacity: .6
@@ -851,7 +851,7 @@ h3
     justify-content: space-between
     align-items: center
     display: flex
-    // background: #fafafa 
+    // background: #fafafa
     border-radius: 4px
     cursor: pointer
     .row
@@ -888,7 +888,7 @@ h3
           opacity: .1
           color: #00BB8E
         span.active
-          opacity: 1   
+          opacity: 1
     .option
       width: 50px
       padding: 10px 16px
@@ -899,7 +899,7 @@ h3
       color: #999
       &:hover
         background: #eee
- 
+
   .status_wrapper
     position: relative
     &:before
@@ -924,7 +924,7 @@ h3
       background-color: #00BFA5
 
     &.rejected:before
-      background-color: red      
+      background-color: red
 
     .status
       outline: none
@@ -942,7 +942,7 @@ h3
 
 .company
   display: flex
-  gap: 4px      
+  gap: 4px
   &-name
     cursor: pointer
     color: #0088ff

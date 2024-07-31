@@ -86,6 +86,7 @@
     </section>
   </div>
 </template>
+
 <script>
 import api from '@/api/api'
 export default {

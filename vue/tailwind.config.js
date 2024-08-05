@@ -30,13 +30,13 @@ module.exports = {
       boxShadow: shadows,
       dropShadow: shadows,
       fontSize: {
-        xs: ['12px', { lineHeight: '17px' }],
-        xsm: ['13px', { lineHeight: '14.3px' }],
-        sm: ['14px', { lineHeight: '18px', }],
+        xs: ['12px', { lineHeight: '13.76px' }],
+        xsm: ['13px', { lineHeight: '15.6px' }],
+        sm: ['14px', { lineHeight: '15.4px', }],
         base: ['16px', { lineHeight: '20px' }],
         lg: ['18px', { lineHeight: '24px' }],
         xl: ['20px', { lineHeight: '28px'  }],
-        '2xl': ['24px', { lineHeight: '32px' }],
+        '2xl': ['26px', { lineHeight: '28.6px' }],
       },
       fontFamily: {
         metropolis: ['Metropolis', 'sans-serif'],
@@ -49,11 +49,26 @@ module.exports = {
           '5d': '#5D647A',
           'e5': '#e5e5e5',
           'f1': '#f1f1f1',
-          'f2': '#f2f2f2'
+          'f2': '#f2f2f2',
+          'dd': '#ddd'
         },
         gray: {
           800: '#424242',
           900: '#212121',
+        },
+        'blue-gray': {
+          600: '#546E7A',
+          900: '#22485B'
+        },
+        yellow: {
+          'ff8': '#FFE082',
+          'ffb': '#FFECB3',
+          '79': '#795548',
+        },
+        green: {
+          '00': '#00796B',
+          '80': '#80CBC4',
+          'b2': '#B2DFDB'
         }
       },
     },

@@ -109,7 +109,7 @@ const menus = [
 const bottomMenus = [
   {
     label: 'Settings',
-    link: '/settings',
+    link: '/settings/users',
     icon: 'SettingIcon',
   },
   {
@@ -120,7 +120,7 @@ const bottomMenus = [
 ];
 
 watch(route, (to) => {
-  if (to.path === '/offers') {
+  if (to.path === '/offers' || to.path.includes('/settings')) {
     layoutStore.setSidebarExpanded(false);
   } else {
     layoutStore.setSidebarExpanded(true);

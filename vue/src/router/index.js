@@ -3,6 +3,9 @@ import { loading } from '@/store/index.js';
 import { authGuard } from "@auth0/auth0-vue";
 import { createRouter, createWebHistory } from 'vue-router'
 
+import UsersPage from '@/pages/setting/UsersPage.vue';
+import SettingLayout from '@/components/layout/SettingLayout.vue';
+
 function apiGuard(to, from, next) {
   next();
 }
@@ -49,7 +52,13 @@ const routes = [
     path: '/settings',
     name: "settings",
     beforeEnter: authGuard,
-    component: () => import('@/pages/SettingsPage.vue')
+    component: SettingLayout,
+    children: [
+      {
+        path: 'users',
+        component: UsersPage
+      }
+    ]
   },
   {
     path: '/profile',

@@ -4,7 +4,7 @@
   </ModalWindow>
   <div v-if="isAdmin" class="main settings">
     <div class="header">
-      <!-- Add buttons to change between pages -->
+      <!-- Add button to change between pages -->
       <div v-if="screens.length > 1" class="button-group">
         <button v-for="(scr, index) in screens" :key="index" @click="changePage(scr)">{{ scr }}</button>
       </div>
@@ -96,7 +96,7 @@ export default {
 
 .header
   display: flex
-  justify-content: space-between  
+  justify-content: space-between
   width: 100%
   max-width: 900px
   .button-group

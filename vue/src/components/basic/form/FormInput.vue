@@ -16,5 +16,5 @@ const props = defineProps({
     required: true,
   },
 });
-const { value, errorMessage } = useField<string>(() => props.name);
+const { value, errorMessage } = useField(() => props.name);
 </script>

@@ -34,10 +34,10 @@
   </td>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { getAlignClass } from './utils';
 import { get } from '@/utils/get';
-import { computed, PropType } from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps({
   col: {

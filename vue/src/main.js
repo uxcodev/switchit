@@ -74,4 +74,10 @@ app.use(auth0);
 import router from './router';
 app.use(router);
 
+import { clickOutsideBeforeMountHook, clickOutsideUnmountedHook } from '@/directives/click-outside.js';
+app.directive('click-outside', {
+  beforeMount: clickOutsideBeforeMountHook,
+  unmounted: clickOutsideUnmountedHook,
+})
+
 app.mount('#app');

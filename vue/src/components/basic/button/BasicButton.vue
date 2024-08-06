@@ -1,25 +1,43 @@
 <template>
   <button
     :class="[
-      'flex items-center justify-center h-[35px] text-[17px] leading-[18.7px] px-3 rounded-7.5 outline-none border-none',
-      variant === 'primary' && 'bg-primary text-white'
+      'flex h-10 items-center justify-center border-none px-3 text-[17px] leading-[18.7px] outline-none rounded-1',
+      variant === 'filled' && color === 'primary' && 'bg-primary text-white',
+      variant === 'filled' && color === 'secondary' && 'bg-blue-gray-900 text-white',
+      variant === 'text' && 'bg-transparent text-shade-67 hover:bg-gray-200'
     ]"
     :type="type"
+    @click.stop="handleClick"
   >
     <slot />
   </button>
 </template>
 
 <script setup>
-defineProps({
+const props = defineProps({
   type: {
     type: String,
-    default: 'button'
+    default: 'button',
   },
   variant: {
     type: String,
-    default: 'primary'
-  }
-})
-</script>
+    default: 'filled',
+  },
+  color: {
+    type: String,
+    default: 'primary',
+  },
+  disabled: {
+    type: Boolean,
+    required: false,
+  },
+});
 
+const emit = defineEmits(['click']);
+
+const handleClick = () => {
+  if (!props.disabled) {
+    emit('click');
+  }
+};
+</script>

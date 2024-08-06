@@ -3,7 +3,10 @@
     <div class="flex items-center justify-between mb-5">
       <h1 class="text-blue-gray-600 text-2xl">Users</h1>
 
-      <BasicButton>
+      <BasicButton
+        @click="openCreateUserDialog"
+        class="!rounded-7.5 !h-[35px]"
+      >
         Invite user
       </BasicButton>
     </div>
@@ -49,6 +52,11 @@
         </div>
       </template>
     </BasicTable>
+
+    <UserDialog
+      :open="showCreateUserDialog"
+      @close="closeCreateUserDialog"
+    />
   </div>
 </template>
 
@@ -57,6 +65,7 @@ import BasicButton from '@/components/basic/button/BasicButton.vue';
 import { computed, getCurrentInstance, onMounted, ref } from 'vue';
 import BasicTable from '@/components/basic/table/BasicTable.vue';
 import BasicAvatar from '@/components/basic/avatar/BasicAvatar.vue';
+import UserDialog from '@/components/users/UserDialog.vue';
 
 const instance = getCurrentInstance();
 const switchit = instance.appContext.config.globalProperties.$switchit
@@ -71,6 +80,15 @@ const columns = computed(() => [
 
 const users = ref([]);
 const loading = ref(false);
+const showCreateUserDialog = ref(false);
+
+const openCreateUserDialog = () => {
+  showCreateUserDialog.value = true;
+}
+
+const closeCreateUserDialog = () => {
+  showCreateUserDialog.value = false;
+}
 
 const fetchUsers = () => {
   if (switchit === 123) {

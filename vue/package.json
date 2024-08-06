@@ -20,6 +20,7 @@
     "material-design-colors": "^1.0.2",
     "papaparse": "^5.4.1",
     "pinia": "^2.2.0",
+    "vee-validate": "^4.13.2",
     "vue": "^3.4.31",
     "vue-chartjs": "^5.3.1",
     "vue-cookies": "^1.8.4",
@@ -27,9 +28,11 @@
     "vue-i18n": "^9.13.1",
     "vue-router": "^4.4.0",
     "vue-tel-input": "^9.1.4",
+    "vue3-tailwind-modal": "^1.0.3",
     "vuex": "^4.1.0",
     "vuex-persistedstate": "^4.1.0",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.4.1",

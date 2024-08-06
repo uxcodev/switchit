@@ -1,7 +1,7 @@
 <template>
   <div
     :class="[
-      'drop-shadow-sidebar group/sidebar relative z-[10000] flex flex-col justify-between bg-white p-2.5 transition-all duration-200 ease-in',
+      'drop-shadow-sidebar group/sidebar relative flex flex-col justify-between bg-white p-2.5 transition-all duration-200 ease-in',
       sidebarExpanded && 'w-100',
       !sidebarExpanded && 'w-15 overflow-hidden hover:w-100',
     ]"

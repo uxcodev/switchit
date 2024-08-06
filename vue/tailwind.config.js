@@ -18,6 +18,7 @@ module.exports = {
   content: [
     "./index.html",
     "./src/**/*.{vue,js,ts,jsx,tsx}",
+    "./node_modules/vue3-tailwind-modal/**/*.js",
   ],
   theme: {
     extend: {
@@ -33,7 +34,7 @@ module.exports = {
         xs: ['12px', { lineHeight: '13.76px' }],
         xsm: ['13px', { lineHeight: '15.6px' }],
         sm: ['14px', { lineHeight: '15.4px', }],
-        base: ['16px', { lineHeight: '20px' }],
+        base: ['16px', { lineHeight: '17.6px' }],
         lg: ['18px', { lineHeight: '24px' }],
         xl: ['20px', { lineHeight: '28px'  }],
         '2xl': ['26px', { lineHeight: '28.6px' }],
@@ -46,10 +47,14 @@ module.exports = {
         darker: '#151E27',
         dark: '#2c3e50',
         shade: {
+          '33': '#333',
+          '55': '#555555',
           '5d': '#5D647A',
+          '67': '#676A76',
           'e5': '#e5e5e5',
           'f1': '#f1f1f1',
           'f2': '#f2f2f2',
+          'f5': '#f5f5f5',
           'dd': '#ddd'
         },
         gray: {

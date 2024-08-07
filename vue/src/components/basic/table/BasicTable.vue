@@ -15,6 +15,8 @@
         :row="row"
         :row-id="rowId"
         :is-last-row="data.length - 1 === rowId"
+        :class="rowClass"
+        @click="onRowClick(row)"
       >
         <template v-for="name in Object.keys($slots)" :key="name" #[name]="slotData">
           <slot :name="name" v-bind="slotData"></slot>
@@ -50,5 +52,14 @@ defineProps({
     type: Boolean,
     default: false,
   },
+  rowClass: {
+    type: String,
+  }
 });
+
+const emit = defineEmits(['rowClick']);
+
+const onRowClick = (row) => {
+  emit('rowClick', row);
+}
 </script>

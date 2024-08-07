@@ -4,14 +4,18 @@
       <h1 class="text-blue-gray-600 text-2xl">Users</h1>
 
       <BasicButton
-        @click="openCreateUserDialog"
+        @click="openUserDialog"
         class="!rounded-7.5 !h-[35px]"
       >
         Invite user
       </BasicButton>
     </div>
 
-    <BasicTable :data="users" :columns="columns">
+    <BasicTable
+      :data="users" :columns="columns"
+      row-class="cursor-pointer"
+      @rowClick="onClickUser"
+    >
       <template #td-info="{ row }">
         <div class="flex items-center gap-4">
           <BasicAvatar
@@ -54,8 +58,9 @@
     </BasicTable>
 
     <UserDialog
-      :open="showCreateUserDialog"
-      @close="closeCreateUserDialog"
+      :open="showUserDialog"
+      :user="user"
+      @close="closeUserDialog"
     />
   </div>
 </template>
@@ -80,14 +85,16 @@ const columns = computed(() => [
 
 const users = ref([]);
 const loading = ref(false);
-const showCreateUserDialog = ref(false);
+const showUserDialog = ref(false);
+const user = ref(undefined);
 
-const openCreateUserDialog = () => {
-  showCreateUserDialog.value = true;
+const openUserDialog = () => {
+  showUserDialog.value = true;
 }
 
-const closeCreateUserDialog = () => {
-  showCreateUserDialog.value = false;
+const closeUserDialog = () => {
+  user.value = undefined;
+  showUserDialog.value = false;
 }
 
 const fetchUsers = () => {
@@ -127,6 +134,11 @@ const fetchUsers = () => {
       }
     ]
   }
+}
+
+const onClickUser = (row) => {
+  user.value = row;
+  openUserDialog();
 }
 
 onMounted(() => {

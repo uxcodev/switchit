@@ -45,15 +45,10 @@
       </template>
 
       <template #td-status="{ row }">
-        <div
-          :class="[
-            'rounded-1 px-1.5 py-0.5 text-xs inline-flex',
-            row.status.name === 'Pending' && 'bg-yellow-ffb text-yellow-79 border-yellow-ff8',
-            row.status.name === 'Active' && 'bg-green-b2 text-green-00 border-green-80'
-          ]"
-        >
-          {{ row.status.name }}
-        </div>
+        <BasicBadge
+          :text="row.status?.name"
+          :status="row.status?.name === 'Active' ? 'success' : 'pending'"
+        />
       </template>
     </BasicTable>
 
@@ -71,6 +66,7 @@ import { computed, getCurrentInstance, onMounted, ref } from 'vue';
 import BasicTable from '@/components/basic/table/BasicTable.vue';
 import BasicAvatar from '@/components/basic/avatar/BasicAvatar.vue';
 import UserDialog from '@/components/users/UserDialog.vue';
+import BasicBadge from '@/components/basic/badge/BasicBadge.vue';
 
 const instance = getCurrentInstance();
 const switchit = instance.appContext.config.globalProperties.$switchit

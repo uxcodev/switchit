@@ -28,10 +28,10 @@
             />
             <span
               v-if="user?.status?.name === 'Active'"
-              class="text-blue-light cursor-pointer text-xsm"
+              class="cursor-pointer text-xsm text-blue-light"
               >Deactivate user</span
             >
-            <span v-else class="text-blue-light cursor-pointer text-xsm">Activate user</span>
+            <span v-else class="cursor-pointer text-xsm text-blue-light">Activate user</span>
           </div>
         </div>
 
@@ -66,7 +66,7 @@
             {{ user ? 'Save' : 'Invite User' }}
           </BasicButton>
 
-          <BasicButton variant="text"> Cancel </BasicButton>
+          <BasicButton variant="text" @click="handleClose"> Cancel </BasicButton>
         </div>
       </form>
     </div>
@@ -126,7 +126,7 @@ const roleOptions = [
   { label: 'Admin', value: 1 },
   { label: 'User', value: 2 },
   { label: 'Manager', value: 3 },
-  { label: 'Sales', value: 3 },
+  { label: 'Sales', value: 4 },
 ];
 
 const onSubmit = handleSubmit((values) => {

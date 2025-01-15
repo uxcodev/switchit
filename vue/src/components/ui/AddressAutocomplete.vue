@@ -47,7 +47,7 @@ export default {
         // }
         this.formatted_address = place.formatted_address;
         this.address = place.formatted_address;
-        place.isCountry = place.types.includes('country');
+        place.isCountry = place.types?.includes('country');
         place.coordinates = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() };
         console.log('place', place);
         this.$emit("updateAddress", place);

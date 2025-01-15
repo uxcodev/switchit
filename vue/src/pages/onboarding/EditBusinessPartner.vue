@@ -6,8 +6,7 @@
         <LoaderAni />
       </div>
 
-
-      <form v-else @submit.prevent="submitForm" class="switchit-form med">
+      <form v-else-if="isAdmin" @submit.prevent="submitForm" class="switchit-form med">
         <!-- inputs for creating business partner -->
         <div class="highlight disabled">
           <div class="checkbox-group">
@@ -65,6 +64,69 @@
 
         <div v-if="errors.length" class="msg_error">{{ errors[0] }}</div>
       </form>
+
+      <!-- If not admin, show all fields as plain text -->
+
+      <div v-else  class="switchit-form med">
+        <div class="highlight info">
+          Please contact us if you need to edit company details, or request access to additional markets.
+        </div>
+
+        <div class="group disabled">
+            <label class="checkbox-label">Company is approved
+            <input disabled type="checkbox" id="isApproved" name="isApproved" v-model="businessPartnerBody.isApproved">
+            <span class="checkmark"></span>
+          </label>
+        </div>
+        <div class="group">
+          <label for="company">Company name</label>
+          <div>{{ businessPartnerBody.name }}</div>
+        </div>
+        <div class="group">
+          <label for="website">Company email</label>
+          <div>{{ businessPartnerBody.email }}</div>
+        </div>
+        <div class="group">
+          <label for="website">Company VAT number</label>
+          <div>{{ businessPartnerBody.vatNumber }}</div>
+        </div>
+        <div class="group">
+          <label for="website">Company website</label>
+          <div>{{ businessPartnerBody.domain }}</div>
+        </div>
+        <div class="group">
+          <label for="website">Company address</label>
+          <div>{{ businessPartnerBody.address }}</div>
+        </div>
+        <div class="group">
+          <label for="country">Company country</label>
+          <div>{{ lookupCountryFromCode(businessPartnerBody.countryCode) }}</div>
+        </div>
+
+        <div class="group">
+          <label for="countries">Countries the company is active in</label>
+          <div class="tags">
+            <span v-for="(country, index) in businessPartnerBody.countriesOfOperation" :key="index" class="tag">{{ lookupCountryFromCode(country) }}</span>
+          </div>
+        </div>
+
+        <div class="group">
+          <label for="markets">Markets the company serves</label>
+          <div class="tags">
+            <span v-for="(service, index) in serviceTypes" :key="index" class="tag" :class="service.serviceType === 1 || !isServiceSelected(service.serviceType) ? 'hide' : ''">{{  $t(service.serviceTypeString) }}</span>
+          </div>
+        </div>
+
+        <!-- <div class="group">
+          <label for="markets">Markets the company serves</label>
+          <div class="checkbox-group">
+            <label v-for="(service, index) in serviceTypes" :key="index" :class="service.serviceType === 1 ? 'hide' : ''" class="checkbox-label">
+              <input :disabled="!isAdmin" class="checkbox" type="checkbox" :checked="isServiceSelected(service.serviceType)" :id="service.serviceTypeString" @change="toggleServiceSelection(service.serviceType)" />{{ $t(service.serviceTypeString) }}
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div> -->
+        </div>
     </div>
   </div>
   <div v-if="status === 'pending'" class="main clip" v-show="!isAdmin">
@@ -153,6 +215,9 @@ export default {
     async countrySelected() {
       // TEMP for testing
       // console.log('countrySelected', this.form.businessPartner.countriesOfOperation)
+    },
+    lookupCountryFromCode(code) {
+      return this.country_options.find(country => country.value === code)?.label;
     },
     isServiceSelected(code) {
       return this.businessPartnerBody.serviceTypes.includes(code);
@@ -282,9 +347,7 @@ export default {
         this.businessPartnerBody.serviceTypes = this.businessPartnerBody.serviceTypes.filter(
           item => item <= this.serviceTypes[this.serviceTypes.length - 1].serviceType
         );
-          if (!this.businessPartnerBody.serviceTypes.includes(1)) {
-            this.businessPartnerBody.serviceTypes.push(1)
-      }
+  
         console.log('Filtered serviceTypes: ', this.businessPartnerBody.serviceTypes);
       }
 
@@ -347,33 +410,6 @@ export default {
   .group
     input:not(.reset)
       max-width: none
-
-// highlight
-.highlight  
-  border: 1px solid rgba($ui-active, .2)
-  border-radius: 5px
-  background-color: rgba($ui-active, .05)
-  &.disabled 
-    background-color: #eee 
-    border: 1px solid #ddd
-    .checkmark::after 
-      background-color: #ccc !important
-
-  &::disabled
-    background-color: #eee !important
-
-// <label  v-for="(service, index) in serviceTypes" :key="index" :class="service.serviceType === 1 ? 'hide' : ''" class="checkbox-label">
-//               <input :disabled="!isAdmin" class="checkbox" type="checkbox" @click="console.log(businessPartnerBody.serviceTypes)" :checked="isServiceSelected(service.serviceType)" :id="service.serviceTypeString" @change="toggleServiceSelection(service.serviceType)" />{{ $t(service.serviceTypeString) }}
-//               <span class="checkmark"></span>
-//             </label>
-
-// disable checkboxes
-
-.checkbox:disabled + .checkmark 
-  background-color: #eee !important
-  &::after 
-      background-color: #ccc !important
-
   
 .hide
   display: none !important
@@ -384,7 +420,6 @@ export default {
   width:400px
   label
     width:160px
-pre
-  color: black
+
 
 </style>

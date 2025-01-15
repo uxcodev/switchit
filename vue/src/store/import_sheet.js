@@ -4,15 +4,19 @@ export default {
   state() {
     return {
       companies: [],
+      importCompaniesUrl: ''
     };
   },
   mutations: {
     setCompanies(state, payload) {
       state.companies = payload.val;
     },
+    setImportCompaniesUrl(state, url) {
+      state.importCompaniesUrl = url;
+    }
   },
   actions: {
-    async getData({ dispatch }) {
+    async getData({ dispatch, commit }) {
       try {
         let sheet_id = '1uHwFPlBanjQKaSlNqCbzSumpK7ty9nhKav1pH84IPiI'
         let sheet_companies = 'companies'
@@ -23,6 +27,7 @@ export default {
 
         console.log('response array', response)
         await dispatch('convertCompanyData', response);
+        await commit('setImportCompaniesUrl', `https://docs.google.com/spreadsheets/d/${sheet_id}/edit#gid=0`);
         return
       } catch (error) {
         console.error(error);
@@ -71,6 +76,9 @@ export default {
   getters: {
     companies(state) {
       return state.companies;
+    },
+    importCompaniesUrl(state) {
+      return state.importCompaniesUrl;
     }
   }
 }

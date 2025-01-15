@@ -7,7 +7,7 @@ button
   justify-content: center
   align-items: center
   background: $button-color
-  color: $light-text
+  color: $button-text-light
   font-family: inherit
   border: none
   white-space: nowrap
@@ -109,3 +109,53 @@ button
   border-radius: 6px
   width: auto
   transition: all .2
+
+.tags 
+  display: flex
+  flex-wrap: wrap
+  gap: 4px
+  max-height: 400px
+  overflow-y: scroll
+
+
+.tag 
+  background-color: $tag-bg
+  color: $tag-color
+  display: flex
+  align-items: center
+  border-radius: 4px
+  padding: 2px 6px
+
+.highlight
+  display: flex
+  flex-direction: column
+  border: 1px solid rgba($ui-active, .2)
+  border-radius: 5px
+  background-color: rgba($ui-active, .05)
+  padding: 10px  
+  gap: 10px
+
+  &.disabled 
+    background-color: #eee 
+    border: 1px solid #ddd
+  &.info
+    color: darken($highlight-info, 20%)
+    border: 1px solid rgba($highlight-info, .2)
+    background-color: rgba($highlight-info, .05)
+  &.success
+    color: darken($highlight-success, 20%)
+    border: 1px solid rgba($highlight-success, .2)
+    background-color: rgba($highlight-success, .05)
+  &.warning
+    color: darken($highlight-warning, 10%)
+    border: 1px solid rgba($highlight-warning, .2)
+    background-color: rgba($highlight-warning, .05)
+  &.error
+    color: darken($highlight-error, 20%)
+    border: 1px solid rgba($highlight-error, .2)
+    background-color: rgba($highlight-error, .05)
+      
+
+.disabled 
+  .checkmark::after 
+    background-color: #ccc !important  

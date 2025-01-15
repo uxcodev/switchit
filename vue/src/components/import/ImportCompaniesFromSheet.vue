@@ -16,6 +16,10 @@
         </tbody>
       </table>
     </div>
+    <!-- add help text -->
+     <div class="help mb5">
+      <strong>Note:</strong> Data imported from <a :href="$store.getters.importCompaniesUrl" class="link" >Google Sheets</a>
+    </div>
     <button @click="importCompanies()">Import companies</button>
      <!-- <pre>
        <code>

@@ -1,0 +1,32 @@
+alerts:
+- rule: DEPLOYMENT_FAILED
+- rule: DOMAIN_FAILED
+domains:
+- domain: app.switchit.ai
+  type: PRIMARY
+envs:
+- key: VUE_APP_API
+  scope: RUN_AND_BUILD_TIME
+  value: https://switchitapi.azurewebsites.net
+- key: VUE_APP_AUTH0_CLIENTID
+  scope: RUN_AND_BUILD_TIME
+  value: YwOb8otAAiTWraG9NBYLpF4EoBohsmS2
+- key: VUE_APP_AUTH0_CLIENT_SECRET
+  scope: RUN_AND_BUILD_TIME
+  value: plY3MWuKux10_sRSnajFF8VJWULoJBZeZZcVZsJYcfVSjtJjgdC4xEUPDjtm8fBz
+- key: VUE_APP_AUTH0_AUDIENCE
+  scope: RUN_AND_BUILD_TIME
+  value: https://switchit.ai/api
+- key: VUE_APP_AUTH0_DOMAIN
+  scope: RUN_AND_BUILD_TIME
+  value: https://dev-pbdw6d5jlg4ghzvp.eu.auth0.com
+- key: VUE_APP_NODE_URL
+  scope: RUN_AND_BUILD_TIME
+  value: https://node.switchit.ai
+- key: VUE_APP_GOOGLE_API_KEY
+  scope: RUN_AND_BUILD_TIME
+  value: AIzaSyBFI4BKmsXM4vOIi0d3urfYoDoJFdbHlfo
+ingress: {}
+maintenance: {}
+name: switchit
+region: ams
